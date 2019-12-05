@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>semantic Boards</title>
+    <link rel="stylesheet" href="../css/propPage.css" media="all" />
+    <script src="../../js/functions.js"></script>
+    <script src="../../js/d3.min.js"></script>
+    <script src="https://unpkg.com/viz.js@1.8.1/viz.js" type="javascript/worker"></script>
+    <script src="https://unpkg.com/d3-graphviz@2.6.1/build/d3-graphviz.js"></script>
+</head>
+<body>
+        <img src="../../images/athenesSchool2.jpg" id="bg" alt="">
+    <header> 
+        <div class="mainHeader">
+            <div class="grid_1_8" > 
+                <img src="../../images/logicusLogo.png" id="logLogo" alt="">
+            </div>
+            <div class="grid_6_8">
+                <p> Propositional Semantic Boards </p>
+            </div>
+            <div class="grid_1_8">
+                <img src="../../images/usLogo.png" id="usLogo" alt="">
+            </div>
+        </div>
+        <nav>
+            <div class="grid_1_7" onclick="window.location= '../../index.html'">
+                    <p> Main Page </p>
+            </div>
+            <div class="grid_1_7"  onclick="window.location= '../sbMain.html'">
+                    <p> Semantic Boards </p>
+            </div>
+            <div class="grid_1_7" onclick="window.location= '../ffMain.html'">
+                    <p> Formula Forms </p>
+            </div>
+            <div class="grid_1_7" onclick="window.location= '../dpMain.html'">
+                    <p> Davis-Putnam </p>
+            </div>
+            <div class="grid_1_7" onclick="window.location= '../heMain.html'">
+                    <p> Herbrand Extension </p>
+            </div>
+            <div class="grid_1_7" onclick="window.location= '../dsMain.html'">
+                    <p> Deductive Systems </p>
+            </div>
+            <div class="grid_1_7" onclick="window.location= '../resMain.html'">
+                    <p> Resolution</p>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="leftView"> 
+            <div>
+                <h2> Set of Formulas (U) </h2>
+                <textarea placeholder="Introduce the formulas of the set. Don't forget to put a semicolon ';' after each one."></textarea>
+            </div>
+            <div>
+                <h2> Single formula (F) </h2>
+                <input type="text" placeholder="Introduce the formula of the set">
+            </div>
+            <div>
+                <h2> Check property </h2>
+                <select>
+                    <option value="" selected> ¿WHAT DO YOU WANT TO CHECK? </option>
+                    <option value="U_CONS"> U CONSISTENCY </option>
+                    <option value="U_INCONS"> U INCONSISTENCY </option>
+                    <option value="U_MOD"> U MODELS </option>
+                    <option value="U_CMOD"> U COUNTERMODELS </option>
+                    <option value="F_SAT"> F SATISFACTIBILITY </option>
+                    <option value="F_UNSAT"> F UNSATISFACTIBILITY </option>
+                    <option value="F_TAUT"> F TAUTOLOGY </option>
+                    <option value="F_MOD"> F MODELS </option>
+                    <option value="F_CMOD"> F COUNTERMODELS </option>
+                    <option value="F_CMOD"> F IS LOGIC CONSECUENCE OF U </option>  
+                </select>
+            </div>
+            <div>
+                <button id="run_butt">RUN</button>
+            </div>
+        </div>
+
+        <div class="rightView"> 
+
+            <div>
+                <div class="grid_3_4">
+                    <h2> Results </h2>
+                </div>
+                
+                <div class="grid_1_4">
+                    <button id="sGraph"> SHOW GRAPH </button>
+                </div>
+                
+                <textarea id="resTA" placeholder="Results of your query will appear here when you push run." readonly></textarea>
+            </div>
+
+            <textarea id="outGTA" style="opacity: 0%;" readonly>digraph{a;}</textarea>
+            
+        </div>
+
+        <div id="popUp">
+            <button id="closepopUp"> ✘ </button>
+            <div id="graph" style="text-align: center;"></div>
+        </div>
+
+        <script>
+            
+            document.getElementById("sGraph").onclick = function(){openPopUp(document.getElementById('popUp')); plotDot(document.getElementById('outGTA').value);};
+            document.getElementById("closepopUp").onclick = function(){closePopUp(document.getElementById('popUp'));};  
+        
+            function plotDot(text){
+                d3.select("#graph").graphviz()
+                    .fade(false)
+                    .renderDot(text);
+            }
+        </script>
+
+    </main>
+    
+</body>
+</html>

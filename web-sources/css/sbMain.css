@@ -1,0 +1,16 @@
+@import url("body.css");
+@import url("./grid.css");
+
+#pCircle{
+    position: fixed;
+    top: 30vh;
+    width: 32vw;
+    left: 12vw;
+}
+
+#foCircle{
+    position: fixed;
+    top: 30vh;
+    width: 32vw;
+    left: 56vw;
+}

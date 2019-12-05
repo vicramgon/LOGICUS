@@ -1,0 +1,157 @@
+@import url("body.css");
+@import url("./grid.css");
+
+.leftView{
+    position: relative;
+    display: block;
+    float: left;
+    width: 49.7%;
+    height: 82vh;
+    background-color: rgba(218, 218, 218, 0.6);
+    z-index: 3;
+    border-right: 5px solid rgba(88, 109, 138,80%);
+}
+
+.rightView{
+    position: relative;
+    display: block;
+    float: left;
+    width: 49.7%;
+    height: 82vh;
+    background-color: rgba(218, 218, 218, 0.6);
+    z-index: 3;
+    border-left: 5px solid rgba(88, 109, 138,80%);
+}
+
+.leftView div{
+    position: relative;
+    display: inline-block;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1%;
+    
+}
+
+.rightView div:not(.grid_1_4):not(.grid_3_4):not(.grid_1_7) {
+    position: relative;
+    display: inline-block;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1%;
+    
+}
+
+h2{
+    color: rgb(50, 70, 95);
+}
+
+textarea{
+    width: 100%;
+    height: 30vh;
+    background-color: transparent;
+    color:  rgb(50, 70, 95);
+    font-size: 2vh;
+    font-weight: bold;
+    border: 3px solid rgba(50, 70, 95,0.6);
+}
+
+input {
+    width: 100%;
+    height: 5vh;
+    background-color: transparent;
+    color:  rgb(50, 70, 95);
+    font-size:  2vh;
+    font-weight: bold;
+    border: 3px solid rgba(50, 70, 95,0.6);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+select {
+    width: 100%;
+    height: 5vh;
+    background-color: transparent;
+    color:  rgb(50, 70, 95);
+    font-size:  2vh;
+    font-weight: bold;
+    border: 3px solid rgba(50, 70, 95,0.6);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#run_butt {
+    margin-top: 4vh;
+    text-align: center;
+    width: 100%;
+    height: 7vh;
+    background-color: rgba(50, 70, 95, 0.6);
+    color:  rgb(218, 218, 218);
+    font-size:  2vh;
+    font-weight: bold;
+    border: 3px solid rgba(50, 70, 95,0.6);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#run_butt:hover  {
+    background-color: rgba(155, 178, 211, 0.8);
+}
+
+#sGraph {
+    margin-top: 2vh;
+    text-align: center;
+    width: 100%;
+    height: 3vh;
+    background-color: rgba(50, 70, 95, 0.6);
+    color:  rgb(218, 218, 218);
+    font-size:  2vh;
+    font-weight: bold;
+    border: 3px solid rgba(50, 70, 95,0.6);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#sGraph:hover {
+    background-color: rgba(155, 178, 211, 0.8);
+}
+
+#resTA{
+    height: 69vh;
+}
+
+#popUp{
+    display: none;
+    position: fixed;
+    top:0;
+    left:0;
+    min-width: 100%;
+    height: 100%;
+    background-color: rgba(150, 193, 245, 0.4);
+    z-index: 4;
+    opacity: 80%;
+}
+
+#closepopUp{
+    float: right;
+    background-color: transparent;
+    color:  rgb(50, 70, 95);
+    font-size:  3vh;
+    font-weight: bold;
+    border: none;
+    z-index: 6;
+}
+
+#graph{
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    width: 90%;
+    height: 98%;
+    margin-top: 1%;
+    margin-left:5%;
+    text-align: center;
+    z-index: 5;
+
+
+}
+
+#outGTA{
+    height: 0%;
+    opacity: 0%;
+}
+

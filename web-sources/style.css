@@ -1,0 +1,67 @@
+#bg {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+      
+    /* Preserve aspet ratio */
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+  }
+
+#lgCirc {
+    position: fixed; 
+    top: 2vh; 
+    left: 37.5vw;
+    z-index: 1;
+    width: 25vw;
+  }
+
+  #sbCirc{
+    position: fixed; 
+    top: 4vh; 
+    left: 75vw;
+    z-index: 1;
+    width: 18vw;
+  }
+
+  #fmCirc{
+    position: fixed; 
+    top: 40vh; 
+    left: 69.2vw;
+    z-index: 1;
+    width: 18vw;
+  }
+
+  #dpCirc{
+    position: fixed; 
+    top: 60vh; 
+    left: 51.5vw;
+    z-index: 1;
+    width: 18vw;
+  }
+
+  #heCirc{
+    position: fixed; 
+    top: 60vh; 
+    left: 30.5vw;
+    z-index: 1;
+    width: 18vw;
+  }
+
+  #dsCirc{
+    position: fixed; 
+    top: 40vh; 
+    left: 12.8vw;
+    z-index: 1;
+    width: 18vw;
+  }
+
+  #resCirc{
+    position: fixed; 
+    top: 4vh; 
+    left: 7vw;
+    z-index: 1;
+    width: 18vw;
+  }
+

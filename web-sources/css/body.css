@@ -1,0 +1,102 @@
+header{
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100vw;
+    height: 5vw;
+}
+
+.mainHeader {
+    display: block;
+    position: relative; 
+    background-color: rgba(243,243,243,84%);
+    min-width: 100%;
+    height: 7vw;
+    z-index: 0;
+}
+
+.mainHeader .grid_1_8 {
+    height: 100%;
+    z-index: 1;
+}
+
+.mainHeader .grid_6_8 {
+    color: rgb(88, 109, 138);
+    height: 100%;
+    z-index: 1;
+}
+
+.mainHeader .grid_6_8 p{
+    text-align: center;
+    font-size: 2vw;
+    margin-top: 3.5%;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+}
+
+#logLogo{
+    position: relative;
+    margin-top: 5%;
+    margin-left: 32.5%;
+    width: 35%;
+    height: 80%;
+    z-index: 2;
+}
+
+#usLogo{
+    position: relative;
+    margin-top: 5%;
+    margin-left: 25%;
+    width: 50%;
+    height: 80%;
+    z-index: 2;
+}
+
+nav{
+    display: block;
+    /* Preserve aspet ratio */
+    min-width: 100%;
+    height: 2.5vw;
+    z-index: 0;  
+}
+
+nav p{
+    font-weight: bold;
+    text-align: center;
+    font-size: 1vw;
+    color: rgb(243,243,243);
+    margin-top: 3.5%;
+    width: 100%;
+    height: auto;
+    z-index: 2;
+}
+
+nav .grid_1_7 {
+    background-color: rgba(88, 109, 138,80%);
+    height: 100%;
+    z-index: 1;
+}
+
+nav .grid_1_7:hover {
+    background-color: rgba(155, 178, 211, 0.8);
+}
+
+main{
+    position: fixed;
+    top: 9.5vw;
+    left: 0;
+    height: auto;
+    min-width: 100%;
+}
+
+#bg {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+      
+    /* Preserve aspet ratio */
+    min-width: 100%;
+    min-height: 100%;
+    z-index: -1;
+  }
