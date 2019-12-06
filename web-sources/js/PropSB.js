@@ -5724,6 +5724,17 @@
 			return 'False';
 		}
 	};
+	var $author$project$Modules$SemanticBoards$hasContradiction = function (fs) {
+		return A2(
+			$elm$core$List$any,
+			function (x) {
+				return A2(
+					$elm$core$List$member,
+					$author$project$Modules$SintaxSemanticsLP$Neg(x),
+					fs);
+			},
+			fs);
+	};
 	var $elm$core$Basics$composeL = F3(
 		function (g, f, x) {
 			return g(
@@ -5736,26 +5747,6 @@
 				A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
 				list);
 		});
-	var $author$project$Modules$AuxiliarFunctions$isSubSet = F2(
-		function (xs, ys) {
-			return A2(
-				$elm$core$List$all,
-				function (x) {
-					return A2($elm$core$List$member, x, ys);
-				},
-				xs);
-		});
-	var $author$project$Modules$SemanticBoards$hasContradiction = function (fs) {
-		return A2(
-			$elm$core$List$any,
-			function (x) {
-				return A2(
-					$elm$core$List$member,
-					$author$project$Modules$SintaxSemanticsLP$Neg(x),
-					fs);
-			},
-			fs);
-	};
 	var $author$project$Modules$LPNormalForms$literal = function (f) {
 		_v0$2:
 		while (true) {
@@ -6029,35 +6020,6 @@
 					return $author$project$Modules$SemanticBoards$modelsTab(gs);
 				},
 				$author$project$Modules$SemanticBoards$sucessors(fs))));
-	};
-	var $author$project$Modules$SemanticBoards$generalModelsTab = function (fs) {
-		var generalModelsTabAux = F2(
-			function (yss, ac) {
-				var _v0 = $elm$core$List$head(yss);
-				if (_v0.$ === 'Just') {
-					var ys = _v0.a;
-					return A2(
-						$elm$core$List$any,
-						function (xs) {
-							return A2($author$project$Modules$AuxiliarFunctions$isSubSet, ys, xs);
-						},
-						ac) ? ac : _Utils_ap(
-						_List_fromArray(
-							[ys]),
-						A2(
-							$elm$core$List$filter,
-							function (xs) {
-								return !A2($author$project$Modules$AuxiliarFunctions$isSubSet, xs, ys);
-							},
-							ac));
-				} else {
-					return ac;
-				}
-			});
-		return A2(
-			generalModelsTabAux,
-			$author$project$Modules$SemanticBoards$modelsTab(fs),
-			_List_Nil);
 	};
 	var $elm$parser$Parser$Advanced$Bad = F2(
 		function (a, b) {
@@ -7809,13 +7771,7 @@
 										function (x) {
 											return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
 										},
-										$author$project$Modules$SemanticBoards$modelsTab(formulaSet))) + ('\n\n' + ('\t general models:' + ($elm$core$Debug$toString(
-									A2(
-										$elm$core$List$map,
-										function (x) {
-											return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
-										},
-										$author$project$Modules$SemanticBoards$generalModelsTab(formulaSet))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. Open branches represents models of U')))))))));
+										$author$project$Modules$SemanticBoards$modelsTab(formulaSet))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. Open branches represents models of U'))))));
 								return _Utils_update(
 									model,
 									{
@@ -7901,15 +7857,7 @@
 															},
 															$author$project$Modules$SemanticBoards$modelsTab(
 																_List_fromArray(
-																	[formula])))) + ('\n\n' + ('\t general models:' + ($elm$core$Debug$toString(
-														A2(
-															$elm$core$List$map,
-															function (x) {
-																return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
-															},
-															$author$project$Modules$SemanticBoards$generalModelsTab(
-																_List_fromArray(
-																	[formula])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t We have to check if ¬F board is closed')))))))));
+																	[formula])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t We have to check if ¬F board is closed'))))));
 													return _Utils_update(
 														model,
 														{
@@ -7931,17 +7879,7 @@
 																	_List_fromArray(
 																		[
 																			$author$project$Modules$SintaxSemanticsLP$Neg(formula)
-																		])))) + ('\n\n' + ('\t general countermodels:' + ($elm$core$Debug$toString(
-															A2(
-																$elm$core$List$map,
-																function (x) {
-																	return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
-																},
-																$author$project$Modules$SemanticBoards$generalModelsTab(
-																	_List_fromArray(
-																		[
-																			$author$project$Modules$SintaxSemanticsLP$Neg(formula)
-																		])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t Countermodels of F are the models of ¬F')))))))));
+																		])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t Countermodels of F are the models of ¬F'))))));
 														return _Utils_update(
 															model,
 															{
@@ -8386,7 +8324,6 @@
 						]))
 				]));
 	};
-
 	var $author$project$Mains$PropSB$main = $elm$browser$Browser$sandbox(
 		{init: $author$project$Mains$PropSB$init, update: $author$project$Mains$PropSB$update, view: $author$project$Mains$PropSB$view});
 	_Platform_export({'Mains':{'PropSB':{'init':$author$project$Mains$PropSB$main(

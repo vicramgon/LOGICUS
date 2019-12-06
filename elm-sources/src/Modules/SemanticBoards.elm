@@ -107,15 +107,6 @@ modelsTab fs = if hasContradiction fs then
                 else 
                     List.concat <| List.map (\gs -> modelsTab gs) (sucessors fs)
 
-
--- definition of generalModels that represents the models of a set of formulas removing models that are contained in other.
-generalModelsTab : List Prop -> List (List Prop)
-generalModelsTab fs =  let generalModelsTabAux yss ac = case List.head yss of
-                                                            Just ys -> if List.any (\xs -> isSubSet ys xs) ac then ac else [ys] ++ List.filter (\xs -> not (isSubSet xs ys)) ac 
-                                                            Nothing -> ac
-                        in
-                            generalModelsTabAux (modelsTab fs) []
-
 -- definition of isTautBoard  that represents if a formula is a tautology using semantic boards
 isTautBoard : Prop -> Bool
 isTautBoard f = List.isEmpty <| modelsTab [Neg f]
