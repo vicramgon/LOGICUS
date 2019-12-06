@@ -92,6 +92,7 @@ select {
 
 #run_butt:hover  {
     background-color: rgba(155, 178, 211, 0.8);
+    color: rgb(88, 109, 138);
 }
 
 #sGraph {
@@ -109,6 +110,7 @@ select {
 
 #sGraph:hover {
     background-color: rgba(155, 178, 211, 0.8);
+    color: rgb(88, 109, 138);
 }
 
 #resTA{
@@ -137,6 +139,10 @@ select {
     z-index: 6;
 }
 
+#closepopUp:hover{
+    color: rgba(45, 45, 255, 0.767);
+}
+
 #graph{
     position: relative;
     background-color: rgb(255, 255, 255);
@@ -146,9 +152,14 @@ select {
     margin-left:5%;
     text-align: center;
     z-index: 5;
-
-
 }
+
+svg {
+    width:100%;
+    height:100%;
+}
+
+
 
 #outGTA{
     height: 0%;

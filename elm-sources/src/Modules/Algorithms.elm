@@ -72,7 +72,7 @@ insertNodes ls g = case List.head ls of
     Just x -> G.insert x (insertNodes (Aux.deleteFirstLs ls) g)
         
 boardToDOTString : Graph String String -> String
-boardToDOTString g = "digraph G { " ++ toStringNodes (nodes g) ++ toStringEdges2 (List.reverse (edges g)) ++ "}"
+boardToDOTString g = "graph G { " ++ toStringNodes (nodes g) ++ toStringEdges2 (List.reverse (edges g)) ++ "}"
 
 toStringNodes : List (Node String) -> String
 toStringNodes ns = List.foldl (++) " " <| List.map (\x ->toStringNode x) <| List.reverse <| ns
@@ -82,11 +82,11 @@ toStringEdges es = List.foldl (++) " " <| List.map (\x -> String.fromInt x.from 
 
 toStringEdges2 : List (Edge String) -> String
 toStringEdges2 es = let (edg, rel) = toStringEdgesAux es 0 "" "OPERATIONS \\l" in
-                        edg ++ "OPERATIONS [shape = \"plaintext\", label = \"" ++ rel ++ "\"];" 
+                        edg ++ "OPERATIONS [ fontcolor=\"#32465F\", fontname=\"times-bold\", shape = \"plaintext\", label = \"" ++ rel ++ "\"];" 
 
 
 toStringEdgesAux es i ac rel = case List.head es of
-    Just x -> let ac_p = ac ++ String.fromInt x.from ++ " -> " ++ String.fromInt x.to ++ " [ label = \"" ++ "(" ++ String.fromInt i ++ ")" ++ "\"]; " in
+    Just x -> let ac_p = ac ++ String.fromInt x.from ++ " -- " ++ String.fromInt x.to ++ " [style=\"setlinewidth(2)\", color=\"#32465F\", fontcolor=\"#32465F\", fontname=\"times-bold\", label = \"" ++ "(" ++ String.fromInt i ++ ")" ++ "\"]; " in
               let rel_p = rel ++ "(" ++ String.fromInt i ++ ")- " ++ x.label ++ "\\l " in
                 toStringEdgesAux (Aux.deleteFirstLs es) (i+1) ac_p rel_p
         
@@ -95,11 +95,11 @@ toStringEdgesAux es i ac rel = case List.head es of
 
 toStringNode : Node String -> String
 toStringNode x =    if x.label == "X" then
-                        String.fromInt x.id ++ " [ shape = \"plaintext\", label = \"" ++ "✖" ++ "\"]; "
+                        String.fromInt x.id ++ " [ fontcolor=\"#32465F\", fontname=\"times-bold\", shape = \"plaintext\", label = \"" ++ "✖" ++ "\"]; "
                     else if x.label == "O" then
-                        String.fromInt x.id ++ " [ shape = \"plaintext\", label = \"" ++ "◯" ++ "\"]; "
+                        String.fromInt x.id ++ " [ fontcolor=\"#32465F\", fontname=\"times-bold\", shape = \"plaintext\", label = \"" ++ "◯" ++ "\"]; "
                     else
-                        String.fromInt x.id ++ " [ shape = \"box\" , label = \"" ++ x.label ++ "\"]; " 
+                        String.fromInt x.id ++ " [ style=\"setlinewidth(2)\", shape=\"box\", color=\"#32465F\", fontcolor=\"#32465F\", fontname=\"times-bold\" , label = \"" ++ x.label ++ "\"]; " 
 
 main = text <| boardToDOTString <| semanticBoardAlg <| parserSet "(p | q -> r)&(t -> ¬r)&¬(¬t->q);"
 

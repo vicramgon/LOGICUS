@@ -82,6 +82,10 @@ nav .grid_1_7:hover {
     background-color: rgba(155, 178, 211, 0.8);
 }
 
+nav .grid_1_7:hover p{
+    color: rgb(88, 109, 138);
+}
+
 main{
     position: fixed;
     top: 9.5vw;
