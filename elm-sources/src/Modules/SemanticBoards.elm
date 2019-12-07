@@ -107,6 +107,20 @@ modelsTab fs = if hasContradiction fs then
                 else 
                     List.concat <| List.map (\gs -> modelsTab gs) (sucessors fs)
 
+generalModels : List (List Prop) -> List (List Prop) 
+generalModels ps =  let generalModelsAux ms ls = case List.head ms of
+                                                    Nothing -> ls
+                                                    
+                                                    Just m -> if List.any (\x -> isSubSet x m) ls then 
+                                                                    generalModelsAux (deleteFirstLs ms) ls
+                                                            else
+                                                                    generalModelsAux (deleteFirstLs ms) (m::(List.filter (\x -> not (isSubSet m x)) ls ))
+                    in
+                        generalModelsAux ps []
+            
+         
+
+
 -- definition of isTautBoard  that represents if a formula is a tautology using semantic boards
 isTautBoard : Prop -> Bool
 isTautBoard f = List.isEmpty <| modelsTab [Neg f]

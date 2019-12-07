@@ -4313,6 +4313,184 @@
 	
 	
 	
+	// DECODER
+	
+	var _File_decoder = _Json_decodePrim(function(value) {
+		// NOTE: checks if `File` exists in case this is run on node
+		return (typeof File !== 'undefined' && value instanceof File)
+			? $elm$core$Result$Ok(value)
+			: _Json_expecting('a FILE', value);
+	});
+	
+	
+	// METADATA
+	
+	function _File_name(file) { return file.name; }
+	function _File_mime(file) { return file.type; }
+	function _File_size(file) { return file.size; }
+	
+	function _File_lastModified(file)
+	{
+		return $elm$time$Time$millisToPosix(file.lastModified);
+	}
+	
+	
+	// DOWNLOAD
+	
+	var _File_downloadNode;
+	
+	function _File_getDownloadNode()
+	{
+		return _File_downloadNode || (_File_downloadNode = document.createElement('a'));
+	}
+	
+	var _File_download = F3(function(name, mime, content)
+	{
+		return _Scheduler_binding(function(callback)
+		{
+			var blob = new Blob([content], {type: mime});
+	
+			// for IE10+
+			if (navigator.msSaveOrOpenBlob)
+			{
+				navigator.msSaveOrOpenBlob(blob, name);
+				return;
+			}
+	
+			// for HTML5
+			var node = _File_getDownloadNode();
+			var objectUrl = URL.createObjectURL(blob);
+			node.href = objectUrl;
+			node.download = name;
+			_File_click(node);
+			URL.revokeObjectURL(objectUrl);
+		});
+	});
+	
+	function _File_downloadUrl(href)
+	{
+		return _Scheduler_binding(function(callback)
+		{
+			var node = _File_getDownloadNode();
+			node.href = href;
+			node.download = '';
+			node.origin === location.origin || (node.target = '_blank');
+			_File_click(node);
+		});
+	}
+	
+	
+	// IE COMPATIBILITY
+	
+	function _File_makeBytesSafeForInternetExplorer(bytes)
+	{
+		// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/10
+		// all other browsers can just run `new Blob([bytes])` directly with no problem
+		//
+		return new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+	}
+	
+	function _File_click(node)
+	{
+		// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/11
+		// all other browsers have MouseEvent and do not need this conditional stuff
+		//
+		if (typeof MouseEvent === 'function')
+		{
+			node.dispatchEvent(new MouseEvent('click'));
+		}
+		else
+		{
+			var event = document.createEvent('MouseEvents');
+			event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+			document.body.appendChild(node);
+			node.dispatchEvent(event);
+			document.body.removeChild(node);
+		}
+	}
+	
+	
+	// UPLOAD
+	
+	var _File_node;
+	
+	function _File_uploadOne(mimes)
+	{
+		return _Scheduler_binding(function(callback)
+		{
+			_File_node = document.createElement('input');
+			_File_node.type = 'file';
+			_File_node.accept = A2($elm$core$String$join, ',', mimes);
+			_File_node.addEventListener('change', function(event)
+			{
+				callback(_Scheduler_succeed(event.target.files[0]));
+			});
+			_File_click(_File_node);
+		});
+	}
+	
+	function _File_uploadOneOrMore(mimes)
+	{
+		return _Scheduler_binding(function(callback)
+		{
+			_File_node = document.createElement('input');
+			_File_node.type = 'file';
+			_File_node.multiple = true;
+			_File_node.accept = A2($elm$core$String$join, ',', mimes);
+			_File_node.addEventListener('change', function(event)
+			{
+				var elmFiles = _List_fromArray(event.target.files);
+				callback(_Scheduler_succeed(_Utils_Tuple2(elmFiles.a, elmFiles.b)));
+			});
+			_File_click(_File_node);
+		});
+	}
+	
+	
+	// CONTENT
+	
+	function _File_toString(blob)
+	{
+		return _Scheduler_binding(function(callback)
+		{
+			var reader = new FileReader();
+			reader.addEventListener('loadend', function() {
+				callback(_Scheduler_succeed(reader.result));
+			});
+			reader.readAsText(blob);
+			return function() { reader.abort(); };
+		});
+	}
+	
+	function _File_toBytes(blob)
+	{
+		return _Scheduler_binding(function(callback)
+		{
+			var reader = new FileReader();
+			reader.addEventListener('loadend', function() {
+				callback(_Scheduler_succeed(new DataView(reader.result)));
+			});
+			reader.readAsArrayBuffer(blob);
+			return function() { reader.abort(); };
+		});
+	}
+	
+	function _File_toUrl(blob)
+	{
+		return _Scheduler_binding(function(callback)
+		{
+			var reader = new FileReader();
+			reader.addEventListener('loadend', function() {
+				callback(_Scheduler_succeed(reader.result));
+			});
+			reader.readAsDataURL(blob);
+			return function() { reader.abort(); };
+		});
+	}
+	
+	
+	
+	
 	
 	// STRINGS
 	
@@ -4477,7 +4655,6 @@
 	{
 		return a >>> offset;
 	});
-	var $author$project$Mains$PropSB$init = {fSet: '', formula: '', out: '', property: '', res: 'Results of your query will appear here when you push run.'};
 	var $elm$core$Basics$EQ = {$: 'EQ'};
 	var $elm$core$Basics$GT = {$: 'GT'};
 	var $elm$core$Basics$LT = {$: 'LT'};
@@ -5266,30 +5443,27 @@
 				$elm$core$Task$Perform(
 					A2($elm$core$Task$map, toMessage, task)));
 		});
+	var $elm$browser$Browser$element = _Browser_element;
 	var $elm$core$Platform$Cmd$batch = _Platform_batch;
 	var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+	var $author$project$Mains$PropSB$init = function (_v0) {
+		return _Utils_Tuple2(
+			{fSet: '', formula: '', out: '', property: '', res: 'Results of your query will appear here when you push run.'},
+			$elm$core$Platform$Cmd$none);
+	};
 	var $elm$core$Platform$Sub$batch = _Platform_batch;
 	var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-	var $elm$browser$Browser$sandbox = function (impl) {
-		return _Browser_element(
-			{
-				init: function (_v0) {
-					return _Utils_Tuple2(impl.init, $elm$core$Platform$Cmd$none);
-				},
-				subscriptions: function (_v1) {
-					return $elm$core$Platform$Sub$none;
-				},
-				update: F2(
-					function (msg, model) {
-						return _Utils_Tuple2(
-							A2(impl.update, msg, model),
-							$elm$core$Platform$Cmd$none);
-					}),
-				view: impl.view
-			});
+	var $author$project$Mains$PropSB$subscriptions = function (_v0) {
+		return $elm$core$Platform$Sub$none;
 	};
 	var $author$project$Modules$SintaxSemanticsLP$Neg = function (a) {
 		return {$: 'Neg', a: a};
+	};
+	var $author$project$Mains$PropSB$TxtLoaded = function (a) {
+		return {$: 'TxtLoaded', a: a};
+	};
+	var $author$project$Mains$PropSB$TxtSelected = function (a) {
+		return {$: 'TxtSelected', a: a};
 	};
 	var $author$project$Modules$SintaxSemanticsLP$Atom = function (a) {
 		return {$: 'Atom', a: a};
@@ -5724,17 +5898,17 @@
 			return 'False';
 		}
 	};
-	var $author$project$Modules$SemanticBoards$hasContradiction = function (fs) {
-		return A2(
-			$elm$core$List$any,
-			function (x) {
-				return A2(
-					$elm$core$List$member,
-					$author$project$Modules$SintaxSemanticsLP$Neg(x),
-					fs);
-			},
-			fs);
+	var $elm$time$Time$Posix = function (a) {
+		return {$: 'Posix', a: a};
 	};
+	var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+	var $elm$file$File$Select$file = F2(
+		function (mimes, toMsg) {
+			return A2(
+				$elm$core$Task$perform,
+				toMsg,
+				_File_uploadOne(mimes));
+		});
 	var $elm$core$Basics$composeL = F3(
 		function (g, f, x) {
 			return g(
@@ -5747,6 +5921,67 @@
 				A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
 				list);
 		});
+	var $author$project$Modules$AuxiliarFunctions$isSubSet = F2(
+		function (xs, ys) {
+			return A2(
+				$elm$core$List$all,
+				function (x) {
+					return A2($elm$core$List$member, x, ys);
+				},
+				xs);
+		});
+	var $author$project$Modules$SemanticBoards$generalModels = function (ps) {
+		var generalModelsAux = F2(
+			function (ms, ls) {
+				generalModelsAux:
+				while (true) {
+					var _v0 = $elm$core$List$head(ms);
+					if (_v0.$ === 'Nothing') {
+						return ls;
+					} else {
+						var m = _v0.a;
+						if (A2(
+							$elm$core$List$any,
+							function (x) {
+								return A2($author$project$Modules$AuxiliarFunctions$isSubSet, x, m);
+							},
+							ls)) {
+							var $temp$ms = $author$project$Modules$AuxiliarFunctions$deleteFirstLs(ms),
+								$temp$ls = ls;
+							ms = $temp$ms;
+							ls = $temp$ls;
+							continue generalModelsAux;
+						} else {
+							var $temp$ms = $author$project$Modules$AuxiliarFunctions$deleteFirstLs(ms),
+								$temp$ls = A2(
+								$elm$core$List$cons,
+								m,
+								A2(
+									$elm$core$List$filter,
+									function (x) {
+										return !A2($author$project$Modules$AuxiliarFunctions$isSubSet, m, x);
+									},
+									ls));
+							ms = $temp$ms;
+							ls = $temp$ls;
+							continue generalModelsAux;
+						}
+					}
+				}
+			});
+		return A2(generalModelsAux, ps, _List_Nil);
+	};
+	var $author$project$Modules$SemanticBoards$hasContradiction = function (fs) {
+		return A2(
+			$elm$core$List$any,
+			function (x) {
+				return A2(
+					$elm$core$List$member,
+					$author$project$Modules$SintaxSemanticsLP$Neg(x),
+					fs);
+			},
+			fs);
+	};
 	var $author$project$Modules$LPNormalForms$literal = function (f) {
 		_v0$2:
 		while (true) {
@@ -7719,50 +7954,61 @@
 			0);
 	};
 	var $elm$core$Debug$toString = _Debug_toString;
+	var $elm$file$File$toString = _File_toString;
 	var $author$project$Mains$PropSB$update = F2(
 		function (msg, model) {
 			switch (msg.$) {
 				case 'ChangefSet':
 					var newContent = msg.a;
-					return _Utils_update(
-						model,
-						{fSet: newContent});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{fSet: newContent}),
+						$elm$core$Platform$Cmd$none);
 				case 'Changeformula':
 					var newContent = msg.a;
-					return _Utils_update(
-						model,
-						{formula: newContent});
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{formula: newContent}),
+						$elm$core$Platform$Cmd$none);
 				case 'Changeproperty':
 					var newContent = msg.a;
-					return _Utils_update(
-						model,
-						{property: newContent});
-				default:
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{property: newContent}),
+						$elm$core$Platform$Cmd$none);
+				case 'Changeout':
 					var formulaSet = $author$project$Modules$LP_Parser$parserSet(model.fSet);
 					var formula = $author$project$Modules$LP_Parser$parserFormula(model.formula);
 					if (model.property === 'U_CONS') {
 						var resultStr = 'Formulas Set: ' + ($author$project$Modules$SintaxSemanticsLP$toStringSet(formulaSet) + ('\n\n' + ('Query: Is U consistent? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
 							!$elm$core$List$isEmpty(
 								$author$project$Modules$SemanticBoards$modelsTab(formulaSet))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board')))));
-						return _Utils_update(
-							model,
-							{
-								out: $author$project$Modules$Algorithms$boardToDOTString(
-									$author$project$Modules$Algorithms$semanticBoardAlg(formulaSet)),
-								res: resultStr
-							});
-					} else {
-						if (model.property === 'U_INCONS') {
-							var resultStr = 'Formulas Set: ' + ($author$project$Modules$SintaxSemanticsLP$toStringSet(formulaSet) + ('\n\n' + ('Query: Is U inconsistent? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
-								$elm$core$List$isEmpty(
-									$author$project$Modules$SemanticBoards$modelsTab(formulaSet))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board')))));
-							return _Utils_update(
+						return _Utils_Tuple2(
+							_Utils_update(
 								model,
 								{
 									out: $author$project$Modules$Algorithms$boardToDOTString(
 										$author$project$Modules$Algorithms$semanticBoardAlg(formulaSet)),
 									res: resultStr
-								});
+								}),
+							$elm$core$Platform$Cmd$none);
+					} else {
+						if (model.property === 'U_INCONS') {
+							var resultStr = 'Formulas Set: ' + ($author$project$Modules$SintaxSemanticsLP$toStringSet(formulaSet) + ('\n\n' + ('Query: Is U inconsistent? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
+								$elm$core$List$isEmpty(
+									$author$project$Modules$SemanticBoards$modelsTab(formulaSet))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board')))));
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{
+										out: $author$project$Modules$Algorithms$boardToDOTString(
+											$author$project$Modules$Algorithms$semanticBoardAlg(formulaSet)),
+										res: resultStr
+									}),
+								$elm$core$Platform$Cmd$none);
 						} else {
 							if (model.property === 'U_MOD') {
 								var resultStr = 'Formulas Set: ' + ($author$project$Modules$SintaxSemanticsLP$toStringSet(formulaSet) + ('\n\n' + ('Query: Can you give me the models of U? \n\n' + ('\t models:' + ($elm$core$Debug$toString(
@@ -7771,14 +8017,23 @@
 										function (x) {
 											return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
 										},
-										$author$project$Modules$SemanticBoards$modelsTab(formulaSet))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. Open branches represents models of U'))))));
-								return _Utils_update(
-									model,
-									{
-										out: $author$project$Modules$Algorithms$boardToDOTString(
-											$author$project$Modules$Algorithms$semanticBoardAlg(formulaSet)),
-										res: resultStr
-									});
+										$author$project$Modules$SemanticBoards$modelsTab(formulaSet))) + ('\n\n' + ('\t general models:' + ($elm$core$Debug$toString(
+									A2(
+										$elm$core$List$map,
+										function (x) {
+											return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
+										},
+										$author$project$Modules$SemanticBoards$generalModels(
+											$author$project$Modules$SemanticBoards$modelsTab(formulaSet)))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. Open branches represents models of U')))))))));
+								return _Utils_Tuple2(
+									_Utils_update(
+										model,
+										{
+											out: $author$project$Modules$Algorithms$boardToDOTString(
+												$author$project$Modules$Algorithms$semanticBoardAlg(formulaSet)),
+											res: resultStr
+										}),
+									$elm$core$Platform$Cmd$none);
 							} else {
 								if (model.property === 'U_CMOD') {
 									var resultStr = 'Formulas Set: ' + ($author$project$Modules$SintaxSemanticsLP$toStringSet(formulaSet) + ('\n\n' + ('Query: Can you give me the countermodels of U? \n\n' + ('\t countermodels:' + ($elm$core$Debug$toString(
@@ -7788,13 +8043,15 @@
 												return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
 											},
 											$author$project$Modules$SintaxSemanticsLP$allSetCounterPropModels(formulaSet))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t The counter models are all posible interpretations that are not in opened branches'))))));
-									return _Utils_update(
-										model,
-										{
-											out: $author$project$Modules$Algorithms$boardToDOTString(
-												$author$project$Modules$Algorithms$semanticBoardAlg(formulaSet)),
-											res: resultStr
-										});
+									return _Utils_Tuple2(
+										_Utils_update(
+											model,
+											{
+												out: $author$project$Modules$Algorithms$boardToDOTString(
+													$author$project$Modules$Algorithms$semanticBoardAlg(formulaSet)),
+												res: resultStr
+											}),
+										$elm$core$Platform$Cmd$none);
 								} else {
 									if (model.property === 'F_SAT') {
 										var resultStr = 'Formula: ' + ($author$project$Modules$SintaxSemanticsLP$toStringProp(formula) + ('\n\n' + ('Query: Is F satisfactible? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
@@ -7802,23 +8059,8 @@
 												$author$project$Modules$SemanticBoards$modelsTab(
 													_List_fromArray(
 														[formula])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board.')))));
-										return _Utils_update(
-											model,
-											{
-												out: $author$project$Modules$Algorithms$boardToDOTString(
-													$author$project$Modules$Algorithms$semanticBoardAlg(
-														_List_fromArray(
-															[formula]))),
-												res: resultStr
-											});
-									} else {
-										if (model.property === 'F_UNSAT') {
-											var resultStr = 'Formula: ' + ($author$project$Modules$SintaxSemanticsLP$toStringProp(formula) + ('\n\n' + ('Query: Is F unsatisfactible? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
-												$elm$core$List$isEmpty(
-													$author$project$Modules$SemanticBoards$modelsTab(
-														_List_fromArray(
-															[formula])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t If is insatifactible, all branches will be closed')))));
-											return _Utils_update(
+										return _Utils_Tuple2(
+											_Utils_update(
 												model,
 												{
 													out: $author$project$Modules$Algorithms$boardToDOTString(
@@ -7826,7 +8068,26 @@
 															_List_fromArray(
 																[formula]))),
 													res: resultStr
-												});
+												}),
+											$elm$core$Platform$Cmd$none);
+									} else {
+										if (model.property === 'F_UNSAT') {
+											var resultStr = 'Formula: ' + ($author$project$Modules$SintaxSemanticsLP$toStringProp(formula) + ('\n\n' + ('Query: Is F unsatisfactible? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
+												$elm$core$List$isEmpty(
+													$author$project$Modules$SemanticBoards$modelsTab(
+														_List_fromArray(
+															[formula])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t If is insatifactible, all branches will be closed')))));
+											return _Utils_Tuple2(
+												_Utils_update(
+													model,
+													{
+														out: $author$project$Modules$Algorithms$boardToDOTString(
+															$author$project$Modules$Algorithms$semanticBoardAlg(
+																_List_fromArray(
+																	[formula]))),
+														res: resultStr
+													}),
+												$elm$core$Platform$Cmd$none);
 										} else {
 											if (model.property === 'F_TAUT') {
 												var resultStr = 'Formula: ' + ($author$project$Modules$SintaxSemanticsLP$toStringProp(formula) + ('\n\n' + ('Query: Is F a tautology? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
@@ -7836,17 +8097,19 @@
 																[
 																	$author$project$Modules$SintaxSemanticsLP$Neg(formula)
 																])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t We have to check if ¬F board is closed')))));
-												return _Utils_update(
-													model,
-													{
-														out: $author$project$Modules$Algorithms$boardToDOTString(
-															$author$project$Modules$Algorithms$semanticBoardAlg(
-																_List_fromArray(
-																	[
-																		$author$project$Modules$SintaxSemanticsLP$Neg(formula)
-																	]))),
-														res: resultStr
-													});
+												return _Utils_Tuple2(
+													_Utils_update(
+														model,
+														{
+															out: $author$project$Modules$Algorithms$boardToDOTString(
+																$author$project$Modules$Algorithms$semanticBoardAlg(
+																	_List_fromArray(
+																		[
+																			$author$project$Modules$SintaxSemanticsLP$Neg(formula)
+																		]))),
+															res: resultStr
+														}),
+													$elm$core$Platform$Cmd$none);
 											} else {
 												if (model.property === 'F_MOD') {
 													var resultStr = 'Formula: ' + ($author$project$Modules$SintaxSemanticsLP$toStringProp(formula) + ('\n\n' + ('Can you give me the models of F? \n\n' + ('\t models:' + ($elm$core$Debug$toString(
@@ -7857,16 +8120,27 @@
 															},
 															$author$project$Modules$SemanticBoards$modelsTab(
 																_List_fromArray(
-																	[formula])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t We have to check if ¬F board is closed'))))));
-													return _Utils_update(
-														model,
-														{
-															out: $author$project$Modules$Algorithms$boardToDOTString(
-																$author$project$Modules$Algorithms$semanticBoardAlg(
+																	[formula])))) + ('\n\n' + ('\t models:' + ($elm$core$Debug$toString(
+														A2(
+															$elm$core$List$map,
+															function (x) {
+																return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
+															},
+															$author$project$Modules$SemanticBoards$generalModels(
+																$author$project$Modules$SemanticBoards$modelsTab(
 																	_List_fromArray(
-																		[formula]))),
-															res: resultStr
-														});
+																		[formula]))))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t We have to check if ¬F board is closed')))))))));
+													return _Utils_Tuple2(
+														_Utils_update(
+															model,
+															{
+																out: $author$project$Modules$Algorithms$boardToDOTString(
+																	$author$project$Modules$Algorithms$semanticBoardAlg(
+																		_List_fromArray(
+																			[formula]))),
+																res: resultStr
+															}),
+														$elm$core$Platform$Cmd$none);
 												} else {
 													if (model.property === 'F_CMOD') {
 														var resultStr = 'Formula: ' + ($author$project$Modules$SintaxSemanticsLP$toStringProp(formula) + ('\n\n' + ('Can you give me the countermodels of F? \n\n' + ('\t countermodels:' + ($elm$core$Debug$toString(
@@ -7879,18 +8153,31 @@
 																	_List_fromArray(
 																		[
 																			$author$project$Modules$SintaxSemanticsLP$Neg(formula)
-																		])))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t Countermodels of F are the models of ¬F'))))));
-														return _Utils_update(
-															model,
-															{
-																out: $author$project$Modules$Algorithms$boardToDOTString(
-																	$author$project$Modules$Algorithms$semanticBoardAlg(
+																		])))) + ('\n\n' + ('\t general countermodels:' + ($elm$core$Debug$toString(
+															A2(
+																$elm$core$List$map,
+																function (x) {
+																	return $author$project$Modules$SintaxSemanticsLP$toStringSet(x);
+																},
+																$author$project$Modules$SemanticBoards$generalModels(
+																	$author$project$Modules$SemanticBoards$modelsTab(
 																		_List_fromArray(
 																			[
 																				$author$project$Modules$SintaxSemanticsLP$Neg(formula)
-																			]))),
-																res: resultStr
-															});
+																			]))))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t Countermodels of F are the models of ¬F')))))))));
+														return _Utils_Tuple2(
+															_Utils_update(
+																model,
+																{
+																	out: $author$project$Modules$Algorithms$boardToDOTString(
+																		$author$project$Modules$Algorithms$semanticBoardAlg(
+																			_List_fromArray(
+																				[
+																					$author$project$Modules$SintaxSemanticsLP$Neg(formula)
+																				]))),
+																	res: resultStr
+																}),
+															$elm$core$Platform$Cmd$none);
 													} else {
 														if (model.property === 'F_CONS') {
 															var resultStr = 'Formulas Set: ' + ($author$project$Modules$SintaxSemanticsLP$toStringSet(formulaSet) + ('\n\n' + ('Formula: ' + ($author$project$Modules$SintaxSemanticsLP$toStringProp(formula) + ('\n\n' + ('Query: Is F consecuence of U? ' + ($author$project$Modules$AuxiliarFunctions$boolToString(
@@ -7902,21 +8189,23 @@
 																				[
 																					$author$project$Modules$SintaxSemanticsLP$Neg(formula)
 																				]))))) + ('\n\n' + 'Process: click on \" SHOW BOARD\" to see the board. \n\n\t U ⊨ F only if U ∪ {¬F} is insatisfactible'))))))));
-															return _Utils_update(
-																model,
-																{
-																	out: $author$project$Modules$Algorithms$boardToDOTString(
-																		$author$project$Modules$Algorithms$semanticBoardAlg(
-																			_Utils_ap(
-																				formulaSet,
-																				_List_fromArray(
-																					[
-																						$author$project$Modules$SintaxSemanticsLP$Neg(formula)
-																					])))),
-																	res: resultStr
-																});
+															return _Utils_Tuple2(
+																_Utils_update(
+																	model,
+																	{
+																		out: $author$project$Modules$Algorithms$boardToDOTString(
+																			$author$project$Modules$Algorithms$semanticBoardAlg(
+																				_Utils_ap(
+																					formulaSet,
+																					_List_fromArray(
+																						[
+																							$author$project$Modules$SintaxSemanticsLP$Neg(formula)
+																						])))),
+																		res: resultStr
+																	}),
+																$elm$core$Platform$Cmd$none);
 														} else {
-															return model;
+															return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 														}
 													}
 												}
@@ -7927,6 +8216,29 @@
 							}
 						}
 					}
+				case 'TxtRequested':
+					return _Utils_Tuple2(
+						model,
+						A2(
+							$elm$file$File$Select$file,
+							_List_fromArray(
+								['text/plain charset=utf-8']),
+							$author$project$Mains$PropSB$TxtSelected));
+				case 'TxtSelected':
+					var file = msg.a;
+					return _Utils_Tuple2(
+						model,
+						A2(
+							$elm$core$Task$perform,
+							$author$project$Mains$PropSB$TxtLoaded,
+							$elm$file$File$toString(file)));
+				default:
+					var content = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{fSet: content}),
+						$elm$core$Platform$Cmd$none);
 			}
 		});
 	var $author$project$Mains$PropSB$ChangefSet = function (a) {
@@ -7939,6 +8251,7 @@
 	var $author$project$Mains$PropSB$Changeproperty = function (a) {
 		return {$: 'Changeproperty', a: a};
 	};
+	var $author$project$Mains$PropSB$TxtRequested = {$: 'TxtRequested'};
 	var $elm$html$Html$button = _VirtualDom_node('button');
 	var $elm$json$Json$Encode$string = _Json_wrap;
 	var $elm$html$Html$Attributes$stringProperty = F2(
@@ -8051,10 +8364,43 @@
 									$elm$html$Html$textarea,
 									_List_fromArray(
 										[
+											$elm$html$Html$Attributes$id('FormSet'),
 											$elm$html$Html$Attributes$placeholder('Introduce the formulas of the set. Don\'t forget to put a semicolon \';\' after each one.\n\nEx: p->q; q&(q|(p<->r));'),
-											$elm$html$Html$Events$onInput($author$project$Mains$PropSB$ChangefSet)
+											$elm$html$Html$Events$onInput($author$project$Mains$PropSB$ChangefSet),
+											$elm$html$Html$Attributes$value(model.fSet)
 										]),
-									_List_Nil)
+									_List_Nil),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$id('up_file')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$id('template'),
+													$elm$html$Html$Attributes$class('buttFSet')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Template File')
+												])),
+											A2(
+											$elm$html$Html$button,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('buttFSet'),
+													$elm$html$Html$Events$onClick($author$project$Mains$PropSB$TxtRequested)
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text('Choose File')
+												]))
+										]))
 								])),
 							A2(
 							$elm$html$Html$div,
@@ -8072,6 +8418,7 @@
 									$elm$html$Html$input,
 									_List_fromArray(
 										[
+											$elm$html$Html$Attributes$id('Formula'),
 											$elm$html$Html$Attributes$type_('text'),
 											$elm$html$Html$Attributes$placeholder('Introduce the formula. Ex: (p->q)<->(q&(q|p))'),
 											$elm$html$Html$Events$onInput($author$project$Mains$PropSB$Changeformula)
@@ -8094,6 +8441,7 @@
 									$elm$html$Html$select,
 									_List_fromArray(
 										[
+											$elm$html$Html$Attributes$id('Query'),
 											$elm$html$Html$Events$onInput($author$project$Mains$PropSB$Changeproperty)
 										]),
 									_List_fromArray(
@@ -8324,7 +8672,7 @@
 						]))
 				]));
 	};
-	var $author$project$Mains$PropSB$main = $elm$browser$Browser$sandbox(
-		{init: $author$project$Mains$PropSB$init, update: $author$project$Mains$PropSB$update, view: $author$project$Mains$PropSB$view});
+	var $author$project$Mains$PropSB$main = $elm$browser$Browser$element(
+		{init: $author$project$Mains$PropSB$init, subscriptions: $author$project$Mains$PropSB$subscriptions, update: $author$project$Mains$PropSB$update, view: $author$project$Mains$PropSB$view});
 	_Platform_export({'Mains':{'PropSB':{'init':$author$project$Mains$PropSB$main(
 		$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}}});}(this));

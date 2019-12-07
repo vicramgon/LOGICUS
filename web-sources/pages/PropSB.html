@@ -57,7 +57,9 @@
 <script>
 
 	var app = Elm.Mains.PropSB.init({ node: document.getElementById("elm") });
-            
+
+	document.getElementById("template").onclick = function(){download('PSB_template.txt', 'p->q;\nq->p;\n');};
+
 	document.getElementById("sGraph").onclick = function(){openPopUp(document.getElementById('popUp')); plotDot(document.getElementById('outGTA').value);};
 	document.getElementById("closepopUp").onclick = function(){closePopUp(document.getElementById('popUp'));};  
 

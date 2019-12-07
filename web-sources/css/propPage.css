@@ -47,12 +47,13 @@ h2{
 
 textarea{
     width: 100%;
-    height: 30vh;
+    height: 29vh;
     background-color: transparent;
     color:  rgb(50, 70, 95);
     font-size: 2vh;
     font-weight: bold;
     border: 3px solid rgba(50, 70, 95,0.6);
+    overflow-y: scroll;
 }
 
 input {
@@ -78,10 +79,10 @@ select {
 }
 
 #run_butt {
-    margin-top: 4vh;
+    margin-top: 4.25vh;
     text-align: center;
     width: 100%;
-    height: 7vh;
+    height: 6vh;
     background-color: rgba(50, 70, 95, 0.6);
     color:  rgb(218, 218, 218);
     font-size:  2vh;
@@ -166,3 +167,24 @@ svg {
     opacity: 0%;
 }
 
+#up_file{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    margin-left: 0%;
+    margin-top: 0%;
+}
+
+.buttFSet{
+    text-align: center;
+    width: 25%;
+    height: 4vh;
+    background-color: rgba(218, 218, 218, 0.6);
+    color:  rgb(50, 70, 95);
+    font-size:  2vh;
+    font-weight: bold;
+    border: 3px solid rgba(50, 70, 95,0.6);
+    font-family: 'Courier New', Courier, monospace;
+    display: block;
+    float:left;
+}
