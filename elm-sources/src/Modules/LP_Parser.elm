@@ -1,8 +1,6 @@
 module Modules.LP_Parser exposing(parserFormula, parserSet)
 
-import Browser
 import Char
-import Html
 import Parser exposing (..)
 import Set
 import Maybe
@@ -23,13 +21,13 @@ parserFormula x =
       Err y -> Atom "ERROR"
 
 parserSet : String -> List Prop
-parserSet x =  List.map parserFormula<| init  <| split ";" x
+parserSet x =  List.map parserFormula<| init <| split ";" x
 
 typeVar : Parser PSymb
 typeVar =
   variable
     { start = Char.isLower
-    , inner = \c -> Char.isAlphaNum c || c == '_'
+    , inner = \c -> Char.isAlphaNum c
     , reserved = Set.fromList []
     }
 
@@ -86,7 +84,6 @@ expressionAux revOps expr =
     , lazy (\_ -> succeed (finalize revOps expr))
     ]
 
-
 finalize : List (Prop, Operator) -> Prop -> Prop
 finalize revOps finalExpr =
   case revOps of
@@ -94,31 +91,21 @@ finalize revOps finalExpr =
       finalExpr
 
       -- AND EXPRESSIONS CASES
+      -- And operation have the maximum priorty, so module have a unique case
 
     (expr, AndOp) :: otherRevOps ->
       finalize otherRevOps (Conj expr finalExpr)
 
       -- OR EXPRESSIONS CASES
-
-    (expr, OrOp) :: [] ->
-      finalize [] (Disj expr finalExpr)
+      -- Or have the second maximum priority, so we need to determine how parser's going to do if it searches an and after, and if it searches something different.
 
     (expr, OrOp) :: (expr2, AndOp) :: otherRevOps ->
       Disj (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
 
-    (expr, OrOp) :: (expr2, OrOp) :: otherRevOps ->
-      finalize ((expr2, OrOp) :: otherRevOps) (Disj expr finalExpr)
-
-    (expr, OrOp) :: (expr2, ImplOp) :: otherRevOps ->
-      finalize ((expr2, ImplOp) :: otherRevOps) (Disj expr finalExpr)
-
-    (expr, OrOp) :: (expr2, EquivOp) :: otherRevOps ->
-      finalize ((expr2, EquivOp) :: otherRevOps) (Disj expr finalExpr)
+    (expr, OrOp) :: otherRevOps ->
+      finalize otherRevOps (Disj expr finalExpr)
 
     -- IMPLICATION EXPRESSIONS CASES
-
-    (expr, ImplOp) :: [] ->
-      finalize  [] (Impl expr finalExpr)
 
     (expr, ImplOp) :: (expr2, AndOp) :: otherRevOps ->
       Impl (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
@@ -126,16 +113,10 @@ finalize revOps finalExpr =
     (expr, ImplOp) :: (expr2, OrOp) :: otherRevOps ->
        Impl (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
 
-    (expr, ImplOp) :: (expr2, ImplOp) :: otherRevOps ->
-      finalize ((expr2, ImplOp) :: otherRevOps) (Impl expr finalExpr)
-
-    (expr, ImplOp) :: (expr2, EquivOp) :: otherRevOps ->
-      finalize ((expr2, EquivOp) :: otherRevOps) (Impl expr finalExpr)
+    (expr, ImplOp) :: otherRevOps ->
+      finalize otherRevOps (Impl expr finalExpr)
 
     -- EQUIVALATION EXPRESSIONS CASES
-
-    (expr, EquivOp) :: [] ->
-      finalize  [] (Equi expr finalExpr)
 
     (expr, EquivOp) :: (expr2, AndOp) :: otherRevOps ->
       Equi (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
@@ -146,5 +127,5 @@ finalize revOps finalExpr =
     (expr, EquivOp) :: (expr2, ImplOp) :: otherRevOps ->
        Equi (finalize ( (expr2, ImplOp) :: otherRevOps) expr) finalExpr
 
-    (expr, EquivOp) :: (expr2, EquivOp) :: otherRevOps ->
-      finalize ((expr2, EquivOp) :: otherRevOps) (Equi expr finalExpr)
+    (expr, EquivOp) :: otherRevOps ->
+      finalize otherRevOps (Equi expr finalExpr)
