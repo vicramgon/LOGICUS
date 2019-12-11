@@ -1,4 +1,4 @@
-module Modules.LPBig_Parser exposing(expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile)
+module Modules.LPBig_Parser exposing(expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp)
 
 import Parser exposing (..)
 import List exposing (head, repeat, length, map, filter, all)
@@ -8,6 +8,7 @@ import Maybe exposing (withDefault)
 import Set exposing (fromList)
 import String exposing (replace, split, concat, join)
 import List.Extra exposing (last, dropWhile, zip, cartesianProduct)
+import Regex
 
 import Modules.A_Expressions exposing (A_Expr, evaluateAExpr, parseAExpr, toStringAExpr, expressionA)
 import Modules.AuxiliarFunctions exposing (deleteFirstLs, init)
@@ -62,7 +63,12 @@ valuesIdentBigProp =
         , separator = ","
         , end = "#"
         , spaces = spaces
-        , item = int
+        , item = oneOf
+                    [ succeed negate
+                         |. symbol "-"
+                         |= int
+                      , int
+                    ]
         , trailing = Optional
         }
 
@@ -130,7 +136,7 @@ atomVarBigProp : Parser String
 atomVarBigProp = getChompedString <|
                     succeed ()
                     |. baseAtomBigProp
-                    |. chompWhile (\c -> Char.isUpper c || c == '_')
+                    |. chompWhile (\c -> Char.isUpper c || c == '_' || Char.isDigit c)
                         
 
 
@@ -159,6 +165,9 @@ termBigProp = oneOf
                         |. symbol "("
                         |= lazy(\_ -> expressionBigProp)
                         |. symbol ")"
+                    , succeed Neg 
+                        |. symbol "¬"
+                        |= lazy(\_ -> termBigProp)
                     ]
 
 expressionBigProp: Parser BigProp
@@ -273,28 +282,54 @@ parseBigProp str = if str == "" then
       
                         Ok y-> y
 
-                        Err y -> Error "Syntax Error"
+                        Err err -> Error ("Syntax Error: " ++ (Debug.toString <| err) ++ str)
 
+parseSetBigProp : String -> List BigProp
+parseSetBigProp str =  List.map (parseBigProp) <| init <| split ";" str
 
-expandBigProp : BigProp -> BigProp
+expandBigProp : BigProp -> Maybe BigProp
 expandBigProp prop = case prop of
-    Atom p -> Atom p
-    Neg p ->  Neg <| expandBigProp p
-    Conj p q -> Conj (expandBigProp p) (expandBigProp q)
-    Disj p q -> Disj (expandBigProp p) (expandBigProp q)
-    Impl p q -> Impl (expandBigProp p) (expandBigProp q)
-    Equi p q -> Equi (expandBigProp p) (expandBigProp q)
+    Atom p -> Just <| Atom p
+    Neg p ->  case expandBigProp p of
+        Nothing -> Nothing
+        Just m -> Just <| Neg <| m
+    Conj p q -> case expandBigProp p of
+        Nothing -> Nothing
+        Just m -> case expandBigProp q of
+            Nothing -> Nothing
+            Just m2 ->  Just <| Conj m m2
+    Disj p q -> case expandBigProp p of
+        Nothing -> Nothing
+        Just m -> case expandBigProp q of
+            Nothing -> Nothing
+            Just m2 ->  Just <| Disj m m2
+    Impl p q -> case expandBigProp p of
+        Nothing -> Nothing
+        Just m -> case expandBigProp q of
+            Nothing -> Nothing
+            Just m2 ->  Just <| Impl m m2
+    Equi p q -> case expandBigProp p of
+        Nothing -> Nothing
+        Just m -> case expandBigProp q of
+            Nothing -> Nothing
+            Just m2 ->  Just <| Equi m m2
+    
     BAnd li lc p -> expandBForm "&" li lc p 
+
     BOr  li lc p -> expandBForm "|" li lc p
-    Error err -> Error err
+
+    Error err -> Just <| Error err
         
 
 
-expandBForm : String -> List Ident -> List Condition -> BigProp -> BigProp
+expandBForm : String -> List Ident -> List Condition -> BigProp -> Maybe BigProp
 expandBForm s li lc p = let keys = List.map (\x -> x.name) li in
                         let values = List.map (\x -> x.values) li in
                         let posibilities = filter (\x -> all (\y -> y) <| List.map (\y -> evalCond y (keys, x)) lc) <| cartesianProduct <| values in 
-                                expandFormula keys posibilities p s
+                                if posibilities == [] then
+                                    Nothing
+                                else
+                                    Just <| expandFormula keys posibilities p s
 
                                          
 
@@ -327,14 +362,24 @@ expandFormula : List String -> List (List Int) -> BigProp -> String -> BigProp
 expandFormula lis llv prop symb = let aux lids llvals p s res = case llvals of
                                                                     [] -> Error "No posibilities to expand the formula"
                                                             
-                                                                    lvals::[] -> parseBigProp <| adecuateString <| res ++ "(" ++ (toStringBigProp <| expandBigProp <| replaceVars (lids, lvals) p) ++ ")"
+                                                                    lvals::[] -> case (expandBigProp <| replaceVars (lids, lvals) p) of
+                                                                        Nothing -> parseBigProp <| adecuateString <| Regex.replace (withDefault Regex.never <| Regex.fromString "&$") (\_ -> "") <| res
+                                                                            
+                                                                        Just exp -> parseBigProp <| adecuateString <| res ++ "(" ++ (toStringBigProp <| exp)  ++ ")"
 
-                                                                    lvals::rlvals -> aux (lids) (rlvals) p s (res ++ "(" ++ (toStringBigProp <| expandBigProp <| replaceVars (lids, lvals) p) ++ ")" ++ symb)
+                                                                    lvals::rlvals -> case (expandBigProp <| replaceVars (lids, lvals) p) of
+                                                                        Nothing ->  aux (lids) (rlvals) p s res
+                                                                            
+                                                                        Just exp -> aux (lids) (rlvals) p s (res ++ "(" ++ (toStringBigProp <| exp) ++ ")" ++ symb )
                                   in
                                     aux lis llv prop symb ""
 
 expandFormBigProp: String -> BigProp
-expandFormBigProp x = expandBigProp <|parseBigProp  <| adecuateString x
+expandFormBigProp x = case expandBigProp <|parseBigProp  <| adecuateString x of
+    Nothing -> Error "No-expansion-returned"
+    
+    Just y -> y
+         
 
 expandSetBigProp : String -> List BigProp
 expandSetBigProp x =  List.map (expandFormBigProp) <| init <| split ";" x
@@ -358,6 +403,6 @@ toStringSetBigProp : List BigProp -> String
 toStringSetBigProp xs = "{" ++ (join "," <| List.map (\x -> toStringBigProp x) <| xs) ++ "}"
 
 toStringSetBigPropFile : List BigProp -> String
-toStringSetBigPropFile xs = join "," <| List.map (\x -> toStringBigPropFile x ++ ";\n") <| xs
+toStringSetBigPropFile xs = join "" <| List.map (\x -> toStringBigPropFile x ++ ";\n") <| xs
 
-main = text <| Debug.toString <| toStringSetBigProp <| expandSetBigProp "&_ {I:0,1#}#(|_ {J:0,1#} # (pIJ));"
+main = text <| Debug.toString <| toStringSetBigProp <| expandSetBigProp "&_ {I:0,1#}#(|_ {J:0,1#} # (pIJ))"

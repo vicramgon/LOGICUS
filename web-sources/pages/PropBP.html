@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Prop_CSF</title>
+  <link rel="stylesheet" href="../css/propPage.css" media="all" />
+  <link rel="shortcut icon" href="../images/logicusLogo.ico" />
+  <script src="../js/functions.js"></script>
+  <script src="../js/PropBP.js"></script>
+  <style>
+		#run_butt {
+		  margin-top: 16vh;
+	  } 
+	</style>
+</head>
+
+<body>
+
+<img src="../images/athenesSchool2.jpg" id="bg" alt="">
+<header> 
+	<div class="mainHeader">
+		<div class="grid_1_8" > 
+			<img src="../images/logicusLogo.png" id="logLogo" alt="">
+		</div>
+		<div class="grid_6_8">
+			<p> Propositional Constraint Satisfaction Problems </p>
+		</div>
+		<div class="grid_1_8">
+			<img src="../images/usLogo.png" id="usLogo" alt="">
+		</div>
+	</div>
+	<nav>
+		<div class="grid_1_7" onclick="window.location= '../index.html'">
+				<p> Main Page </p>
+		</div>
+		<div class="grid_1_7"  onclick="window.location= 'sbMain.html'">
+				<p> Semantic Boards </p>
+		</div>
+		<div class="grid_1_7" onclick="window.location= 'ffMain.html'">
+				<p> Formula Forms </p>
+		</div>
+		<div class="grid_1_7" onclick="window.location= 'dpMain.html'">
+				<p> Davis-Putnam </p>
+		</div>
+		<div class="grid_1_7" onclick="window.location= 'heMain.html'">
+				<p> Herbrand Extension </p>
+		</div>
+		<div class="grid_1_7" onclick="window.location= 'dsMain.html'">
+				<p> Deductive Systems </p>
+		</div>
+		<div class="grid_1_7" onclick="window.location= 'resMain.html'">
+				<p> Resolution</p>
+		</div>
+	</nav>
+</header>
+
+<pre id="elm"></pre>
+
+<script>
+
+	var app = Elm.Mains.PropBP.init({ node: document.getElementById("elm") });
+
+	document.getElementById("template").onclick = function(){download('BProp_template.txt', 'p->q;\nq->p;\n');};
+	document.getElementById("toFile").onclick = function(){download('BProp_ExpandedForms.txt', document.getElementById("outGTA").value);};
+	document.getElementById("Nqueens").onclick = function(){download('NQueens_CSF.txt', "---\nThe N Queen is the problem of placing N chess queens on an N×N chessboard so that no two queens\nattack each other.\n\nFor exmple, here is a solution for N = 4:\n\n	-------------------------\n	|     |||||||     |     |\n    	|     |||||||     |     |\n	-------------------------\n	|     |     |     |||||||\n	|     |     |     |||||||\n	-------------------------\n	|||||||     |     |     |\n	|||||||     |     |     |\n	-------------------------\n	|     |     |||||||     |\n	|     |     |||||||     |\n	-------------------------\n\nFor modeling it we're going to use pij that represents that one queen is on the chessboard at the\nposition (i,j).\nRules are exposed below.\n---\n\n--- There must be a queen in each row  ---\n\n&_ {I:0,1,2,3#} # (|_ {J:0,1,2,3#} # (pIJ));\n\n--- There cannot be more than one queen in the same row. ---\n\n&_ {I:0,1,2,3#, J:0,1,2,3#} # (pIJ -> &_ {U:0,1,2,3#} {I!=U} (¬pUJ));\n\n--- There cannot be more than one queen in the same column. ---\n\n&_ {I:0,1,2,3#, J:0,1,2,3#} # (pIJ -> &_ {U:0,1,2,3#} {J!=U} (¬pIU));\n\n--- There cannot be more than one queen in the same main diagonal. ---\n\n&_ {I:0,1,2,3#, J:0,1,2,3#} # (pIJ -> &_ {K:-3,-2,-1,1,2,3#,U:0,1,2,3#,V:0,1,2,3#} {U=I+K, V=J+K} (¬pUV));\n\n--- There cannot be more than one queen in the same secondary diagonal. ---\n\n&_ {I:0,1,2,3#, J:0,1,2,3#} # (pIJ -> &_ {K:-3,-2,-1,1,2,3#,U:0,1,2,3#,V:0,1,2,3#} {U=I+K, V=J-K} (¬pUV));\n");};	document.getElementById("Sudoku").onclick = function(){download('Sudoku_CSF', document.getElementById("outGTA").value);};
+	document.getElementById("Gcoloring").onclick = function(){download('MapColoring_CSF', 'TO_DO');};
+	document.getElementById("SendMM").onclick = function(){download('SendMM_CSF', 'TO_DO');};
+
+</script>
+
+</body>
+</html>

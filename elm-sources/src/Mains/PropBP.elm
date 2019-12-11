@@ -1,29 +1,23 @@
-module Mains.PropBF exposing (..)
+module Mains.PropBP exposing (..)
 
 import Browser
 import Html exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (..)
-import Maybe
-import String exposing (..)
-import List exposing (..)
 import File exposing (File)
 import File.Select as Select
 import Task
 import Regex
 import Maybe exposing (withDefault)
-
-import Modules.LPBig_Parser exposing(..)
-import Modules.AuxiliarFunctions exposing (..)
-import Modules.Algorithms exposing(..)
-import Modules.SemanticBoards exposing(..)
+import Modules.LPBig_Parser exposing (expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp)
+import String exposing (replace)
 
 -- Filtered file content
 -- Remove comments
 
-pattern = "---(.|\r|\n|\t])*---"
+pattern = "(---((?!(---))(.|\r|\n|\t))*---)"
 regex = Maybe.withDefault Regex.never <| Regex.fromString pattern 
-fileFilter s = Regex.replace regex (\_ -> "") s
+fileFilter s =  replace ";" ";\n" <| replace " " "" <| replace "\n" "" <| replace "\r" "" <| replace "\t" "" <| Regex.replace regex (\_ -> "") s
 
 -- MAIN
 
@@ -69,7 +63,7 @@ update msg model =
     ChangefSet newContent ->
       ({ model | fSet = newContent }, Cmd.none)
 
-    ChangeOut ->  ({model | out = (toStringSetBigProp <| expandSetBigProp <| model.fSet), res=(toStringSetBigPropFile <| expandSetBigProp <| model.fSet)}, Cmd.none)
+    ChangeOut ->  ({model | out=(toStringSetBigPropFile <| expandSetBigProp <| model.fSet), res = (toStringSetBigProp <| expandSetBigProp <| model.fSet)}, Cmd.none)
     
     TxtRequested ->
       ( model
@@ -100,6 +94,15 @@ view model =
                     button [Html.Attributes.id "template", Html.Attributes.class "buttFSet"][Html.text "Template File"],
                     button [Html.Attributes.class "buttFSet", onClick TxtRequested][Html.text "Choose File"]
                 ]
+            ],
+
+             div[][
+                 h2 [] [Html.text "Some propositional models for CSP Problems"],
+                 button [Html.Attributes.class "buttExamples", Html.Attributes.id "Nqueens"][Html.text "N Queens"],
+                 button [Html.Attributes.class "buttExamples", Html.Attributes.id "Sudoku"][Html.text "Sudoku"],
+                 button [Html.Attributes.class "buttExamples", Html.Attributes.id "Gcoloring"][Html.text "Map coloring"],
+                 button [Html.Attributes.class "buttExamples", Html.Attributes.id "SendMM"][Html.text "Send more money "]
+
             ],
 
             div[][
