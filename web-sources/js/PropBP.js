@@ -5526,6 +5526,32 @@
 	var $author$project$Mains$PropBP$TxtSelected = function (a) {
 		return {$: 'TxtSelected', a: a};
 	};
+	var $elm$core$List$append = F2(
+		function (xs, ys) {
+			if (!ys.b) {
+				return xs;
+			} else {
+				return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+			}
+		});
+	var $elm$core$List$concat = function (lists) {
+		return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+	};
+	var $author$project$Modules$LPBig_Parser$conjPropToSet = function (p) {
+		if (p.$ === 'Conj') {
+			var p1 = p.a;
+			var p2 = p.b;
+			return $elm$core$List$concat(
+				_List_fromArray(
+					[
+						$author$project$Modules$LPBig_Parser$conjPropToSet(p1),
+						$author$project$Modules$LPBig_Parser$conjPropToSet(p2)
+					]));
+		} else {
+			return _List_fromArray(
+				[p]);
+		}
+	};
 	var $author$project$Modules$LPBig_Parser$Error = function (a) {
 		return {$: 'Error', a: a};
 	};
@@ -5627,17 +5653,6 @@
 				A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
 				list);
 		});
-	var $elm$core$List$append = F2(
-		function (xs, ys) {
-			if (!ys.b) {
-				return xs;
-			} else {
-				return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-			}
-		});
-	var $elm$core$List$concat = function (lists) {
-		return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-	};
 	var $elm$core$List$concatMap = F2(
 		function (f, list) {
 			return $elm$core$List$concat(
@@ -8365,7 +8380,7 @@
 			A2(
 				$elm$core$List$map,
 				function (x) {
-					return $author$project$Modules$LPBig_Parser$toStringBigProp(x);
+					return $author$project$Modules$LPBig_Parser$toStringBigProp(x) + '\n';
 				},
 				xs)) + '}');
 	};
@@ -8400,9 +8415,17 @@
 							model,
 							{
 								out: $author$project$Modules$LPBig_Parser$toStringSetBigPropFile(
-									$author$project$Modules$LPBig_Parser$expandSetBigProp(model.fSet)),
+									$elm$core$List$concat(
+										A2(
+											$elm$core$List$map,
+											$author$project$Modules$LPBig_Parser$conjPropToSet,
+											$author$project$Modules$LPBig_Parser$expandSetBigProp(model.fSet)))),
 								res: $author$project$Modules$LPBig_Parser$toStringSetBigProp(
-									$author$project$Modules$LPBig_Parser$expandSetBigProp(model.fSet))
+									$elm$core$List$concat(
+										A2(
+											$elm$core$List$map,
+											$author$project$Modules$LPBig_Parser$conjPropToSet,
+											$author$project$Modules$LPBig_Parser$expandSetBigProp(model.fSet))))
 							}),
 						$elm$core$Platform$Cmd$none);
 				case 'TxtRequested':

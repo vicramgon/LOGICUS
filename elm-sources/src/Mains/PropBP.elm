@@ -9,7 +9,7 @@ import File.Select as Select
 import Task
 import Regex
 import Maybe exposing (withDefault)
-import Modules.LPBig_Parser exposing (expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp)
+import Modules.LPBig_Parser exposing (expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp, conjPropToSet)
 import String exposing (replace)
 
 -- Filtered file content
@@ -63,7 +63,7 @@ update msg model =
     ChangefSet newContent ->
       ({ model | fSet = newContent }, Cmd.none)
 
-    ChangeOut ->  ({model | out=(toStringSetBigPropFile <| expandSetBigProp <| model.fSet), res = (toStringSetBigProp <| expandSetBigProp <| model.fSet)}, Cmd.none)
+    ChangeOut ->  ({model | out=(toStringSetBigPropFile <| List.concat <| List.map (conjPropToSet) <| expandSetBigProp <| model.fSet), res = (toStringSetBigProp <| List.concat <| List.map (conjPropToSet) <| expandSetBigProp <| model.fSet)}, Cmd.none)
     
     TxtRequested ->
       ( model

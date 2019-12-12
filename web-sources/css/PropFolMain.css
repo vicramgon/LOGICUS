@@ -1,0 +1,108 @@
+#bg {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+
+    width: 100vw;
+    height: 100vh;
+
+    z-index: -1;
+  }
+
+  #PLCircle {
+    position: fixed; 
+    top: 3vh; 
+    left: 35vw;
+
+    width: 30vw;
+    height: 60vh;
+    z-index: 0;
+    
+}
+
+#FOLCircle {
+    position: fixed; 
+    top: 3vh; 
+    left: 35vw;
+
+    width: 30vw;
+    height: 60vh;
+    z-index: 0;
+    
+}
+
+#CSCircle {
+    position: fixed; 
+    top: 0; 
+    left: 0;
+
+    width: 15vw;
+    height: 30vh;
+    z-index: 0;
+}
+
+#ResCircle {
+    position: fixed; 
+    top: 32vh; 
+    left: 1vw;
+
+    width: 20vw;
+    height: 40vh;
+    z-index: 0;
+}
+
+#DSysCircle {
+    position: fixed; 
+    top: 58vh; 
+    left: 20vw;
+
+    width: 20vw;
+    height: 40vh;
+    z-index: 0;
+}
+
+#LogCircle {
+    position: fixed; 
+    bottom: 0vh; 
+    left: 42.5vw;
+
+    width: 15vw;
+    height: 30vh;
+    z-index: 0;
+}
+
+#DPLLCircle {
+    position: fixed; 
+    top: 58vh; 
+    right: 20vw;
+
+    width: 20vw;
+    height: 40vh;
+    z-index: 0;
+}
+
+#ClausesCircle {
+    position: fixed; 
+    top: 32vh; 
+    right: 1vw;
+
+    width: 20vw;
+    height: 40vh;
+    z-index: 0;
+}
+
+#SBCircle {
+    position: fixed; 
+    top: 0; 
+    right: 0;
+
+    width: 15vw;
+    height: 30vh;
+    z-index: 0;
+}
+
+
+
+
+
+

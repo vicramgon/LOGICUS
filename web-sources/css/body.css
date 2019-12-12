@@ -72,17 +72,17 @@ nav p{
     z-index: 2;
 }
 
-nav .grid_1_7 {
+nav .grid_1_8 {
     background-color: rgba(88, 109, 138,80%);
     height: 100%;
     z-index: 1;
 }
 
-nav .grid_1_7:hover {
+nav .grid_1_8:hover {
     background-color: rgba(155, 178, 211, 0.8);
 }
 
-nav .grid_1_7:hover p{
+nav .grid_1_8:hover p{
     color: rgb(88, 109, 138);
 }
 

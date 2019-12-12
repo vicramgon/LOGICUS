@@ -2,66 +2,104 @@
     position: fixed; 
     top: 0; 
     left: 0; 
-      
-    /* Preserve aspet ratio */
-    min-width: 100%;
-    min-height: 100%;
+
+    width: 100vw;
+    height: 100vh;
+
     z-index: -1;
   }
 
-#lgCirc {
-    position: fixed; 
-    top: 2vh; 
-    left: 37.5vw;
-    z-index: 1;
-    width: 25vw;
-  }
+main {
+  position: fixed;
+  top: 0; 
+  left: 0; 
 
-  #sbCirc{
-    position: fixed; 
-    top: 4vh; 
-    left: 75vw;
-    z-index: 1;
-    width: 18vw;
-  }
+  min-width: 100%;
+  min-height: 100%;
+  z-index: 0;
+    
+}
 
-  #fmCirc{
-    position: fixed; 
-    top: 40vh; 
-    left: 69.2vw;
-    z-index: 1;
-    width: 18vw;
-  }
+.middleView{
+  position: fixed; 
+  width: 50vw;
+  height: 100vh;
 
-  #dpCirc{
-    position: fixed; 
-    top: 60vh; 
-    left: 51.5vw;
-    z-index: 1;
-    width: 18vw;
-  }
+  z-index: 1;
+}
 
-  #heCirc{
-    position: fixed; 
-    top: 60vh; 
-    left: 30.5vw;
-    z-index: 1;
-    width: 18vw;
-  }
+#leftView{
+  top: 0;
+  left: 0;
+  background-color: rgba(88,109,138,0.64);
 
-  #dsCirc{
-    position: fixed; 
-    top: 40vh; 
-    left: 12.8vw;
-    z-index: 1;
-    width: 18vw;
-  }
+}
 
-  #resCirc{
-    position: fixed; 
-    top: 4vh; 
-    left: 7vw;
-    z-index: 1;
-    width: 18vw;
-  }
+#LogIndex{
+  position: fixed;
+  top: 20vh;
+  left: 37.5vw;
+
+  width: 25vw;
+  height: 60vh;
+
+  z-index: 2;
+}
+
+#FOLSymb{
+  position: fixed;
+  top: 5vh;
+  left: 5vw;
+  
+  width: 15vw;
+  height: 40vh;
+  z-index: 2;
+}
+
+#FOL{
+  position: fixed;
+  top: 8vh;
+  left: 18vw;
+
+  width: 20vw;
+  height: 5vh;
+  z-index: 2;
+}
+
+#rightView{
+  top:0;
+  left: 50vw;
+  background-color: rgba(222,235,247,0.64);
+
+}
+
+#PLSymb{
+  position: fixed;
+  bottom: 5vh;
+  right: 5vw;
+  
+  width: 15vw;
+  height: 40vh;
+  z-index: 2;
+}
+
+
+#PL{
+
+  position: fixed;
+  bottom: 8vh;
+  right: 18vw;
+
+  width: 20vw;
+  height: 6vh;
+  z-index: 2;
+
+}
+
+
+
+
+
+
+
 

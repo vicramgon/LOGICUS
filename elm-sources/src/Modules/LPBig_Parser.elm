@@ -1,4 +1,4 @@
-module Modules.LPBig_Parser exposing(expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp)
+module Modules.LPBig_Parser exposing(expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp, conjPropToSet)
 
 import Parser exposing (..)
 import List exposing (head, repeat, length, map, filter, all)
@@ -400,9 +400,14 @@ toStringBigPropFile : BigProp -> String
 toStringBigPropFile x = adecuateString <| toStringBigProp x
 
 toStringSetBigProp : List BigProp -> String
-toStringSetBigProp xs = "{" ++ (join "," <| List.map (\x -> toStringBigProp x) <| xs) ++ "}"
+toStringSetBigProp xs = "{" ++ (join "," <| List.map (\x -> toStringBigProp x ++ "\n") <| xs) ++ "}"
 
 toStringSetBigPropFile : List BigProp -> String
 toStringSetBigPropFile xs = join "" <| List.map (\x -> toStringBigPropFile x ++ ";\n") <| xs
+
+conjPropToSet : BigProp -> List BigProp
+conjPropToSet p = case p of
+    Conj p1 p2 -> List.concat [conjPropToSet p1, conjPropToSet p2]
+    _ -> [p]
 
 main = text <| Debug.toString <| toStringSetBigProp <| expandSetBigProp "&_ {I:0,1#}#(|_ {J:0,1#} # (pIJ))"
