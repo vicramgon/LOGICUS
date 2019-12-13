@@ -9,9 +9,12 @@ import Set exposing (fromList)
 import String exposing (replace, split, concat, join)
 import List.Extra exposing (last, dropWhile, zip, cartesianProduct)
 import Regex
+import Random
+import Random.List
 
 import Modules.A_Expressions exposing (A_Expr, evaluateAExpr, parseAExpr, toStringAExpr, expressionA)
-import Modules.AuxiliarFunctions exposing (deleteFirstLs, init)
+import Modules.AuxiliarFunctions exposing (deleteFirstLs, init, unique)
+import Modules.StateSpaceSearches exposing (StateSpaceSearch, backtrackingSearch, bestFirstSearch)
 
 import Html exposing (text)
 
@@ -57,20 +60,40 @@ nameIdentBigProp =
     }
 
 valuesIdentBigProp : Parser (List Int)
-valuesIdentBigProp =
-     Parser.sequence
-        { start = ":"
-        , separator = ","
-        , end = "#"
-        , spaces = spaces
-        , item = oneOf
-                    [ succeed negate
-                         |. symbol "-"
-                         |= int
-                      , int
-                    ]
-        , trailing = Optional
-        }
+valuesIdentBigProp =    oneOf [
+                            Parser.sequence
+                                { start = ":"
+                                , separator = ","
+                                , end = "#"
+                                , spaces = spaces
+                                , item = oneOf
+                                            [ succeed negate
+                                                |. symbol "-"
+                                                |= int
+                                            , int
+                                            ]
+                                , trailing = Optional
+                                },
+
+                            succeed List.range
+                                |. symbol "["
+                                |= oneOf
+                                    [ succeed negate
+                                        |. symbol "-"
+                                        |= int
+                                    , int
+                                    ]
+                                |. symbol ":"
+                                |= oneOf
+                                    [ succeed negate
+                                        |. symbol "-"
+                                        |= int
+                                    , int
+                                    ]
+                                |. symbol "]"
+                            ]
+
+
 
 
 identBigProp : Parser Ident
@@ -410,4 +433,63 @@ conjPropToSet p = case p of
     Conj p1 p2 -> List.concat [conjPropToSet p1, conjPropToSet p2]
     _ -> [p]
 
-main = text <| Debug.toString <| toStringSetBigProp <| expandSetBigProp "&_ {I:0,1#}#(|_ {J:0,1#} # (pIJ))"
+symbInBigProp : BigProp -> List String
+
+symbInBigProp f=
+    case f of
+        Atom p -> [p]
+        Neg p -> symbInBigProp p
+        Conj p q -> symbInBigProp p ++ symbInBigProp q
+        Disj p q -> symbInBigProp p ++ symbInBigProp q
+        Impl p q -> symbInBigProp p ++ symbInBigProp q
+        Equi p q -> symbInBigProp p ++ symbInBigProp q
+        Error _ -> []
+        _ -> case expandBigProp f of
+                Nothing -> []
+    
+                Just y -> symbInBigProp <| y
+
+distinctSymbInBigProp : BigProp -> List String
+distinctSymbInBigProp p = unique (symbInBigProp p)
+
+setBigPSymbols: List BigProp -> List String
+setBigPSymbols xs = List.concat <| List.map (distinctSymbInBigProp) xs
+
+type alias BigPropSSP = StateSpaceSearch (List String)
+
+createBigPropSSP : List BigProp -> BigPropSSP
+createBigPropSSP bps = let symbols = setBigPSymbols <| bps in
+                            {init = [],
+                            actions = \s -> generateActionsBPS symbols s,
+                            apply = \s f -> (f s),
+                            heuristic = \ps -> List.length <|  List.filter (\bp -> not <| evaluateBigProp ps bp) bps,
+                            isGoal = \ ps -> List.all (\bp -> evaluateBigProp ps bp) bps
+                            }  
+
+generateActionsBPS : List String -> List String -> (List (List String -> List String))
+generateActionsBPS symbols x = let actions = List.map (\y -> (\ z -> z ++ [y]) ) <| List.filter (\y -> not <| List.member y x) symbols in
+                                    first <| Random.step (Random.List.shuffle actions) (Random.initialSeed (List.length actions))
+
+evaluateBigProp : List String -> BigProp -> Bool
+evaluateBigProp ps bp = case bp of
+    Atom p -> List.member p ps
+    Neg p -> not (evaluateBigProp ps p)
+    Conj p q -> (evaluateBigProp ps p) && (evaluateBigProp ps q)
+    Disj p q ->  (evaluateBigProp ps p) || (evaluateBigProp ps q)
+    Impl p q ->  (not (evaluateBigProp ps p)) || (evaluateBigProp ps q)
+    Equi p q ->  (evaluateBigProp ps (Impl p q)) && (evaluateBigProp ps (Impl q p))
+    Error err -> False
+    _ -> case expandBigProp <| bp of
+        Nothing -> False    
+        Just f -> evaluateBigProp ps f
+
+
+solveCSP : String -> String
+solveCSP str = case backtrackingSearch <| createBigPropSSP <| expandSetBigProp str of
+                    Nothing -> "Instisfactible problem"
+                    Just y -> "Solution found: True values -> {" ++ join ", " y ++ "}"
+ 
+
+
+
+--main = text <| Debug.toString <| toStringSetBigProp <| expandSetBigProp <| "&_ {I[0:3], J[0:3]} # (pIJ -> &_ {K[-3:3],U[0:3],V[0:3]} {K!=0, U=I+K, V=J+K} (¬pUV));"

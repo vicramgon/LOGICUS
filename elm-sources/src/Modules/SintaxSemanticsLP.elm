@@ -107,7 +107,7 @@ insatisfactibility x = List.isEmpty (models x)
 validity : Prop -> Bool
 validity x = (models x) == (allInterpretations x)
 
--- Definition of setSymbols function that represents all symbols in a set of propositional formula
+-- Definition of setSymbols function that represents all symbols in a set of propositional formulas
 
 setSymbols : List Prop -> List PSymb
 setSymbols xs = List.map distinctSymbInProp xs |> List.concat |> unique

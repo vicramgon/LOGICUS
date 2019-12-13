@@ -7078,26 +7078,68 @@
 				str,
 				$elm$parser$Parser$ExpectingSymbol(str)));
 	};
-	var $author$project$Modules$LPBig_Parser$valuesIdentBigProp = $elm$parser$Parser$sequence(
-		{
-			end: '#',
-			item: $elm$parser$Parser$oneOf(
-				_List_fromArray(
-					[
-						A2(
-						$elm$parser$Parser$keeper,
-						A2(
-							$elm$parser$Parser$ignorer,
-							$elm$parser$Parser$succeed($elm$core$Basics$negate),
-							$elm$parser$Parser$symbol('-')),
-						$elm$parser$Parser$int),
-						$elm$parser$Parser$int
-					])),
-			separator: ',',
-			spaces: $elm$parser$Parser$spaces,
-			start: ':',
-			trailing: $elm$parser$Parser$Optional
-		});
+	var $author$project$Modules$LPBig_Parser$valuesIdentBigProp = $elm$parser$Parser$oneOf(
+		_List_fromArray(
+			[
+				$elm$parser$Parser$sequence(
+				{
+					end: '#',
+					item: $elm$parser$Parser$oneOf(
+						_List_fromArray(
+							[
+								A2(
+								$elm$parser$Parser$keeper,
+								A2(
+									$elm$parser$Parser$ignorer,
+									$elm$parser$Parser$succeed($elm$core$Basics$negate),
+									$elm$parser$Parser$symbol('-')),
+								$elm$parser$Parser$int),
+								$elm$parser$Parser$int
+							])),
+					separator: ',',
+					spaces: $elm$parser$Parser$spaces,
+					start: ':',
+					trailing: $elm$parser$Parser$Optional
+				}),
+				A2(
+				$elm$parser$Parser$keeper,
+				A2(
+					$elm$parser$Parser$keeper,
+					A2(
+						$elm$parser$Parser$ignorer,
+						$elm$parser$Parser$succeed($elm$core$List$range),
+						$elm$parser$Parser$symbol('[')),
+					A2(
+						$elm$parser$Parser$ignorer,
+						$elm$parser$Parser$oneOf(
+							_List_fromArray(
+								[
+									A2(
+									$elm$parser$Parser$keeper,
+									A2(
+										$elm$parser$Parser$ignorer,
+										$elm$parser$Parser$succeed($elm$core$Basics$negate),
+										$elm$parser$Parser$symbol('-')),
+									$elm$parser$Parser$int),
+									$elm$parser$Parser$int
+								])),
+						$elm$parser$Parser$symbol(':'))),
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$oneOf(
+						_List_fromArray(
+							[
+								A2(
+								$elm$parser$Parser$keeper,
+								A2(
+									$elm$parser$Parser$ignorer,
+									$elm$parser$Parser$succeed($elm$core$Basics$negate),
+									$elm$parser$Parser$symbol('-')),
+								$elm$parser$Parser$int),
+								$elm$parser$Parser$int
+							])),
+					$elm$parser$Parser$symbol(']')))
+			]));
 	var $author$project$Modules$LPBig_Parser$identBigProp = A2(
 		$elm$parser$Parser$keeper,
 		A2(
