@@ -3,7 +3,6 @@ module Modules.LP_Parser exposing(parserFormula, parserSet)
 import Char
 import Parser exposing (..)
 import Set
-import Maybe
 import String exposing (..)
 
 import Modules.SintaxSemanticsLP exposing (..)
@@ -14,7 +13,7 @@ parserFormula x =
   if x == "" then
         Atom " "
   else
-    case ( run lpParser ("(" ++ x ++ ")")) of
+    case run lpParser ("(" ++ x ++ ")") of
       
       Ok y-> y
 

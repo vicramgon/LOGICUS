@@ -1,99 +1,115 @@
-module Modules.LPBig_Parser exposing(expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp, conjPropToSet)
+module Modules.LPBig_Parser exposing (conjPropToSet, expandFormBigProp, expandSetBigProp, parseBigProp, parseSetBigProp, toStringBigProp, toStringBigPropFile, toStringSetBigProp, toStringSetBigPropFile, toProp, toSolverNotation, setBigPSymbols)
 
-import Parser exposing (..)
-import List exposing (head, repeat, length, map, filter, all)
-import Tuple exposing (first, second)
-import Maybe.Extra exposing (isNothing)
+import List exposing (all, filter, head, map)
+import List.Extra exposing (cartesianProduct, zip)
 import Maybe exposing (withDefault)
-import Set exposing (fromList)
-import String exposing (replace, split, concat, join)
-import List.Extra exposing (last, dropWhile, zip, cartesianProduct)
-import Regex
-import Random
-import Random.List
-
-import Modules.A_Expressions exposing (A_Expr, evaluateAExpr, parseAExpr, toStringAExpr, expressionA)
+import Modules.A_Expressions exposing (A_Expr, evaluateAExpr, expressionA, toStringAExpr)
 import Modules.AuxiliarFunctions exposing (deleteFirstLs, init, unique)
-import Modules.StateSpaceSearches exposing (StateSpaceSearch, backtrackingSearch, bestFirstSearch)
+import Modules.LP_Parser exposing (parserFormula)
+import Modules.SintaxSemanticsLP exposing (Prop, toStringProp)
+import Modules.LPClausalForms exposing (setClauses)
+import Parser exposing (..)
+import Regex
+import Set exposing (fromList)
+import String exposing (concat, join, replace, split)
 
-import Html exposing (text)
+
+type Comparator
+    = EQ
+    | NE
+    | GT
+    | LT
+    | GE
+    | LE
 
 
+type alias Condition =
+    { comp : Comparator
+    , fmember : A_Expr
+    , smember : A_Expr
+    }
 
-type Comparator = EQ | NE | GT | LT | GE | LE
-
-
-type alias Condition = {comp : Comparator, fmember : A_Expr, smember : A_Expr }
 
 createCondition : A_Expr -> Comparator -> A_Expr -> Condition
-createCondition f c s = {comp = c, fmember = f, smember = s }
+createCondition f c s =
+    { comp = c, fmember = f, smember = s }
 
-type alias Ident = { name : String, values : List Int}
+
+type alias Ident =
+    { name : String
+    , values : List Int
+    }
+
 
 createIdent : String -> List Int -> Ident
-createIdent str li = {name = str, values = li}
+createIdent str li =
+    { name = str, values = li }
 
-type BigProp =  Atom String
-                | Neg BigProp
-                | Conj BigProp BigProp
-                | Disj BigProp BigProp
-                | Impl BigProp BigProp
-                | Equi BigProp BigProp
-                | BAnd (List Ident) (List Condition) BigProp
-                | BOr  (List Ident) (List Condition) BigProp
-                | Error String
+
+type BigProp
+    = Atom String
+    | Neg BigProp
+    | Conj BigProp BigProp
+    | Disj BigProp BigProp
+    | Impl BigProp BigProp
+    | Equi BigProp BigProp
+    | BAnd (List Ident) (List Condition) BigProp
+    | BOr (List Ident) (List Condition) BigProp
+    | Error String
+
 
 baseAtomBigProp : Parser String
-baseAtomBigProp = 
+baseAtomBigProp =
     variable
-    { start = Char.isLower
-    , inner = \c -> Char.isLower c || Char.isDigit c
-    , reserved = Set.fromList []
-    }
+        { start = Char.isLower
+        , inner = \c -> Char.isLower c || Char.isDigit c
+        , reserved = Set.fromList []
+        }
+
 
 nameIdentBigProp : Parser String
-nameIdentBigProp = 
+nameIdentBigProp =
     variable
-    { start = Char.isUpper
-    , inner = Char.isUpper
-    , reserved = Set.fromList []
-    }
+        { start = Char.isUpper
+        , inner = Char.isUpper
+        , reserved = Set.fromList []
+        }
+
 
 valuesIdentBigProp : Parser (List Int)
-valuesIdentBigProp =    oneOf [
-                            Parser.sequence
-                                { start = ":"
-                                , separator = ","
-                                , end = "#"
-                                , spaces = spaces
-                                , item = oneOf
-                                            [ succeed negate
-                                                |. symbol "-"
-                                                |= int
-                                            , int
-                                            ]
-                                , trailing = Optional
-                                },
-
-                            succeed List.range
-                                |. symbol "["
-                                |= oneOf
-                                    [ succeed negate
-                                        |. symbol "-"
-                                        |= int
-                                    , int
-                                    ]
-                                |. symbol ":"
-                                |= oneOf
-                                    [ succeed negate
-                                        |. symbol "-"
-                                        |= int
-                                    , int
-                                    ]
-                                |. symbol "]"
-                            ]
-
-
+valuesIdentBigProp =
+    oneOf
+        [ Parser.sequence
+            { start = ":"
+            , separator = ","
+            , end = "#"
+            , spaces = spaces
+            , item =
+                oneOf
+                    [ succeed negate
+                        |. symbol "-"
+                        |= int
+                    , int
+                    ]
+            , trailing = Optional
+            }
+        , succeed List.range
+            |. symbol "["
+            |= oneOf
+                [ succeed negate
+                    |. symbol "-"
+                    |= int
+                , int
+                ]
+            |. symbol ":"
+            |= oneOf
+                [ succeed negate
+                    |. symbol "-"
+                    |= int
+                , int
+                ]
+            |. symbol "]"
+        ]
 
 
 identBigProp : Parser Ident
@@ -104,7 +120,7 @@ identBigProp =
 
 
 listIdentBigProp : Parser (List Ident)
-listIdentBigProp = 
+listIdentBigProp =
     Parser.sequence
         { start = "{"
         , separator = ","
@@ -114,25 +130,27 @@ listIdentBigProp =
         , trailing = Optional -- demand a trailing semi-colon
         }
 
+
 compConditionBigProp : Parser Comparator
-compConditionBigProp = oneOf 
-                            [
-                              succeed GE
-                                |. symbol ">"
-                                |. symbol "="
-                            , succeed LE
-                                |. symbol "<"
-                                |. symbol "="
-                            , succeed NE
-                                |. symbol "!"
-                                |. symbol "="
-                            , succeed GT
-                                |. symbol ">"
-                            , succeed LT
-                                |. symbol "<"
-                            ,succeed EQ
-                                |. symbol "="
-                            ]
+compConditionBigProp =
+    oneOf
+        [ succeed GE
+            |. symbol ">"
+            |. symbol "="
+        , succeed LE
+            |. symbol "<"
+            |. symbol "="
+        , succeed NE
+            |. symbol "!"
+            |. symbol "="
+        , succeed GT
+            |. symbol ">"
+        , succeed LT
+            |. symbol "<"
+        , succeed EQ
+            |. symbol "="
+        ]
+
 
 conditionBigProp : Parser Condition
 conditionBigProp =
@@ -141,355 +159,521 @@ conditionBigProp =
         |= compConditionBigProp
         |= expressionA
 
+
 listconditionBigProp : Parser (List Condition)
-listconditionBigProp = oneOf [
-                                Parser.sequence
-                                    { start = "{"
-                                    , separator = ","
-                                    , end = "}"
-                                    , spaces = spaces
-                                    , item = conditionBigProp
-                                    , trailing = Optional -- demand a trailing semi-colon
-                                    }
-                                , succeed []
-                                    |. symbol "#"
-                            ]
+listconditionBigProp =
+    oneOf
+        [ Parser.sequence
+            { start = "{"
+            , separator = ","
+            , end = "}"
+            , spaces = spaces
+            , item = conditionBigProp
+            , trailing = Optional -- demand a trailing semi-colon
+            }
+        , succeed []
+            |. symbol "#"
+        ]
+
 
 atomVarBigProp : Parser String
-atomVarBigProp = getChompedString <|
-                    succeed ()
-                    |. baseAtomBigProp
-                    |. chompWhile (\c -> Char.isUpper c || c == '_' || Char.isDigit c)
-                        
+atomVarBigProp =
+    getChompedString <|
+        succeed ()
+            |. baseAtomBigProp
+            |. chompWhile (\c -> Char.isUpper c || c == '_' || Char.isDigit c)
 
 
 termBigProp : Parser BigProp
-termBigProp = oneOf 
-                    [
-                    succeed Atom 
-                        |= atomVarBigProp
-                    ,succeed BAnd
-                        |. symbol "&"
-                        |. symbol "_"
-                        |= listIdentBigProp
-                        |= listconditionBigProp
-                        |. symbol "("
-                        |= lazy(\_ -> expressionBigProp)
-                        |. symbol ")"
-                    , succeed BOr
-                        |. symbol "|"
-                        |. symbol "_"
-                        |= listIdentBigProp
-                        |= listconditionBigProp
-                        |. symbol "("
-                        |= lazy(\_ -> expressionBigProp)
-                        |. symbol ")"
-                    , succeed identity 
-                        |. symbol "("
-                        |= lazy(\_ -> expressionBigProp)
-                        |. symbol ")"
-                    , succeed Neg 
-                        |. symbol "¬"
-                        |= lazy(\_ -> termBigProp)
-                    ]
+termBigProp =
+    oneOf
+        [ succeed Atom
+            |= atomVarBigProp
+        , succeed BAnd
+            |. symbol "&"
+            |. symbol "_"
+            |= listIdentBigProp
+            |= listconditionBigProp
+            |. symbol "("
+            |= lazy (\_ -> expressionBigProp)
+            |. symbol ")"
+        , succeed BOr
+            |. symbol "|"
+            |. symbol "_"
+            |= listIdentBigProp
+            |= listconditionBigProp
+            |. symbol "("
+            |= lazy (\_ -> expressionBigProp)
+            |. symbol ")"
+        , succeed identity
+            |. symbol "("
+            |= lazy (\_ -> expressionBigProp)
+            |. symbol ")"
+        , succeed Neg
+            |. symbol "¬"
+            |= lazy (\_ -> termBigProp)
+        ]
 
-expressionBigProp: Parser BigProp
-expressionBigProp = termBigProp |> andThen (expressionBigPropAux [])
 
-type Operator = AndOp | OrOp | ImplOp | EquivOp
+expressionBigProp : Parser BigProp
+expressionBigProp =
+    termBigProp |> andThen (expressionBigPropAux [])
+
+
+type Operator
+    = AndOp
+    | OrOp
+    | ImplOp
+    | EquivOp
+
 
 operator : Parser Operator
-operator = 
+operator =
     oneOf
-    [ Parser.map (\_ -> AndOp) (symbol "&")
-    , Parser.map (\_ -> OrOp) (symbol "|")
-    , Parser.map (\_ -> ImplOp) (symbol "->")
-    , Parser.map (\_ -> EquivOp) (symbol "<->")
-    ]
+        [ Parser.map (\_ -> AndOp) (symbol "&")
+        , Parser.map (\_ -> OrOp) (symbol "|")
+        , Parser.map (\_ -> ImplOp) (symbol "->")
+        , Parser.map (\_ -> EquivOp) (symbol "<->")
+        ]
 
-expressionBigPropAux : List (BigProp, Operator) -> BigProp -> Parser BigProp
+
+expressionBigPropAux : List ( BigProp, Operator ) -> BigProp -> Parser BigProp
 expressionBigPropAux revOps expr =
-  oneOf
-    [ succeed Tuple.pair
-        |= operator
-        |= termBigProp
-        |> andThen (\(op, newExpr) -> expressionBigPropAux ((expr,op) :: revOps) newExpr)
-    , lazy (\_ -> succeed (finalize revOps expr))
-    ]
+    oneOf
+        [ succeed Tuple.pair
+            |= operator
+            |= termBigProp
+            |> andThen (\( op, newExpr ) -> expressionBigPropAux (( expr, op ) :: revOps) newExpr)
+        , lazy (\_ -> succeed (finalize revOps expr))
+        ]
 
-finalize : List (BigProp, Operator) -> BigProp -> BigProp
+
+finalize : List ( BigProp, Operator ) -> BigProp -> BigProp
 finalize revOps finalExpr =
-  case revOps of
-    [] ->
-      finalExpr
+    case revOps of
+        [] ->
+            finalExpr
 
-      -- AND EXPRESSIONS CASES
-      -- And operation have the maximum priorty, so module have a unique case
+        -- AND EXPRESSIONS CASES
+        -- And operation have the maximum priorty, so module have a unique case
+        ( expr, AndOp ) :: otherRevOps ->
+            finalize otherRevOps (Conj expr finalExpr)
 
-    (expr, AndOp) :: otherRevOps ->
-      finalize otherRevOps (Conj expr finalExpr)
+        -- OR EXPRESSIONS CASES
+        -- Or have the second maximum priority, so we need to determine how parser's going to do if it searches an and after, and if it searches something different.
+        ( expr, OrOp ) :: ( expr2, AndOp ) :: otherRevOps ->
+            Disj (finalize (( expr2, AndOp ) :: otherRevOps) expr) finalExpr
 
-      -- OR EXPRESSIONS CASES
-      -- Or have the second maximum priority, so we need to determine how parser's going to do if it searches an and after, and if it searches something different.
+        ( expr, OrOp ) :: otherRevOps ->
+            finalize otherRevOps (Disj expr finalExpr)
 
-    (expr, OrOp) :: (expr2, AndOp) :: otherRevOps ->
-      Disj (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+        -- IMPLICATION EXPRESSIONS CASES
+        ( expr, ImplOp ) :: ( expr2, AndOp ) :: otherRevOps ->
+            Impl (finalize (( expr2, AndOp ) :: otherRevOps) expr) finalExpr
 
-    (expr, OrOp) :: otherRevOps ->
-      finalize otherRevOps (Disj expr finalExpr)
+        ( expr, ImplOp ) :: ( expr2, OrOp ) :: otherRevOps ->
+            Impl (finalize (( expr2, OrOp ) :: otherRevOps) expr) finalExpr
 
-    -- IMPLICATION EXPRESSIONS CASES
+        ( expr, ImplOp ) :: otherRevOps ->
+            finalize otherRevOps (Impl expr finalExpr)
 
-    (expr, ImplOp) :: (expr2, AndOp) :: otherRevOps ->
-      Impl (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+        -- EQUIVALATION EXPRESSIONS CASES
+        ( expr, EquivOp ) :: ( expr2, AndOp ) :: otherRevOps ->
+            Equi (finalize (( expr2, AndOp ) :: otherRevOps) expr) finalExpr
 
-    (expr, ImplOp) :: (expr2, OrOp) :: otherRevOps ->
-       Impl (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
+        ( expr, EquivOp ) :: ( expr2, OrOp ) :: otherRevOps ->
+            Equi (finalize (( expr2, OrOp ) :: otherRevOps) expr) finalExpr
 
-    (expr, ImplOp) :: otherRevOps ->
-      finalize otherRevOps (Impl expr finalExpr)
+        ( expr, EquivOp ) :: ( expr2, ImplOp ) :: otherRevOps ->
+            Equi (finalize (( expr2, ImplOp ) :: otherRevOps) expr) finalExpr
 
-    -- EQUIVALATION EXPRESSIONS CASES
+        ( expr, EquivOp ) :: otherRevOps ->
+            finalize otherRevOps (Equi expr finalExpr)
 
-    (expr, EquivOp) :: (expr2, AndOp) :: otherRevOps ->
-      Equi (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
-
-    (expr, EquivOp) :: (expr2, OrOp) :: otherRevOps ->
-       Equi (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
-
-    (expr, EquivOp) :: (expr2, ImplOp) :: otherRevOps ->
-       Equi (finalize ( (expr2, ImplOp) :: otherRevOps) expr) finalExpr
-
-    (expr, EquivOp) :: otherRevOps ->
-      finalize otherRevOps (Equi expr finalExpr)
 
 toStringIdentBigProp : Ident -> String
-toStringIdentBigProp i = i.name ++  (replace "[" ":"<| replace "]" "#" <| Debug.toString <| i.values) 
+toStringIdentBigProp i =
+    i.name ++ (replace "[" ":" <| replace "]" "#" <| Debug.toString <| i.values)
 
-toStringListIdentBigProp: List Ident -> String
-toStringListIdentBigProp lid = let aux lp str = case lp of
-                                                [] -> "{" ++ str ++ "}" 
-                                                i::[] -> "{" ++ str ++ toStringIdentBigProp i ++ "}"
-                                                i::rlp -> aux rlp (str ++ (toStringIdentBigProp i) ++ ",")
-                                in
-                                    aux lid ""
+
+toStringListIdentBigProp : List Ident -> String
+toStringListIdentBigProp lid =
+    let
+        aux lp str =
+            case lp of
+                [] ->
+                    "{" ++ str ++ "}"
+
+                i :: [] ->
+                    "{" ++ str ++ toStringIdentBigProp i ++ "}"
+
+                i :: rlp ->
+                    aux rlp (str ++ toStringIdentBigProp i ++ ",")
+    in
+    aux lid ""
+
 
 toStringComparator : Comparator -> String
-toStringComparator c = case c of
-                         EQ -> "="
-                         NE -> "!="
-                         GT -> ">"
-                         LT -> "<"
-                         GE -> ">="
-                         LE -> "<="
-        
+toStringComparator c =
+    case c of
+        EQ ->
+            "="
+
+        NE ->
+            "!="
+
+        GT ->
+            ">"
+
+        LT ->
+            "<"
+
+        GE ->
+            ">="
+
+        LE ->
+            "<="
+
 
 toStringConditionBigProp : Condition -> String
-toStringConditionBigProp c = (toStringAExpr c.fmember) ++ (toStringComparator c.comp) ++ (toStringAExpr c.smember)
+toStringConditionBigProp c =
+    toStringAExpr c.fmember ++ toStringComparator c.comp ++ toStringAExpr c.smember
 
-toStringListConditionBigProp: List Condition -> String
-toStringListConditionBigProp lcond = let aux lp str = case lp of
-                                                [] -> "{" ++ str ++ "}" 
-                                                i::[] -> "{" ++ str ++ toStringConditionBigProp i ++ "}"
-                                                i::rlp -> aux rlp (str ++ (toStringConditionBigProp i) ++ ",")
-                                in
-                                    aux lcond ""
-        
+
+toStringListConditionBigProp : List Condition -> String
+toStringListConditionBigProp lcond =
+    let
+        aux lp str =
+            case lp of
+                [] ->
+                    "{" ++ str ++ "}"
+
+                i :: [] ->
+                    "{" ++ str ++ toStringConditionBigProp i ++ "}"
+
+                i :: rlp ->
+                    aux rlp (str ++ toStringConditionBigProp i ++ ",")
+    in
+    aux lcond ""
 
 
 parseBigProp : String -> BigProp
-parseBigProp str = if str == "" then
-                     Error "Empty expression"
-                 else
-                    case ( run expressionBigProp str) of
-      
-                        Ok y-> y
+parseBigProp str =
+    if str == "" then
+        Error "Empty expression"
 
-                        Err err -> Error ("Syntax Error: " ++ (Debug.toString <| err) ++ str)
+    else
+        case run expressionBigProp str of
+            Ok y ->
+                y
+
+            Err err ->
+                Error ("Syntax Error: " ++ (Debug.toString <| err) ++ str)
+
 
 parseSetBigProp : String -> List BigProp
-parseSetBigProp str =  List.map (parseBigProp) <| init <| split ";" str
+parseSetBigProp str =
+    List.map parseBigProp <| init <| split ";" str
+
 
 expandBigProp : BigProp -> Maybe BigProp
-expandBigProp prop = case prop of
-    Atom p -> Just <| Atom p
-    Neg p ->  case expandBigProp p of
-        Nothing -> Nothing
-        Just m -> Just <| Neg <| m
-    Conj p q -> case expandBigProp p of
-        Nothing -> Nothing
-        Just m -> case expandBigProp q of
-            Nothing -> Nothing
-            Just m2 ->  Just <| Conj m m2
-    Disj p q -> case expandBigProp p of
-        Nothing -> Nothing
-        Just m -> case expandBigProp q of
-            Nothing -> Nothing
-            Just m2 ->  Just <| Disj m m2
-    Impl p q -> case expandBigProp p of
-        Nothing -> Nothing
-        Just m -> case expandBigProp q of
-            Nothing -> Nothing
-            Just m2 ->  Just <| Impl m m2
-    Equi p q -> case expandBigProp p of
-        Nothing -> Nothing
-        Just m -> case expandBigProp q of
-            Nothing -> Nothing
-            Just m2 ->  Just <| Equi m m2
-    
-    BAnd li lc p -> expandBForm "&" li lc p 
+expandBigProp prop =
+    case prop of
+        Atom p ->
+            Just <| Atom p
 
-    BOr  li lc p -> expandBForm "|" li lc p
+        Neg p ->
+            case expandBigProp p of
+                Nothing ->
+                    Nothing
 
-    Error err -> Just <| Error err
-        
+                Just m ->
+                    Just <| Neg <| m
+
+        Conj p q ->
+            case expandBigProp p of
+                Nothing ->
+                    Nothing
+
+                Just m ->
+                    case expandBigProp q of
+                        Nothing ->
+                            Nothing
+
+                        Just m2 ->
+                            Just <| Conj m m2
+
+        Disj p q ->
+            case expandBigProp p of
+                Nothing ->
+                    Nothing
+
+                Just m ->
+                    case expandBigProp q of
+                        Nothing ->
+                            Nothing
+
+                        Just m2 ->
+                            Just <| Disj m m2
+
+        Impl p q ->
+            case expandBigProp p of
+                Nothing ->
+                    Nothing
+
+                Just m ->
+                    case expandBigProp q of
+                        Nothing ->
+                            Nothing
+
+                        Just m2 ->
+                            Just <| Impl m m2
+
+        Equi p q ->
+            case expandBigProp p of
+                Nothing ->
+                    Nothing
+
+                Just m ->
+                    case expandBigProp q of
+                        Nothing ->
+                            Nothing
+
+                        Just m2 ->
+                            Just <| Equi m m2
+
+        BAnd li lc p ->
+            expandBForm "&" li lc p
+
+        BOr li lc p ->
+            expandBForm "|" li lc p
+
+        Error err ->
+            Just <| Error err
 
 
 expandBForm : String -> List Ident -> List Condition -> BigProp -> Maybe BigProp
-expandBForm s li lc p = let keys = List.map (\x -> x.name) li in
-                        let values = List.map (\x -> x.values) li in
-                        let posibilities = filter (\x -> all (\y -> y) <| List.map (\y -> evalCond y (keys, x)) lc) <| cartesianProduct <| values in 
-                                if posibilities == [] then
-                                    Nothing
-                                else
-                                    Just <| expandFormula keys posibilities p s
+expandBForm s li lc p =
+    let
+        keys =
+            List.map (\x -> x.name) li
+    in
+    let
+        values =
+            List.map (\x -> x.values) li
+    in
+    let
+        posibilities =
+            filter (\x -> all (\y -> y) <| List.map (\y -> evalCond y ( keys, x )) lc) <| cartesianProduct <| values
+    in
+    if posibilities == [] then
+        Nothing
 
-                                         
+    else
+        Just <| expandFormula keys posibilities p s
 
-evalCond : Condition -> (List String, List Int) -> Bool
-evalCond cond (lids, lvals) = let fmemberVal = evaluateAExpr cond.fmember (zip lids lvals) in
-                  let smemberVal = evaluateAExpr cond.smember (zip lids lvals) in
-                        case fmemberVal of
-                            Nothing -> False
 
-                            Just fv -> case smemberVal of
-                                Nothing -> False
-                                    
-                                Just sv -> case cond.comp of
-                                                EQ -> fv == sv
-                                                NE -> not <| fv == sv
-                                                GT -> fv > sv
-                                                LT -> fv < sv
-                                                GE -> fv >= sv
-                                                LE -> fv <= sv
+evalCond : Condition -> ( List String, List Int ) -> Bool
+evalCond cond ( lids, lvals ) =
+    let
+        fmemberVal =
+            evaluateAExpr cond.fmember (zip lids lvals)
+    in
+    let
+        smemberVal =
+            evaluateAExpr cond.smember (zip lids lvals)
+    in
+    case fmemberVal of
+        Nothing ->
+            False
 
-adecuateString s = replace "{}" "#" <| replace "⟷" "<->" <| replace "⟶" "->" <| replace "∨" "|" <| replace "∧" "&" <| replace " " "" <| replace "\n" "" <| replace "\r" "" <| replace "\t" "" s
+        Just fv ->
+            case smemberVal of
+                Nothing ->
+                    False
 
-replaceVars : (List String, List Int) -> BigProp -> BigProp
-replaceVars (lids, lvals) p = case head lids of
-    Nothing -> p
-    Just id -> let val = withDefault 0 <| head lvals in
-                   replaceVars (deleteFirstLs lids, deleteFirstLs lvals) (parseBigProp <| adecuateString <| replace id (String.fromInt val) <| toStringBigProp p)
+                Just sv ->
+                    case cond.comp of
+                        EQ ->
+                            fv == sv
+
+                        NE ->
+                            not <| fv == sv
+
+                        GT ->
+                            fv > sv
+
+                        LT ->
+                            fv < sv
+
+                        GE ->
+                            fv >= sv
+
+                        LE ->
+                            fv <= sv
+
+
+adecuateString : String -> String
+adecuateString s =
+    replace "{}" "#" <| replace "⟷" "<->" <| replace "⟶" "->" <| replace "∨" "|" <| replace "∧" "&" <| replace " " "" <| replace "\n" "" <| replace "\u{000D}" "" <| replace "\t" "" s
+
+
+replaceVars : ( List String, List Int ) -> BigProp -> BigProp
+replaceVars ( lids, lvals ) p =
+    case head lids of
+        Nothing ->
+            p
+
+        Just id ->
+            let
+                val =
+                    withDefault 0 <| head lvals
+            in
+            replaceVars ( deleteFirstLs lids, deleteFirstLs lvals ) (parseBigProp <| adecuateString <| replace id (String.fromInt val) <| toStringBigProp p)
+
 
 expandFormula : List String -> List (List Int) -> BigProp -> String -> BigProp
-expandFormula lis llv prop symb = let aux lids llvals p s res = case llvals of
-                                                                    [] -> Error "No posibilities to expand the formula"
-                                                            
-                                                                    lvals::[] -> case (expandBigProp <| replaceVars (lids, lvals) p) of
-                                                                        Nothing -> parseBigProp <| adecuateString <| Regex.replace (withDefault Regex.never <| Regex.fromString "&$") (\_ -> "") <| res
-                                                                            
-                                                                        Just exp -> parseBigProp <| adecuateString <| res ++ "(" ++ (toStringBigProp <| exp)  ++ ")"
+expandFormula lis llv prop symb =
+    let
+        aux lids llvals p s res =
+            case llvals of
+                [] ->
+                    Error "No posibilities to expand the formula"
 
-                                                                    lvals::rlvals -> case (expandBigProp <| replaceVars (lids, lvals) p) of
-                                                                        Nothing ->  aux (lids) (rlvals) p s res
-                                                                            
-                                                                        Just exp -> aux (lids) (rlvals) p s (res ++ "(" ++ (toStringBigProp <| exp) ++ ")" ++ symb )
-                                  in
-                                    aux lis llv prop symb ""
+                lvals :: [] ->
+                    case expandBigProp <| replaceVars ( lids, lvals ) p of
+                        Nothing ->
+                            parseBigProp <| adecuateString <| Regex.replace (withDefault Regex.never <| Regex.fromString "&$") (\_ -> "") <| res
 
-expandFormBigProp: String -> BigProp
-expandFormBigProp x = case expandBigProp <|parseBigProp  <| adecuateString x of
-    Nothing -> Error "No-expansion-returned"
-    
-    Just y -> y
-         
+                        Just exp ->
+                            parseBigProp <| adecuateString <| res ++ "(" ++ (toStringBigProp <| exp) ++ ")"
+
+                lvals :: rlvals ->
+                    case expandBigProp <| replaceVars ( lids, lvals ) p of
+                        Nothing ->
+                            aux lids rlvals p s res
+
+                        Just exp ->
+                            aux lids rlvals p s (res ++ "(" ++ (toStringBigProp <| exp) ++ ")" ++ symb)
+    in
+    aux lis llv prop symb ""
+
+
+expandFormBigProp : String -> BigProp
+expandFormBigProp x =
+    case expandBigProp <| parseBigProp <| adecuateString x of
+        Nothing ->
+            Error "No-expansion-returned"
+
+        Just y ->
+            y
+
 
 expandSetBigProp : String -> List BigProp
-expandSetBigProp x =  List.map (expandFormBigProp) <| init <| split ";" x
+expandSetBigProp x =
+    List.map expandFormBigProp <| init <| split ";" x
+
 
 toStringBigProp : BigProp -> String
-toStringBigProp prop = case prop of 
-        Atom p -> p
-        Neg p -> "¬ " ++ (toStringBigProp p) 
-        Conj p q -> "( " ++ (toStringBigProp p) ++ " ∧ "  ++ (toStringBigProp q) ++ " )"
-        Disj p q -> "( " ++ (toStringBigProp p) ++ " ∨ "  ++ (toStringBigProp q) ++ " )"
-        Impl p q -> "( " ++ (toStringBigProp p) ++ " ⟶ "  ++ (toStringBigProp q) ++ " )"
-        Equi p q -> "( " ++ (toStringBigProp p) ++ " ⟷ "  ++ (toStringBigProp q) ++ " )"
-        BAnd li lc p -> "∧_" ++ (toStringListIdentBigProp li) ++ (toStringListConditionBigProp lc) ++ "(" ++ toStringBigProp p ++ ")"
-        BOr  li lc p -> "∨_" ++ (toStringListIdentBigProp li) ++ (toStringListConditionBigProp lc) ++ "(" ++ toStringBigProp p ++ ")"
-        Error err -> "Error:" ++ err
+toStringBigProp prop =
+    case prop of
+        Atom p ->
+            p
+
+        Neg p ->
+            "¬ " ++ toStringBigProp p
+
+        Conj p q ->
+            "( " ++ toStringBigProp p ++ " ∧ " ++ toStringBigProp q ++ " )"
+
+        Disj p q ->
+            "( " ++ toStringBigProp p ++ " ∨ " ++ toStringBigProp q ++ " )"
+
+        Impl p q ->
+            "( " ++ toStringBigProp p ++ " ⟶ " ++ toStringBigProp q ++ " )"
+
+        Equi p q ->
+            "( " ++ toStringBigProp p ++ " ⟷ " ++ toStringBigProp q ++ " )"
+
+        BAnd li lc p ->
+            "∧_" ++ toStringListIdentBigProp li ++ toStringListConditionBigProp lc ++ "(" ++ toStringBigProp p ++ ")"
+
+        BOr li lc p ->
+            "∨_" ++ toStringListIdentBigProp li ++ toStringListConditionBigProp lc ++ "(" ++ toStringBigProp p ++ ")"
+
+        Error err ->
+            "Error:" ++ err
+
 
 toStringBigPropFile : BigProp -> String
-toStringBigPropFile x = adecuateString <| toStringBigProp x
+toStringBigPropFile x =
+    adecuateString <| toStringBigProp x
+
 
 toStringSetBigProp : List BigProp -> String
-toStringSetBigProp xs = "{" ++ (join "," <| List.map (\x -> toStringBigProp x ++ "\n") <| xs) ++ "}"
+toStringSetBigProp xs =
+    "{" ++ (join "," <| List.map (\x -> toStringBigProp x ++ "\n") <| xs) ++ "}"
+
 
 toStringSetBigPropFile : List BigProp -> String
-toStringSetBigPropFile xs = join "" <| List.map (\x -> toStringBigPropFile x ++ ";\n") <| xs
+toStringSetBigPropFile xs =
+    join "" <| List.map (\x -> toStringBigPropFile x ++ ";\n") <| xs
+
 
 conjPropToSet : BigProp -> List BigProp
-conjPropToSet p = case p of
-    Conj p1 p2 -> List.concat [conjPropToSet p1, conjPropToSet p2]
-    _ -> [p]
+conjPropToSet p =
+    case p of
+        Conj p1 p2 ->
+            List.concat [ conjPropToSet p1, conjPropToSet p2 ]
+
+        _ ->
+            [ p ]
+
 
 symbInBigProp : BigProp -> List String
-
-symbInBigProp f=
+symbInBigProp f =
     case f of
-        Atom p -> [p]
-        Neg p -> symbInBigProp p
-        Conj p q -> symbInBigProp p ++ symbInBigProp q
-        Disj p q -> symbInBigProp p ++ symbInBigProp q
-        Impl p q -> symbInBigProp p ++ symbInBigProp q
-        Equi p q -> symbInBigProp p ++ symbInBigProp q
-        Error _ -> []
-        _ -> case expandBigProp f of
-                Nothing -> []
-    
-                Just y -> symbInBigProp <| y
+        Atom p ->
+            [ p ]
+
+        Neg p ->
+            symbInBigProp p
+
+        Conj p q ->
+            symbInBigProp p ++ symbInBigProp q
+
+        Disj p q ->
+            symbInBigProp p ++ symbInBigProp q
+
+        Impl p q ->
+            symbInBigProp p ++ symbInBigProp q
+
+        Equi p q ->
+            symbInBigProp p ++ symbInBigProp q
+
+        Error _ ->
+            []
+
+        _ ->
+            case expandBigProp f of
+                Nothing ->
+                    []
+
+                Just y ->
+                    symbInBigProp <| y
+
 
 distinctSymbInBigProp : BigProp -> List String
-distinctSymbInBigProp p = unique (symbInBigProp p)
-
-setBigPSymbols: List BigProp -> List String
-setBigPSymbols xs = List.concat <| List.map (distinctSymbInBigProp) xs
-
-type alias BigPropSSP = StateSpaceSearch (List String)
-
-createBigPropSSP : List BigProp -> BigPropSSP
-createBigPropSSP bps = let symbols = setBigPSymbols <| bps in
-                            {init = [],
-                            actions = \s -> generateActionsBPS symbols s,
-                            apply = \s f -> (f s),
-                            heuristic = \ps -> List.length <|  List.filter (\bp -> not <| evaluateBigProp ps bp) bps,
-                            isGoal = \ ps -> List.all (\bp -> evaluateBigProp ps bp) bps
-                            }  
-
-generateActionsBPS : List String -> List String -> (List (List String -> List String))
-generateActionsBPS symbols x = let actions = List.map (\y -> (\ z -> z ++ [y]) ) <| List.filter (\y -> not <| List.member y x) symbols in
-                                    first <| Random.step (Random.List.shuffle actions) (Random.initialSeed (List.length actions))
-
-evaluateBigProp : List String -> BigProp -> Bool
-evaluateBigProp ps bp = case bp of
-    Atom p -> List.member p ps
-    Neg p -> not (evaluateBigProp ps p)
-    Conj p q -> (evaluateBigProp ps p) && (evaluateBigProp ps q)
-    Disj p q ->  (evaluateBigProp ps p) || (evaluateBigProp ps q)
-    Impl p q ->  (not (evaluateBigProp ps p)) || (evaluateBigProp ps q)
-    Equi p q ->  (evaluateBigProp ps (Impl p q)) && (evaluateBigProp ps (Impl q p))
-    Error err -> False
-    _ -> case expandBigProp <| bp of
-        Nothing -> False    
-        Just f -> evaluateBigProp ps f
+distinctSymbInBigProp p =
+    unique (symbInBigProp p)
 
 
-solveCSP : String -> String
-solveCSP str = case backtrackingSearch <| createBigPropSSP <| expandSetBigProp str of
-                    Nothing -> "Instisfactible problem"
-                    Just y -> "Solution found: True values -> {" ++ join ", " y ++ "}"
- 
+setBigPSymbols : List BigProp -> List String
+setBigPSymbols xs =
+    unique <| List.concat <| List.map distinctSymbInBigProp xs
 
+toProp : BigProp -> Prop 
+toProp a = parserFormula <|  adecuateString <| toStringBigProp a
 
-
---main = text <| Debug.toString <| toStringSetBigProp <| expandSetBigProp <| "&_ {I[0:3], J[0:3]} # (pIJ -> &_ {K[-3:3],U[0:3],V[0:3]} {K!=0, U=I+K, V=J+K} (¬pUV));"
+toSolverNotation : List BigProp -> String
+toSolverNotation bps = String.replace " " "" <| String.replace "\"" "" <| String.replace  "]" "" <| String.replace  "[" "" <| String.replace  "],[" ";" <| Debug.toString <| List.map (\x -> List.map toStringProp x) <| setClauses <| List.map toProp bps

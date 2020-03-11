@@ -32,7 +32,7 @@
     
 }
 
-.rightView div:not(.grid_1_4):not(.grid_3_4):not(.grid_1_7) {
+.rightView div:not(.grid_1_4):not(.grid_3_4):not(.grid_1_7):not(.grid_2_4){
     position: relative;
     display: inline-block;
     width: 90%;
@@ -161,7 +161,7 @@ svg {
 
 
 
-#outGTA{
+#outGTA, #outSolver{
     height: 0%;
     opacity: 0%;
 }
@@ -212,10 +212,13 @@ svg {
     color: rgb(218, 218, 218);
 }
 
-#toFile {
+#solveBut{
+    display: block;
+    float: left;
     margin-top: 2vh;
+    margin-right: 2%;
     text-align: center;
-    width: 100%;
+    width: 48%;
     height: 3vh;
     background-color: rgba(50, 70, 95, 0.6);
     color:  rgb(218, 218, 218);
@@ -225,7 +228,23 @@ svg {
     font-family: 'Courier New', Courier, monospace;
 }
 
-#toFile:hover {
+#toFile {
+    display: block;
+    float: left;
+    margin-top: 2vh;
+    margin-left: 2%;
+    text-align: center;
+    width: 48%;
+    height: 3vh;
+    background-color: rgba(50, 70, 95, 0.6);
+    color:  rgb(218, 218, 218);
+    font-size:  2vh;
+    font-weight: bold;
+    border: 3px solid rgba(50, 70, 95,0.6);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#toFile:hover, #solveBut:hover {
     background-color: rgba(155, 178, 211, 0.8);
     color: rgb(88, 109, 138);
 }

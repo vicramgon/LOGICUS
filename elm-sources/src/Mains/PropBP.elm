@@ -9,7 +9,7 @@ import File.Select as Select
 import Task
 import Regex
 import Maybe exposing (withDefault)
-import Modules.LPBig_Parser exposing (expandFormBigProp, expandSetBigProp, toStringBigProp, toStringSetBigProp, toStringBigPropFile, toStringSetBigPropFile, parseBigProp, parseSetBigProp, conjPropToSet)
+import Modules.LPBig_Parser exposing (expandSetBigProp, toStringSetBigProp, toStringSetBigPropFile, conjPropToSet, toSolverNotation, setBigPSymbols)
 import String exposing (replace)
 
 -- Filtered file content
@@ -33,7 +33,8 @@ main =
 type alias Model =
   {  fSet: String,
      out: String,
-     res: String
+     res: String,
+     solveOut: String
   }
 
 
@@ -41,7 +42,8 @@ init : () -> (Model, Cmd Msg)
 init _ =
   ({ fSet="",
      out = "",
-     res = "Results of your query will appear here when you push run."
+     res = "Results of your query will appear here when you push run.",
+     solveOut = ""
     }, Cmd.none)
 
 
@@ -63,7 +65,13 @@ update msg model =
     ChangefSet newContent ->
       ({ model | fSet = newContent }, Cmd.none)
 
-    ChangeOut ->  ({model | out=(toStringSetBigPropFile <| List.concat <| List.map (conjPropToSet) <| expandSetBigProp <| model.fSet), res = (toStringSetBigProp <| List.concat <| List.map (conjPropToSet) <| expandSetBigProp <| model.fSet)}, Cmd.none)
+    ChangeOut ->  let 
+                    v = expandSetBigProp <| model.fSet 
+                    
+                  in
+                      ({model | out= toStringSetBigPropFile <| List.concat <| List.map conjPropToSet <| expandSetBigProp <| model.fSet, 
+                      res = toStringSetBigProp <| List.concat <| List.map conjPropToSet <| expandSetBigProp <| model.fSet,
+                      solveOut = (String.join "," <| setBigPSymbols v)  ++ "#" ++ toSolverNotation v }, Cmd.none)
     
     TxtRequested ->
       ( model
@@ -76,7 +84,7 @@ update msg model =
       )
 
     TxtLoaded content ->
-      ( { model | fSet = (fileFilter <| content) }
+      ( { model | fSet = fileFilter <| content }
       , Cmd.none
       )
       
@@ -112,23 +120,22 @@ view model =
 
         div [Html.Attributes.class "rightView"][
            div[][
-               div[Html.Attributes.class "grid_3_4"][
+               div[Html.Attributes.class "grid_2_4"][
                     h2 [] [Html.text "Results"]
                ],
 
-               div [Html.Attributes.class "grid_1_4"][
-                    button [Html.Attributes.id "toFile"]
-                    [Html.text "TO FILE"]
+               div [Html.Attributes.class "grid_2_4"][
+                    button [Html.Attributes.id "solveBut"][Html.text "SOLVE PROBLEM"],
+                    button [Html.Attributes.id "toFile"][Html.text "TO FILE"]
                ],
 
              textarea [Html.Attributes.id "resTA", Html.Attributes.readonly True, value model.res][]
            ],
-            textarea [Html.Attributes.id "outGTA", Html.Attributes.readonly True, value model.out][]   
+            textarea [Html.Attributes.id "outGTA", Html.Attributes.readonly True, value model.out][],
+            textarea [Html.Attributes.id "outSolver", Html.Attributes.readonly True, value model.solveOut][]
         ]
     ]
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
   Sub.none
-
--- TODO: Finalize view adding some buttons for the examples for N queens, sudoku, graph coloration, ....

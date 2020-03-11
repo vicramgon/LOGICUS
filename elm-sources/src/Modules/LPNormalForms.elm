@@ -5,6 +5,7 @@ import Html exposing (..)
 
 import Modules.SintaxSemanticsLP exposing (..)
 import Modules.AuxiliarFunctions exposing (..)
+import Modules.LP_Parser exposing(parserSet)
 
 -- Definition of areEquiv that repesents if two formulas are equivalent
 
@@ -28,6 +29,23 @@ remEquiv f =
 
         Equi x y -> Conj (Impl (remEquiv x) (remEquiv y)) (Impl (remEquiv y) (remEquiv x))
 
+-- Definition of containsEquiv that returns if there are equivalencies inside a formula:
+containsEquiv : Prop -> Bool
+containsEquiv f =
+    case f of
+        Atom x-> False
+            
+        Neg x -> containsEquiv x
+
+        Conj x y -> containsEquiv x || containsEquiv y
+
+        Disj x y -> containsEquiv x || containsEquiv y
+
+        Impl x y -> containsEquiv x || containsEquiv y
+
+        Equi x y -> True
+
+
 
 -- Definition of remImpl that returns an equivalent formula that not have implications. This function will not be applicated to equivalencies
 
@@ -45,6 +63,23 @@ remImpl f =
         Impl x y-> Disj (Neg (remImpl x)) (remImpl y)
 
         Equi x y-> Atom ""                              -- This option never will be chosen
+
+
+-- Definition of containsImpl that returns if there are some implication inside a formula:
+containsImpl : Prop -> Bool
+containsImpl f =
+    case f of
+        Atom x-> False
+            
+        Neg x -> containsImpl x
+
+        Conj x y -> containsImpl x || containsImpl y
+
+        Disj x y -> containsImpl x || containsImpl y
+
+        Impl x y -> True
+
+        Equi x y -> containsImpl x || containsImpl y
 
 -- Definition interiorizeNeg that returns an equivalent formula that negations are aplicated only to atomical formulas. This function will not be applicated to equivalencies neither implications
 
@@ -73,6 +108,27 @@ interiorizeNegAux f=
         Disj x y -> Conj (interiorizeNegAux x) (interiorizeNegAux y)
 
         other -> Atom ""                                     -- This option never will be chosen
+
+-- Definition of deMorganIsAplicable that returns if there are some negation of a conjuctive or disjuntive formula:
+deMorganIsApplicable : Prop -> Bool
+deMorganIsApplicable f =
+    case f of
+        Atom x-> False
+            
+        Neg (Atom x) -> False 
+
+        Neg (Conj x y) -> True
+
+        Neg (Disj x y) -> True
+
+        Neg x -> deMorganIsApplicable x
+
+        Conj x y -> deMorganIsApplicable x || deMorganIsApplicable y
+
+        Disj x y -> deMorganIsApplicable x || deMorganIsApplicable y
+
+        _ -> False -- this case is never used
+
 
 -- Definition of negativeNF  that returns an equivalent formula that is in negative normal formula (NNF)
 
