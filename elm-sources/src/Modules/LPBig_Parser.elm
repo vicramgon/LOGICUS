@@ -8,31 +8,11 @@ import Modules.AuxiliarFunctions exposing (deleteFirstLs, init, unique)
 import Modules.LP_Parser exposing (parserFormula)
 import Modules.SintaxSemanticsLP exposing (Prop, toStringProp)
 import Modules.LPClausalForms exposing (setClauses)
+import Modules.B_Expressions exposing (..)
 import Parser exposing (..)
 import Regex
 import Set exposing (fromList)
 import String exposing (concat, join, replace, split)
-
-
-type Comparator
-    = EQ
-    | NE
-    | GT
-    | LT
-    | GE
-    | LE
-
-
-type alias Condition =
-    { comp : Comparator
-    , fmember : A_Expr
-    , smember : A_Expr
-    }
-
-
-createCondition : A_Expr -> Comparator -> A_Expr -> Condition
-createCondition f c s =
-    { comp = c, fmember = f, smember = s }
 
 
 type alias Ident =
@@ -53,8 +33,8 @@ type BigProp
     | Disj BigProp BigProp
     | Impl BigProp BigProp
     | Equi BigProp BigProp
-    | BAnd (List Ident) (List Condition) BigProp
-    | BOr (List Ident) (List Condition) BigProp
+    | BAnd (List Ident) B_Expr BigProp
+    | BOr (List Ident) B_Expr BigProp
     | Error String
 
 
@@ -130,52 +110,6 @@ listIdentBigProp =
         , trailing = Optional -- demand a trailing semi-colon
         }
 
-
-compConditionBigProp : Parser Comparator
-compConditionBigProp =
-    oneOf
-        [ succeed GE
-            |. symbol ">"
-            |. symbol "="
-        , succeed LE
-            |. symbol "<"
-            |. symbol "="
-        , succeed NE
-            |. symbol "!"
-            |. symbol "="
-        , succeed GT
-            |. symbol ">"
-        , succeed LT
-            |. symbol "<"
-        , succeed EQ
-            |. symbol "="
-        ]
-
-
-conditionBigProp : Parser Condition
-conditionBigProp =
-    succeed createCondition
-        |= expressionA
-        |= compConditionBigProp
-        |= expressionA
-
-
-listconditionBigProp : Parser (List Condition)
-listconditionBigProp =
-    oneOf
-        [ Parser.sequence
-            { start = "{"
-            , separator = ","
-            , end = "}"
-            , spaces = spaces
-            , item = conditionBigProp
-            , trailing = Optional -- demand a trailing semi-colon
-            }
-        , succeed []
-            |. symbol "#"
-        ]
-
-
 atomVarBigProp : Parser String
 atomVarBigProp =
     getChompedString <|
@@ -193,7 +127,9 @@ termBigProp =
             |. symbol "&"
             |. symbol "_"
             |= listIdentBigProp
-            |= listconditionBigProp
+            |. symbol "{"
+            |= expressionB
+            |. symbol "}"
             |. symbol "("
             |= lazy (\_ -> expressionBigProp)
             |. symbol ")"
@@ -201,7 +137,9 @@ termBigProp =
             |. symbol "|"
             |. symbol "_"
             |= listIdentBigProp
-            |= listconditionBigProp
+            |. symbol "{"
+            |= expressionB
+            |. symbol "}"
             |. symbol "("
             |= lazy (\_ -> expressionBigProp)
             |. symbol ")"
@@ -313,50 +251,6 @@ toStringListIdentBigProp lid =
     aux lid ""
 
 
-toStringComparator : Comparator -> String
-toStringComparator c =
-    case c of
-        EQ ->
-            "="
-
-        NE ->
-            "!="
-
-        GT ->
-            ">"
-
-        LT ->
-            "<"
-
-        GE ->
-            ">="
-
-        LE ->
-            "<="
-
-
-toStringConditionBigProp : Condition -> String
-toStringConditionBigProp c =
-    toStringAExpr c.fmember ++ toStringComparator c.comp ++ toStringAExpr c.smember
-
-
-toStringListConditionBigProp : List Condition -> String
-toStringListConditionBigProp lcond =
-    let
-        aux lp str =
-            case lp of
-                [] ->
-                    "{" ++ str ++ "}"
-
-                i :: [] ->
-                    "{" ++ str ++ toStringConditionBigProp i ++ "}"
-
-                i :: rlp ->
-                    aux rlp (str ++ toStringConditionBigProp i ++ ",")
-    in
-    aux lcond ""
-
-
 parseBigProp : String -> BigProp
 parseBigProp str =
     if str == "" then
@@ -452,8 +346,8 @@ expandBigProp prop =
             Just <| Error err
 
 
-expandBForm : String -> List Ident -> List Condition -> BigProp -> Maybe BigProp
-expandBForm s li lc p =
+expandBForm : String -> List Ident -> B_Expr -> BigProp -> Maybe BigProp
+expandBForm s li bexpr p =
     let
         keys =
             List.map (\x -> x.name) li
@@ -464,53 +358,13 @@ expandBForm s li lc p =
     in
     let
         posibilities =
-            filter (\x -> all (\y -> y) <| List.map (\y -> evalCond y ( keys, x )) lc) <| cartesianProduct <| values
+            filter (\x -> Maybe.withDefault False (evaluateBExpr bexpr ( keys, x ))) <| cartesianProduct <| values
     in
     if posibilities == [] then
         Nothing
 
     else
         Just <| expandFormula keys posibilities p s
-
-
-evalCond : Condition -> ( List String, List Int ) -> Bool
-evalCond cond ( lids, lvals ) =
-    let
-        fmemberVal =
-            evaluateAExpr cond.fmember (zip lids lvals)
-    in
-    let
-        smemberVal =
-            evaluateAExpr cond.smember (zip lids lvals)
-    in
-    case fmemberVal of
-        Nothing ->
-            False
-
-        Just fv ->
-            case smemberVal of
-                Nothing ->
-                    False
-
-                Just sv ->
-                    case cond.comp of
-                        EQ ->
-                            fv == sv
-
-                        NE ->
-                            not <| fv == sv
-
-                        GT ->
-                            fv > sv
-
-                        LT ->
-                            fv < sv
-
-                        GE ->
-                            fv >= sv
-
-                        LE ->
-                            fv <= sv
 
 
 adecuateString : String -> String
@@ -596,10 +450,10 @@ toStringBigProp prop =
             "( " ++ toStringBigProp p ++ " ⟷ " ++ toStringBigProp q ++ " )"
 
         BAnd li lc p ->
-            "∧_" ++ toStringListIdentBigProp li ++ toStringListConditionBigProp lc ++ "(" ++ toStringBigProp p ++ ")"
+            "∧_" ++ toStringListIdentBigProp li ++ toStringB_Expression lc ++ "(" ++ toStringBigProp p ++ ")"
 
         BOr li lc p ->
-            "∨_" ++ toStringListIdentBigProp li ++ toStringListConditionBigProp lc ++ "(" ++ toStringBigProp p ++ ")"
+            "∨_" ++ toStringListIdentBigProp li ++ toStringB_Expression lc ++ "(" ++ toStringBigProp p ++ ")"
 
         Error err ->
             "Error:" ++ err

@@ -8,6 +8,7 @@
   <script src="../js/functions.js"></script>
   <script src="../js/solver.js"></script>
   <script src="../js/PropBP.js"></script>
+  <script src="../examples/CSF_examples.js"></script>
   <style>
 		#run_butt {
 		  margin-top: 16vh;
@@ -67,10 +68,10 @@
 	document.getElementById("template").onclick = function(){download('BProp_template.txt', 'p->q;\nq->p;\n');};
 	document.getElementById("toFile").onclick = function(){download('BProp_ExpandedForms.txt', document.getElementById("outGTA").value);};
 	
-	document.getElementById("Nqueens").onclick = function(){download('NQueens_CSF.txt', "---\nThe N Queen is the problem of placing N chess queens on an N×N chessboard so that no two queens\nattack each other.\n\nFor exmple, here is a solution for N = 4:\n\n	-------------------------\n	|     |||||||     |     |\n    	|     |||||||     |     |\n	-------------------------\n	|     |     |     |||||||\n	|     |     |     |||||||\n	-------------------------\n	|||||||     |     |     |\n	|||||||     |     |     |\n	-------------------------\n	|     |     |||||||     |\n	|     |     |||||||     |\n	-------------------------\n\nFor modeling it we're going to use pij that represents that one queen is on the chessboard at the\nposition (i,j).\nRules are exposed below.\n---\n\n--- There must be a queen in each row  ---\n\n&_ {I[0:3]} # (|_ {J[0:3]} # (pIJ));\n\n--- There cannot be more than one queen in the same row. ---\n\n&_ {I[0:3], J[0:3]} # (pIJ -> &_ {U[0:3]} {I!=U} (¬pUJ));\n\n--- There cannot be more than one queen in the same column. ---\n\n&_ {I[0:3], J[0:3]} # (pIJ -> &_ {U[0:3]} {J!=U} (¬pIU));\n\n--- There cannot be more than one queen in the same main diagonal. ---\n\n&_ {I[0:3], J[0:3]} # (pIJ -> &_ {K[-3:3],U[0:3],V[0:3]} {K!=0, U=I+K, V=J+K} (¬pUV));\n\n--- There cannot be more than one queen in the same secondary diagonal. ---\n\n&_ {I[0:3], J[0:3]} # (pIJ -> &_ {K[-3:3],U[0:3],V[0:3]} {K!=0, U=I+K, V=J-K} (¬pUV));\n\n --- For example you can probe with the 8 queens problem, replacing interval [0,3] with [0:7] and [-3,3] with [-7,7]---\n" );};	
-	document.getElementById("Sudoku").onclick = function(){download('Sudoku_CSF.txt', 'TO_DO');};
-	document.getElementById("Gcoloring").onclick = function(){download('MapColoring_CSF.txt', 'TO_DO');};
-	document.getElementById("SendMM").onclick = function(){download('SendMM_CSF.txt', 'TO_DO');};
+	document.getElementById("Nqueens").onclick = function(){download('8Queens_CSF.txt', CSF_8Queens);};
+	document.getElementById("Sudoku").onclick = function(){download('Sudoku6x6_CSF.txt', CSF_Sudoku);};
+	document.getElementById("Gcoloring").onclick = function(){download('MapColoring_CSF.txt', CSF_MapColoring);};
+	document.getElementById("SendMM").onclick = function(){download('SendMM_CSF.txt', CSF_SendMoreMoney);};
 	
 	document.getElementById("solveBut").onclick = function(){const c = document.getElementById("outSolver").value; document.getElementById("resTA").value = document.getElementById("resTA").value + "\n\n" + satSolver(c); document.getElementById('resTA').scrollTop = document.getElementById('resTA').scrollHeight;};
 

@@ -5619,40 +5619,6 @@ var $author$project$Modules$LPBig_Parser$Impl = F2(
 var $author$project$Modules$LPBig_Parser$Neg = function (a) {
 	return {$: 'Neg', a: a};
 };
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
-var $elm$core$Basics$not = _Basics_not;
-var $elm$core$List$all = F2(
-	function (isOkay, list) {
-		return !A2(
-			$elm$core$List$any,
-			A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
-			list);
-	});
 var $elm$core$List$concatMap = F2(
 	function (f, list) {
 		return $elm$core$List$concat(
@@ -5826,12 +5792,13 @@ var $author$project$Modules$A_Expressions$evaluateAExpr = F2(
 		}
 	});
 var $elm$core$Basics$ge = _Utils_ge;
+var $elm$core$Basics$not = _Basics_not;
 var $elm$core$Tuple$pair = F2(
 	function (a, b) {
 		return _Utils_Tuple2(a, b);
 	});
 var $elm_community$list_extra$List$Extra$zip = $elm$core$List$map2($elm$core$Tuple$pair);
-var $author$project$Modules$LPBig_Parser$evalCond = F2(
+var $author$project$Modules$B_Expressions$evalCond = F2(
 	function (cond, _v0) {
 		var lids = _v0.a;
 		var lvals = _v0.b;
@@ -5867,6 +5834,83 @@ var $author$project$Modules$LPBig_Parser$evalCond = F2(
 						return _Utils_cmp(fv, sv) < 1;
 				}
 			}
+		}
+	});
+var $author$project$Modules$B_Expressions$evaluateBExpr = F2(
+	function (expr, _v0) {
+		var ls = _v0.a;
+		var li = _v0.b;
+		switch (expr.$) {
+			case 'T':
+				return $elm$core$Maybe$Just(true);
+			case 'F':
+				return $elm$core$Maybe$Just(false);
+			case 'And':
+				var e1 = expr.a;
+				var e2 = expr.b;
+				var _v2 = A2(
+					$author$project$Modules$B_Expressions$evaluateBExpr,
+					e1,
+					_Utils_Tuple2(ls, li));
+				if (_v2.$ === 'Nothing') {
+					return $elm$core$Maybe$Nothing;
+				} else {
+					var y = _v2.a;
+					var _v3 = A2(
+						$author$project$Modules$B_Expressions$evaluateBExpr,
+						e2,
+						_Utils_Tuple2(ls, li));
+					if (_v3.$ === 'Nothing') {
+						return $elm$core$Maybe$Nothing;
+					} else {
+						var z = _v3.a;
+						return $elm$core$Maybe$Just(y && z);
+					}
+				}
+			case 'Or':
+				var e1 = expr.a;
+				var e2 = expr.b;
+				var _v4 = A2(
+					$author$project$Modules$B_Expressions$evaluateBExpr,
+					e1,
+					_Utils_Tuple2(ls, li));
+				if (_v4.$ === 'Nothing') {
+					return $elm$core$Maybe$Nothing;
+				} else {
+					var y = _v4.a;
+					var _v5 = A2(
+						$author$project$Modules$B_Expressions$evaluateBExpr,
+						e2,
+						_Utils_Tuple2(ls, li));
+					if (_v5.$ === 'Nothing') {
+						return $elm$core$Maybe$Nothing;
+					} else {
+						var z = _v5.a;
+						return $elm$core$Maybe$Just(y || z);
+					}
+				}
+			case 'Not':
+				var e = expr.a;
+				var _v6 = A2(
+					$author$project$Modules$B_Expressions$evaluateBExpr,
+					e,
+					_Utils_Tuple2(ls, li));
+				if (_v6.$ === 'Nothing') {
+					return $elm$core$Maybe$Nothing;
+				} else {
+					var y = _v6.a;
+					return $elm$core$Maybe$Just(!y);
+				}
+			case 'Cond':
+				var c = expr.a;
+				return $elm$core$Maybe$Just(
+					A2(
+						$author$project$Modules$B_Expressions$evalCond,
+						c,
+						_Utils_Tuple2(ls, li)));
+			default:
+				var s = expr.a;
+				return $elm$core$Maybe$Nothing;
 		}
 	});
 var $elm$regex$Regex$Match = F4(
@@ -6334,386 +6378,20 @@ var $author$project$Modules$LPBig_Parser$atomVarBigProp = $elm$parser$Parser$get
 					c,
 					_Utils_chr('_')) || $elm$core$Char$isDigit(c));
 			})));
-var $author$project$Modules$LPBig_Parser$AndOp = {$: 'AndOp'};
-var $author$project$Modules$LPBig_Parser$ImplOp = {$: 'ImplOp'};
-var $author$project$Modules$LPBig_Parser$OrOp = {$: 'OrOp'};
-var $author$project$Modules$LPBig_Parser$finalize = F2(
-	function (revOps, finalExpr) {
-		finalize:
-		while (true) {
-			_v0$6:
-			while (true) {
-				_v0$10:
-				while (true) {
-					if (!revOps.b) {
-						return finalExpr;
-					} else {
-						switch (revOps.a.b.$) {
-							case 'AndOp':
-								var _v1 = revOps.a;
-								var expr = _v1.a;
-								var _v2 = _v1.b;
-								var otherRevOps = revOps.b;
-								var $temp$revOps = otherRevOps,
-									$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Conj, expr, finalExpr);
-								revOps = $temp$revOps;
-								finalExpr = $temp$finalExpr;
-								continue finalize;
-							case 'OrOp':
-								if (revOps.b.b && (revOps.b.a.b.$ === 'AndOp')) {
-									var _v3 = revOps.a;
-									var expr = _v3.a;
-									var _v4 = _v3.b;
-									var _v5 = revOps.b;
-									var _v6 = _v5.a;
-									var expr2 = _v6.a;
-									var _v7 = _v6.b;
-									var otherRevOps = _v5.b;
-									return A2(
-										$author$project$Modules$LPBig_Parser$Disj,
-										A2(
-											$author$project$Modules$LPBig_Parser$finalize,
-											A2(
-												$elm$core$List$cons,
-												_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$AndOp),
-												otherRevOps),
-											expr),
-										finalExpr);
-								} else {
-									var _v8 = revOps.a;
-									var expr = _v8.a;
-									var _v9 = _v8.b;
-									var otherRevOps = revOps.b;
-									var $temp$revOps = otherRevOps,
-										$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Disj, expr, finalExpr);
-									revOps = $temp$revOps;
-									finalExpr = $temp$finalExpr;
-									continue finalize;
-								}
-							case 'ImplOp':
-								if (revOps.b.b) {
-									switch (revOps.b.a.b.$) {
-										case 'AndOp':
-											var _v10 = revOps.a;
-											var expr = _v10.a;
-											var _v11 = _v10.b;
-											var _v12 = revOps.b;
-											var _v13 = _v12.a;
-											var expr2 = _v13.a;
-											var _v14 = _v13.b;
-											var otherRevOps = _v12.b;
-											return A2(
-												$author$project$Modules$LPBig_Parser$Impl,
-												A2(
-													$author$project$Modules$LPBig_Parser$finalize,
-													A2(
-														$elm$core$List$cons,
-														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$AndOp),
-														otherRevOps),
-													expr),
-												finalExpr);
-										case 'OrOp':
-											var _v15 = revOps.a;
-											var expr = _v15.a;
-											var _v16 = _v15.b;
-											var _v17 = revOps.b;
-											var _v18 = _v17.a;
-											var expr2 = _v18.a;
-											var _v19 = _v18.b;
-											var otherRevOps = _v17.b;
-											return A2(
-												$author$project$Modules$LPBig_Parser$Impl,
-												A2(
-													$author$project$Modules$LPBig_Parser$finalize,
-													A2(
-														$elm$core$List$cons,
-														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$OrOp),
-														otherRevOps),
-													expr),
-												finalExpr);
-										default:
-											break _v0$6;
-									}
-								} else {
-									break _v0$6;
-								}
-							default:
-								if (revOps.b.b) {
-									switch (revOps.b.a.b.$) {
-										case 'AndOp':
-											var _v22 = revOps.a;
-											var expr = _v22.a;
-											var _v23 = _v22.b;
-											var _v24 = revOps.b;
-											var _v25 = _v24.a;
-											var expr2 = _v25.a;
-											var _v26 = _v25.b;
-											var otherRevOps = _v24.b;
-											return A2(
-												$author$project$Modules$LPBig_Parser$Equi,
-												A2(
-													$author$project$Modules$LPBig_Parser$finalize,
-													A2(
-														$elm$core$List$cons,
-														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$AndOp),
-														otherRevOps),
-													expr),
-												finalExpr);
-										case 'OrOp':
-											var _v27 = revOps.a;
-											var expr = _v27.a;
-											var _v28 = _v27.b;
-											var _v29 = revOps.b;
-											var _v30 = _v29.a;
-											var expr2 = _v30.a;
-											var _v31 = _v30.b;
-											var otherRevOps = _v29.b;
-											return A2(
-												$author$project$Modules$LPBig_Parser$Equi,
-												A2(
-													$author$project$Modules$LPBig_Parser$finalize,
-													A2(
-														$elm$core$List$cons,
-														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$OrOp),
-														otherRevOps),
-													expr),
-												finalExpr);
-										case 'ImplOp':
-											var _v32 = revOps.a;
-											var expr = _v32.a;
-											var _v33 = _v32.b;
-											var _v34 = revOps.b;
-											var _v35 = _v34.a;
-											var expr2 = _v35.a;
-											var _v36 = _v35.b;
-											var otherRevOps = _v34.b;
-											return A2(
-												$author$project$Modules$LPBig_Parser$Equi,
-												A2(
-													$author$project$Modules$LPBig_Parser$finalize,
-													A2(
-														$elm$core$List$cons,
-														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$ImplOp),
-														otherRevOps),
-													expr),
-												finalExpr);
-										default:
-											break _v0$10;
-									}
-								} else {
-									break _v0$10;
-								}
-						}
-					}
-				}
-				var _v37 = revOps.a;
-				var expr = _v37.a;
-				var _v38 = _v37.b;
-				var otherRevOps = revOps.b;
-				var $temp$revOps = otherRevOps,
-					$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Equi, expr, finalExpr);
-				revOps = $temp$revOps;
-				finalExpr = $temp$finalExpr;
-				continue finalize;
-			}
-			var _v20 = revOps.a;
-			var expr = _v20.a;
-			var _v21 = _v20.b;
-			var otherRevOps = revOps.b;
-			var $temp$revOps = otherRevOps,
-				$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Impl, expr, finalExpr);
-			revOps = $temp$revOps;
-			finalExpr = $temp$finalExpr;
-			continue finalize;
-		}
-	});
-var $elm$parser$Parser$Advanced$keeper = F2(
-	function (parseFunc, parseArg) {
-		return A3($elm$parser$Parser$Advanced$map2, $elm$core$Basics$apL, parseFunc, parseArg);
-	});
-var $elm$parser$Parser$keeper = $elm$parser$Parser$Advanced$keeper;
-var $elm$parser$Parser$Advanced$lazy = function (thunk) {
-	return $elm$parser$Parser$Advanced$Parser(
-		function (s) {
-			var _v0 = thunk(_Utils_Tuple0);
-			var parse = _v0.a;
-			return parse(s);
-		});
+var $author$project$Modules$B_Expressions$Cond = function (a) {
+	return {$: 'Cond', a: a};
 };
-var $elm$parser$Parser$lazy = $elm$parser$Parser$Advanced$lazy;
-var $elm$parser$Parser$Optional = {$: 'Optional'};
-var $author$project$Modules$LPBig_Parser$createIdent = F2(
-	function (str, li) {
-		return {name: str, values: li};
-	});
-var $author$project$Modules$LPBig_Parser$nameIdentBigProp = $elm$parser$Parser$variable(
-	{
-		inner: $elm$core$Char$isUpper,
-		reserved: $elm$core$Set$fromList(_List_Nil),
-		start: $elm$core$Char$isUpper
-	});
-var $elm$parser$Parser$ExpectingInt = {$: 'ExpectingInt'};
-var $elm$parser$Parser$Advanced$consumeBase = _Parser_consumeBase;
-var $elm$parser$Parser$Advanced$consumeBase16 = _Parser_consumeBase16;
-var $elm$parser$Parser$Advanced$bumpOffset = F2(
-	function (newOffset, s) {
-		return {col: s.col + (newOffset - s.offset), context: s.context, indent: s.indent, offset: newOffset, row: s.row, src: s.src};
-	});
-var $elm$parser$Parser$Advanced$chompBase10 = _Parser_chompBase10;
-var $elm$parser$Parser$Advanced$isAsciiCode = _Parser_isAsciiCode;
-var $elm$parser$Parser$Advanced$consumeExp = F2(
-	function (offset, src) {
-		if (A3($elm$parser$Parser$Advanced$isAsciiCode, 101, offset, src) || A3($elm$parser$Parser$Advanced$isAsciiCode, 69, offset, src)) {
-			var eOffset = offset + 1;
-			var expOffset = (A3($elm$parser$Parser$Advanced$isAsciiCode, 43, eOffset, src) || A3($elm$parser$Parser$Advanced$isAsciiCode, 45, eOffset, src)) ? (eOffset + 1) : eOffset;
-			var newOffset = A2($elm$parser$Parser$Advanced$chompBase10, expOffset, src);
-			return _Utils_eq(expOffset, newOffset) ? (-newOffset) : newOffset;
-		} else {
-			return offset;
-		}
-	});
-var $elm$parser$Parser$Advanced$consumeDotAndExp = F2(
-	function (offset, src) {
-		return A3($elm$parser$Parser$Advanced$isAsciiCode, 46, offset, src) ? A2(
-			$elm$parser$Parser$Advanced$consumeExp,
-			A2($elm$parser$Parser$Advanced$chompBase10, offset + 1, src),
-			src) : A2($elm$parser$Parser$Advanced$consumeExp, offset, src);
-	});
-var $elm$parser$Parser$Advanced$finalizeInt = F5(
-	function (invalid, handler, startOffset, _v0, s) {
-		var endOffset = _v0.a;
-		var n = _v0.b;
-		if (handler.$ === 'Err') {
-			var x = handler.a;
-			return A2(
-				$elm$parser$Parser$Advanced$Bad,
-				true,
-				A2($elm$parser$Parser$Advanced$fromState, s, x));
-		} else {
-			var toValue = handler.a;
-			return _Utils_eq(startOffset, endOffset) ? A2(
-				$elm$parser$Parser$Advanced$Bad,
-				_Utils_cmp(s.offset, startOffset) < 0,
-				A2($elm$parser$Parser$Advanced$fromState, s, invalid)) : A3(
-				$elm$parser$Parser$Advanced$Good,
-				true,
-				toValue(n),
-				A2($elm$parser$Parser$Advanced$bumpOffset, endOffset, s));
-		}
-	});
-var $elm$parser$Parser$Advanced$fromInfo = F4(
-	function (row, col, x, context) {
-		return A2(
-			$elm$parser$Parser$Advanced$AddRight,
-			$elm$parser$Parser$Advanced$Empty,
-			A4($elm$parser$Parser$Advanced$DeadEnd, row, col, x, context));
-	});
-var $elm$core$String$toFloat = _String_toFloat;
-var $elm$parser$Parser$Advanced$finalizeFloat = F6(
-	function (invalid, expecting, intSettings, floatSettings, intPair, s) {
-		var intOffset = intPair.a;
-		var floatOffset = A2($elm$parser$Parser$Advanced$consumeDotAndExp, intOffset, s.src);
-		if (floatOffset < 0) {
-			return A2(
-				$elm$parser$Parser$Advanced$Bad,
-				true,
-				A4($elm$parser$Parser$Advanced$fromInfo, s.row, s.col - (floatOffset + s.offset), invalid, s.context));
-		} else {
-			if (_Utils_eq(s.offset, floatOffset)) {
-				return A2(
-					$elm$parser$Parser$Advanced$Bad,
-					false,
-					A2($elm$parser$Parser$Advanced$fromState, s, expecting));
-			} else {
-				if (_Utils_eq(intOffset, floatOffset)) {
-					return A5($elm$parser$Parser$Advanced$finalizeInt, invalid, intSettings, s.offset, intPair, s);
-				} else {
-					if (floatSettings.$ === 'Err') {
-						var x = floatSettings.a;
-						return A2(
-							$elm$parser$Parser$Advanced$Bad,
-							true,
-							A2($elm$parser$Parser$Advanced$fromState, s, invalid));
-					} else {
-						var toValue = floatSettings.a;
-						var _v1 = $elm$core$String$toFloat(
-							A3($elm$core$String$slice, s.offset, floatOffset, s.src));
-						if (_v1.$ === 'Nothing') {
-							return A2(
-								$elm$parser$Parser$Advanced$Bad,
-								true,
-								A2($elm$parser$Parser$Advanced$fromState, s, invalid));
-						} else {
-							var n = _v1.a;
-							return A3(
-								$elm$parser$Parser$Advanced$Good,
-								true,
-								toValue(n),
-								A2($elm$parser$Parser$Advanced$bumpOffset, floatOffset, s));
-						}
-					}
-				}
-			}
-		}
-	});
-var $elm$parser$Parser$Advanced$number = function (c) {
-	return $elm$parser$Parser$Advanced$Parser(
-		function (s) {
-			if (A3($elm$parser$Parser$Advanced$isAsciiCode, 48, s.offset, s.src)) {
-				var zeroOffset = s.offset + 1;
-				var baseOffset = zeroOffset + 1;
-				return A3($elm$parser$Parser$Advanced$isAsciiCode, 120, zeroOffset, s.src) ? A5(
-					$elm$parser$Parser$Advanced$finalizeInt,
-					c.invalid,
-					c.hex,
-					baseOffset,
-					A2($elm$parser$Parser$Advanced$consumeBase16, baseOffset, s.src),
-					s) : (A3($elm$parser$Parser$Advanced$isAsciiCode, 111, zeroOffset, s.src) ? A5(
-					$elm$parser$Parser$Advanced$finalizeInt,
-					c.invalid,
-					c.octal,
-					baseOffset,
-					A3($elm$parser$Parser$Advanced$consumeBase, 8, baseOffset, s.src),
-					s) : (A3($elm$parser$Parser$Advanced$isAsciiCode, 98, zeroOffset, s.src) ? A5(
-					$elm$parser$Parser$Advanced$finalizeInt,
-					c.invalid,
-					c.binary,
-					baseOffset,
-					A3($elm$parser$Parser$Advanced$consumeBase, 2, baseOffset, s.src),
-					s) : A6(
-					$elm$parser$Parser$Advanced$finalizeFloat,
-					c.invalid,
-					c.expecting,
-					c._int,
-					c._float,
-					_Utils_Tuple2(zeroOffset, 0),
-					s)));
-			} else {
-				return A6(
-					$elm$parser$Parser$Advanced$finalizeFloat,
-					c.invalid,
-					c.expecting,
-					c._int,
-					c._float,
-					A3($elm$parser$Parser$Advanced$consumeBase, 10, s.offset, s.src),
-					s);
-			}
-		});
+var $author$project$Modules$B_Expressions$F = {$: 'F'};
+var $author$project$Modules$B_Expressions$Not = function (a) {
+	return {$: 'Not', a: a};
 };
-var $elm$parser$Parser$Advanced$int = F2(
-	function (expecting, invalid) {
-		return $elm$parser$Parser$Advanced$number(
-			{
-				binary: $elm$core$Result$Err(invalid),
-				expecting: expecting,
-				_float: $elm$core$Result$Err(invalid),
-				hex: $elm$core$Result$Err(invalid),
-				_int: $elm$core$Result$Ok($elm$core$Basics$identity),
-				invalid: invalid,
-				octal: $elm$core$Result$Err(invalid)
-			});
-	});
-var $elm$parser$Parser$int = A2($elm$parser$Parser$Advanced$int, $elm$parser$Parser$ExpectingInt, $elm$parser$Parser$ExpectingInt);
+var $author$project$Modules$B_Expressions$T = {$: 'T'};
+var $author$project$Modules$B_Expressions$EQ = {$: 'EQ'};
+var $author$project$Modules$B_Expressions$GE = {$: 'GE'};
+var $author$project$Modules$B_Expressions$GT = {$: 'GT'};
+var $author$project$Modules$B_Expressions$LE = {$: 'LE'};
+var $author$project$Modules$B_Expressions$LT = {$: 'LT'};
+var $author$project$Modules$B_Expressions$NE = {$: 'NE'};
 var $elm$parser$Parser$Advanced$Append = F2(
 	function (a, b) {
 		return {$: 'Append', a: a, b: b};
@@ -6757,231 +6435,12 @@ var $elm$parser$Parser$Advanced$oneOf = function (parsers) {
 		});
 };
 var $elm$parser$Parser$oneOf = $elm$parser$Parser$Advanced$oneOf;
-var $elm$parser$Parser$Advanced$loopHelp = F4(
-	function (p, state, callback, s0) {
-		loopHelp:
-		while (true) {
-			var _v0 = callback(state);
-			var parse = _v0.a;
-			var _v1 = parse(s0);
-			if (_v1.$ === 'Good') {
-				var p1 = _v1.a;
-				var step = _v1.b;
-				var s1 = _v1.c;
-				if (step.$ === 'Loop') {
-					var newState = step.a;
-					var $temp$p = p || p1,
-						$temp$state = newState,
-						$temp$callback = callback,
-						$temp$s0 = s1;
-					p = $temp$p;
-					state = $temp$state;
-					callback = $temp$callback;
-					s0 = $temp$s0;
-					continue loopHelp;
-				} else {
-					var result = step.a;
-					return A3($elm$parser$Parser$Advanced$Good, p || p1, result, s1);
-				}
-			} else {
-				var p1 = _v1.a;
-				var x = _v1.b;
-				return A2($elm$parser$Parser$Advanced$Bad, p || p1, x);
-			}
-		}
-	});
-var $elm$parser$Parser$Advanced$loop = F2(
-	function (state, callback) {
-		return $elm$parser$Parser$Advanced$Parser(
-			function (s) {
-				return A4($elm$parser$Parser$Advanced$loopHelp, false, state, callback, s);
-			});
-	});
-var $elm$parser$Parser$Advanced$map = F2(
-	function (func, _v0) {
-		var parse = _v0.a;
-		return $elm$parser$Parser$Advanced$Parser(
-			function (s0) {
-				var _v1 = parse(s0);
-				if (_v1.$ === 'Good') {
-					var p = _v1.a;
-					var a = _v1.b;
-					var s1 = _v1.c;
-					return A3(
-						$elm$parser$Parser$Advanced$Good,
-						p,
-						func(a),
-						s1);
-				} else {
-					var p = _v1.a;
-					var x = _v1.b;
-					return A2($elm$parser$Parser$Advanced$Bad, p, x);
-				}
-			});
-	});
-var $elm$parser$Parser$Advanced$Done = function (a) {
-	return {$: 'Done', a: a};
+var $elm$parser$Parser$ExpectingSymbol = function (a) {
+	return {$: 'ExpectingSymbol', a: a};
 };
-var $elm$parser$Parser$Advanced$Loop = function (a) {
-	return {$: 'Loop', a: a};
-};
-var $elm$parser$Parser$Advanced$revAlways = F2(
-	function (_v0, b) {
-		return b;
-	});
-var $elm$parser$Parser$Advanced$skip = F2(
-	function (iParser, kParser) {
-		return A3($elm$parser$Parser$Advanced$map2, $elm$parser$Parser$Advanced$revAlways, iParser, kParser);
-	});
-var $elm$parser$Parser$Advanced$sequenceEndForbidden = F5(
-	function (ender, ws, parseItem, sep, revItems) {
-		var chompRest = function (item) {
-			return A5(
-				$elm$parser$Parser$Advanced$sequenceEndForbidden,
-				ender,
-				ws,
-				parseItem,
-				sep,
-				A2($elm$core$List$cons, item, revItems));
-		};
-		return A2(
-			$elm$parser$Parser$Advanced$skip,
-			ws,
-			$elm$parser$Parser$Advanced$oneOf(
-				_List_fromArray(
-					[
-						A2(
-						$elm$parser$Parser$Advanced$skip,
-						sep,
-						A2(
-							$elm$parser$Parser$Advanced$skip,
-							ws,
-							A2(
-								$elm$parser$Parser$Advanced$map,
-								function (item) {
-									return $elm$parser$Parser$Advanced$Loop(
-										A2($elm$core$List$cons, item, revItems));
-								},
-								parseItem))),
-						A2(
-						$elm$parser$Parser$Advanced$map,
-						function (_v0) {
-							return $elm$parser$Parser$Advanced$Done(
-								$elm$core$List$reverse(revItems));
-						},
-						ender)
-					])));
-	});
-var $elm$parser$Parser$Advanced$sequenceEndMandatory = F4(
-	function (ws, parseItem, sep, revItems) {
-		return $elm$parser$Parser$Advanced$oneOf(
-			_List_fromArray(
-				[
-					A2(
-					$elm$parser$Parser$Advanced$map,
-					function (item) {
-						return $elm$parser$Parser$Advanced$Loop(
-							A2($elm$core$List$cons, item, revItems));
-					},
-					A2(
-						$elm$parser$Parser$Advanced$ignorer,
-						parseItem,
-						A2(
-							$elm$parser$Parser$Advanced$ignorer,
-							ws,
-							A2($elm$parser$Parser$Advanced$ignorer, sep, ws)))),
-					A2(
-					$elm$parser$Parser$Advanced$map,
-					function (_v0) {
-						return $elm$parser$Parser$Advanced$Done(
-							$elm$core$List$reverse(revItems));
-					},
-					$elm$parser$Parser$Advanced$succeed(_Utils_Tuple0))
-				]));
-	});
-var $elm$parser$Parser$Advanced$sequenceEndOptional = F5(
-	function (ender, ws, parseItem, sep, revItems) {
-		var parseEnd = A2(
-			$elm$parser$Parser$Advanced$map,
-			function (_v0) {
-				return $elm$parser$Parser$Advanced$Done(
-					$elm$core$List$reverse(revItems));
-			},
-			ender);
-		return A2(
-			$elm$parser$Parser$Advanced$skip,
-			ws,
-			$elm$parser$Parser$Advanced$oneOf(
-				_List_fromArray(
-					[
-						A2(
-						$elm$parser$Parser$Advanced$skip,
-						sep,
-						A2(
-							$elm$parser$Parser$Advanced$skip,
-							ws,
-							$elm$parser$Parser$Advanced$oneOf(
-								_List_fromArray(
-									[
-										A2(
-										$elm$parser$Parser$Advanced$map,
-										function (item) {
-											return $elm$parser$Parser$Advanced$Loop(
-												A2($elm$core$List$cons, item, revItems));
-										},
-										parseItem),
-										parseEnd
-									])))),
-						parseEnd
-					])));
-	});
-var $elm$parser$Parser$Advanced$sequenceEnd = F5(
-	function (ender, ws, parseItem, sep, trailing) {
-		var chompRest = function (item) {
-			switch (trailing.$) {
-				case 'Forbidden':
-					return A2(
-						$elm$parser$Parser$Advanced$loop,
-						_List_fromArray(
-							[item]),
-						A4($elm$parser$Parser$Advanced$sequenceEndForbidden, ender, ws, parseItem, sep));
-				case 'Optional':
-					return A2(
-						$elm$parser$Parser$Advanced$loop,
-						_List_fromArray(
-							[item]),
-						A4($elm$parser$Parser$Advanced$sequenceEndOptional, ender, ws, parseItem, sep));
-				default:
-					return A2(
-						$elm$parser$Parser$Advanced$ignorer,
-						A2(
-							$elm$parser$Parser$Advanced$skip,
-							ws,
-							A2(
-								$elm$parser$Parser$Advanced$skip,
-								sep,
-								A2(
-									$elm$parser$Parser$Advanced$skip,
-									ws,
-									A2(
-										$elm$parser$Parser$Advanced$loop,
-										_List_fromArray(
-											[item]),
-										A3($elm$parser$Parser$Advanced$sequenceEndMandatory, ws, parseItem, sep))))),
-						ender);
-			}
-		};
-		return $elm$parser$Parser$Advanced$oneOf(
-			_List_fromArray(
-				[
-					A2($elm$parser$Parser$Advanced$andThen, chompRest, parseItem),
-					A2(
-					$elm$parser$Parser$Advanced$map,
-					function (_v0) {
-						return _List_Nil;
-					},
-					ender)
-				]));
+var $elm$parser$Parser$Advanced$Token = F2(
+	function (a, b) {
+		return {$: 'Token', a: a, b: b};
 	});
 var $elm$parser$Parser$Advanced$isSubString = _Parser_isSubString;
 var $elm$parser$Parser$Advanced$token = function (_v0) {
@@ -7004,72 +6463,6 @@ var $elm$parser$Parser$Advanced$token = function (_v0) {
 				{col: newCol, context: s.context, indent: s.indent, offset: newOffset, row: newRow, src: s.src});
 		});
 };
-var $elm$parser$Parser$Advanced$sequence = function (i) {
-	return A2(
-		$elm$parser$Parser$Advanced$skip,
-		$elm$parser$Parser$Advanced$token(i.start),
-		A2(
-			$elm$parser$Parser$Advanced$skip,
-			i.spaces,
-			A5(
-				$elm$parser$Parser$Advanced$sequenceEnd,
-				$elm$parser$Parser$Advanced$token(i.end),
-				i.spaces,
-				i.item,
-				$elm$parser$Parser$Advanced$token(i.separator),
-				i.trailing)));
-};
-var $elm$parser$Parser$Advanced$Forbidden = {$: 'Forbidden'};
-var $elm$parser$Parser$Advanced$Mandatory = {$: 'Mandatory'};
-var $elm$parser$Parser$Advanced$Optional = {$: 'Optional'};
-var $elm$parser$Parser$toAdvancedTrailing = function (trailing) {
-	switch (trailing.$) {
-		case 'Forbidden':
-			return $elm$parser$Parser$Advanced$Forbidden;
-		case 'Optional':
-			return $elm$parser$Parser$Advanced$Optional;
-		default:
-			return $elm$parser$Parser$Advanced$Mandatory;
-	}
-};
-var $elm$parser$Parser$Expecting = function (a) {
-	return {$: 'Expecting', a: a};
-};
-var $elm$parser$Parser$Advanced$Token = F2(
-	function (a, b) {
-		return {$: 'Token', a: a, b: b};
-	});
-var $elm$parser$Parser$toToken = function (str) {
-	return A2(
-		$elm$parser$Parser$Advanced$Token,
-		str,
-		$elm$parser$Parser$Expecting(str));
-};
-var $elm$parser$Parser$sequence = function (i) {
-	return $elm$parser$Parser$Advanced$sequence(
-		{
-			end: $elm$parser$Parser$toToken(i.end),
-			item: i.item,
-			separator: $elm$parser$Parser$toToken(i.separator),
-			spaces: i.spaces,
-			start: $elm$parser$Parser$toToken(i.start),
-			trailing: $elm$parser$Parser$toAdvancedTrailing(i.trailing)
-		});
-};
-var $elm$parser$Parser$Advanced$spaces = $elm$parser$Parser$Advanced$chompWhile(
-	function (c) {
-		return _Utils_eq(
-			c,
-			_Utils_chr(' ')) || (_Utils_eq(
-			c,
-			_Utils_chr('\n')) || _Utils_eq(
-			c,
-			_Utils_chr('\r')));
-	});
-var $elm$parser$Parser$spaces = $elm$parser$Parser$Advanced$spaces;
-var $elm$parser$Parser$ExpectingSymbol = function (a) {
-	return {$: 'ExpectingSymbol', a: a};
-};
 var $elm$parser$Parser$Advanced$symbol = $elm$parser$Parser$Advanced$token;
 var $elm$parser$Parser$symbol = function (str) {
 	return $elm$parser$Parser$Advanced$symbol(
@@ -7078,121 +6471,44 @@ var $elm$parser$Parser$symbol = function (str) {
 			str,
 			$elm$parser$Parser$ExpectingSymbol(str)));
 };
-var $author$project$Modules$LPBig_Parser$valuesIdentBigProp = $elm$parser$Parser$oneOf(
-	_List_fromArray(
-		[
-			$elm$parser$Parser$sequence(
-			{
-				end: '#',
-				item: $elm$parser$Parser$oneOf(
-					_List_fromArray(
-						[
-							A2(
-							$elm$parser$Parser$keeper,
-							A2(
-								$elm$parser$Parser$ignorer,
-								$elm$parser$Parser$succeed($elm$core$Basics$negate),
-								$elm$parser$Parser$symbol('-')),
-							$elm$parser$Parser$int),
-							$elm$parser$Parser$int
-						])),
-				separator: ',',
-				spaces: $elm$parser$Parser$spaces,
-				start: ':',
-				trailing: $elm$parser$Parser$Optional
-			}),
-			A2(
-			$elm$parser$Parser$keeper,
-			A2(
-				$elm$parser$Parser$keeper,
-				A2(
-					$elm$parser$Parser$ignorer,
-					$elm$parser$Parser$succeed($elm$core$List$range),
-					$elm$parser$Parser$symbol('[')),
-				A2(
-					$elm$parser$Parser$ignorer,
-					$elm$parser$Parser$oneOf(
-						_List_fromArray(
-							[
-								A2(
-								$elm$parser$Parser$keeper,
-								A2(
-									$elm$parser$Parser$ignorer,
-									$elm$parser$Parser$succeed($elm$core$Basics$negate),
-									$elm$parser$Parser$symbol('-')),
-								$elm$parser$Parser$int),
-								$elm$parser$Parser$int
-							])),
-					$elm$parser$Parser$symbol(':'))),
-			A2(
-				$elm$parser$Parser$ignorer,
-				$elm$parser$Parser$oneOf(
-					_List_fromArray(
-						[
-							A2(
-							$elm$parser$Parser$keeper,
-							A2(
-								$elm$parser$Parser$ignorer,
-								$elm$parser$Parser$succeed($elm$core$Basics$negate),
-								$elm$parser$Parser$symbol('-')),
-							$elm$parser$Parser$int),
-							$elm$parser$Parser$int
-						])),
-				$elm$parser$Parser$symbol(']')))
-		]));
-var $author$project$Modules$LPBig_Parser$identBigProp = A2(
-	$elm$parser$Parser$keeper,
-	A2(
-		$elm$parser$Parser$keeper,
-		$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$createIdent),
-		$author$project$Modules$LPBig_Parser$nameIdentBigProp),
-	$author$project$Modules$LPBig_Parser$valuesIdentBigProp);
-var $author$project$Modules$LPBig_Parser$listIdentBigProp = $elm$parser$Parser$sequence(
-	{end: '}', item: $author$project$Modules$LPBig_Parser$identBigProp, separator: ',', spaces: $elm$parser$Parser$spaces, start: '{', trailing: $elm$parser$Parser$Optional});
-var $author$project$Modules$LPBig_Parser$EQ = {$: 'EQ'};
-var $author$project$Modules$LPBig_Parser$GE = {$: 'GE'};
-var $author$project$Modules$LPBig_Parser$GT = {$: 'GT'};
-var $author$project$Modules$LPBig_Parser$LE = {$: 'LE'};
-var $author$project$Modules$LPBig_Parser$LT = {$: 'LT'};
-var $author$project$Modules$LPBig_Parser$NE = {$: 'NE'};
-var $author$project$Modules$LPBig_Parser$compConditionBigProp = $elm$parser$Parser$oneOf(
+var $author$project$Modules$B_Expressions$compCondition = $elm$parser$Parser$oneOf(
 	_List_fromArray(
 		[
 			A2(
 			$elm$parser$Parser$ignorer,
 			A2(
 				$elm$parser$Parser$ignorer,
-				$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$GE),
+				$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$GE),
 				$elm$parser$Parser$symbol('>')),
 			$elm$parser$Parser$symbol('=')),
 			A2(
 			$elm$parser$Parser$ignorer,
 			A2(
 				$elm$parser$Parser$ignorer,
-				$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$LE),
+				$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$LE),
 				$elm$parser$Parser$symbol('<')),
 			$elm$parser$Parser$symbol('=')),
 			A2(
 			$elm$parser$Parser$ignorer,
 			A2(
 				$elm$parser$Parser$ignorer,
-				$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$NE),
+				$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$NE),
 				$elm$parser$Parser$symbol('!')),
 			$elm$parser$Parser$symbol('=')),
 			A2(
 			$elm$parser$Parser$ignorer,
-			$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$GT),
+			$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$GT),
 			$elm$parser$Parser$symbol('>')),
 			A2(
 			$elm$parser$Parser$ignorer,
-			$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$LT),
+			$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$LT),
 			$elm$parser$Parser$symbol('<')),
 			A2(
 			$elm$parser$Parser$ignorer,
-			$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$EQ),
+			$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$EQ),
 			$elm$parser$Parser$symbol('='))
 		]));
-var $author$project$Modules$LPBig_Parser$createCondition = F3(
+var $author$project$Modules$B_Expressions$createCondition = F3(
 	function (f, c, s) {
 		return {comp: c, fmember: f, smember: s};
 	});
@@ -7513,6 +6829,182 @@ var $author$project$Modules$A_Expressions$finalize = F2(
 			continue finalize;
 		}
 	});
+var $elm$parser$Parser$Advanced$keeper = F2(
+	function (parseFunc, parseArg) {
+		return A3($elm$parser$Parser$Advanced$map2, $elm$core$Basics$apL, parseFunc, parseArg);
+	});
+var $elm$parser$Parser$keeper = $elm$parser$Parser$Advanced$keeper;
+var $elm$parser$Parser$Advanced$lazy = function (thunk) {
+	return $elm$parser$Parser$Advanced$Parser(
+		function (s) {
+			var _v0 = thunk(_Utils_Tuple0);
+			var parse = _v0.a;
+			return parse(s);
+		});
+};
+var $elm$parser$Parser$lazy = $elm$parser$Parser$Advanced$lazy;
+var $elm$parser$Parser$ExpectingInt = {$: 'ExpectingInt'};
+var $elm$parser$Parser$Advanced$consumeBase = _Parser_consumeBase;
+var $elm$parser$Parser$Advanced$consumeBase16 = _Parser_consumeBase16;
+var $elm$parser$Parser$Advanced$bumpOffset = F2(
+	function (newOffset, s) {
+		return {col: s.col + (newOffset - s.offset), context: s.context, indent: s.indent, offset: newOffset, row: s.row, src: s.src};
+	});
+var $elm$parser$Parser$Advanced$chompBase10 = _Parser_chompBase10;
+var $elm$parser$Parser$Advanced$isAsciiCode = _Parser_isAsciiCode;
+var $elm$parser$Parser$Advanced$consumeExp = F2(
+	function (offset, src) {
+		if (A3($elm$parser$Parser$Advanced$isAsciiCode, 101, offset, src) || A3($elm$parser$Parser$Advanced$isAsciiCode, 69, offset, src)) {
+			var eOffset = offset + 1;
+			var expOffset = (A3($elm$parser$Parser$Advanced$isAsciiCode, 43, eOffset, src) || A3($elm$parser$Parser$Advanced$isAsciiCode, 45, eOffset, src)) ? (eOffset + 1) : eOffset;
+			var newOffset = A2($elm$parser$Parser$Advanced$chompBase10, expOffset, src);
+			return _Utils_eq(expOffset, newOffset) ? (-newOffset) : newOffset;
+		} else {
+			return offset;
+		}
+	});
+var $elm$parser$Parser$Advanced$consumeDotAndExp = F2(
+	function (offset, src) {
+		return A3($elm$parser$Parser$Advanced$isAsciiCode, 46, offset, src) ? A2(
+			$elm$parser$Parser$Advanced$consumeExp,
+			A2($elm$parser$Parser$Advanced$chompBase10, offset + 1, src),
+			src) : A2($elm$parser$Parser$Advanced$consumeExp, offset, src);
+	});
+var $elm$parser$Parser$Advanced$finalizeInt = F5(
+	function (invalid, handler, startOffset, _v0, s) {
+		var endOffset = _v0.a;
+		var n = _v0.b;
+		if (handler.$ === 'Err') {
+			var x = handler.a;
+			return A2(
+				$elm$parser$Parser$Advanced$Bad,
+				true,
+				A2($elm$parser$Parser$Advanced$fromState, s, x));
+		} else {
+			var toValue = handler.a;
+			return _Utils_eq(startOffset, endOffset) ? A2(
+				$elm$parser$Parser$Advanced$Bad,
+				_Utils_cmp(s.offset, startOffset) < 0,
+				A2($elm$parser$Parser$Advanced$fromState, s, invalid)) : A3(
+				$elm$parser$Parser$Advanced$Good,
+				true,
+				toValue(n),
+				A2($elm$parser$Parser$Advanced$bumpOffset, endOffset, s));
+		}
+	});
+var $elm$parser$Parser$Advanced$fromInfo = F4(
+	function (row, col, x, context) {
+		return A2(
+			$elm$parser$Parser$Advanced$AddRight,
+			$elm$parser$Parser$Advanced$Empty,
+			A4($elm$parser$Parser$Advanced$DeadEnd, row, col, x, context));
+	});
+var $elm$core$String$toFloat = _String_toFloat;
+var $elm$parser$Parser$Advanced$finalizeFloat = F6(
+	function (invalid, expecting, intSettings, floatSettings, intPair, s) {
+		var intOffset = intPair.a;
+		var floatOffset = A2($elm$parser$Parser$Advanced$consumeDotAndExp, intOffset, s.src);
+		if (floatOffset < 0) {
+			return A2(
+				$elm$parser$Parser$Advanced$Bad,
+				true,
+				A4($elm$parser$Parser$Advanced$fromInfo, s.row, s.col - (floatOffset + s.offset), invalid, s.context));
+		} else {
+			if (_Utils_eq(s.offset, floatOffset)) {
+				return A2(
+					$elm$parser$Parser$Advanced$Bad,
+					false,
+					A2($elm$parser$Parser$Advanced$fromState, s, expecting));
+			} else {
+				if (_Utils_eq(intOffset, floatOffset)) {
+					return A5($elm$parser$Parser$Advanced$finalizeInt, invalid, intSettings, s.offset, intPair, s);
+				} else {
+					if (floatSettings.$ === 'Err') {
+						var x = floatSettings.a;
+						return A2(
+							$elm$parser$Parser$Advanced$Bad,
+							true,
+							A2($elm$parser$Parser$Advanced$fromState, s, invalid));
+					} else {
+						var toValue = floatSettings.a;
+						var _v1 = $elm$core$String$toFloat(
+							A3($elm$core$String$slice, s.offset, floatOffset, s.src));
+						if (_v1.$ === 'Nothing') {
+							return A2(
+								$elm$parser$Parser$Advanced$Bad,
+								true,
+								A2($elm$parser$Parser$Advanced$fromState, s, invalid));
+						} else {
+							var n = _v1.a;
+							return A3(
+								$elm$parser$Parser$Advanced$Good,
+								true,
+								toValue(n),
+								A2($elm$parser$Parser$Advanced$bumpOffset, floatOffset, s));
+						}
+					}
+				}
+			}
+		}
+	});
+var $elm$parser$Parser$Advanced$number = function (c) {
+	return $elm$parser$Parser$Advanced$Parser(
+		function (s) {
+			if (A3($elm$parser$Parser$Advanced$isAsciiCode, 48, s.offset, s.src)) {
+				var zeroOffset = s.offset + 1;
+				var baseOffset = zeroOffset + 1;
+				return A3($elm$parser$Parser$Advanced$isAsciiCode, 120, zeroOffset, s.src) ? A5(
+					$elm$parser$Parser$Advanced$finalizeInt,
+					c.invalid,
+					c.hex,
+					baseOffset,
+					A2($elm$parser$Parser$Advanced$consumeBase16, baseOffset, s.src),
+					s) : (A3($elm$parser$Parser$Advanced$isAsciiCode, 111, zeroOffset, s.src) ? A5(
+					$elm$parser$Parser$Advanced$finalizeInt,
+					c.invalid,
+					c.octal,
+					baseOffset,
+					A3($elm$parser$Parser$Advanced$consumeBase, 8, baseOffset, s.src),
+					s) : (A3($elm$parser$Parser$Advanced$isAsciiCode, 98, zeroOffset, s.src) ? A5(
+					$elm$parser$Parser$Advanced$finalizeInt,
+					c.invalid,
+					c.binary,
+					baseOffset,
+					A3($elm$parser$Parser$Advanced$consumeBase, 2, baseOffset, s.src),
+					s) : A6(
+					$elm$parser$Parser$Advanced$finalizeFloat,
+					c.invalid,
+					c.expecting,
+					c._int,
+					c._float,
+					_Utils_Tuple2(zeroOffset, 0),
+					s)));
+			} else {
+				return A6(
+					$elm$parser$Parser$Advanced$finalizeFloat,
+					c.invalid,
+					c.expecting,
+					c._int,
+					c._float,
+					A3($elm$parser$Parser$Advanced$consumeBase, 10, s.offset, s.src),
+					s);
+			}
+		});
+};
+var $elm$parser$Parser$Advanced$int = F2(
+	function (expecting, invalid) {
+		return $elm$parser$Parser$Advanced$number(
+			{
+				binary: $elm$core$Result$Err(invalid),
+				expecting: expecting,
+				_float: $elm$core$Result$Err(invalid),
+				hex: $elm$core$Result$Err(invalid),
+				_int: $elm$core$Result$Ok($elm$core$Basics$identity),
+				invalid: invalid,
+				octal: $elm$core$Result$Err(invalid)
+			});
+	});
+var $elm$parser$Parser$int = A2($elm$parser$Parser$Advanced$int, $elm$parser$Parser$ExpectingInt, $elm$parser$Parser$ExpectingInt);
 var $author$project$Modules$A_Expressions$numberParser = $elm$parser$Parser$oneOf(
 	_List_fromArray(
 		[
@@ -7526,6 +7018,28 @@ var $author$project$Modules$A_Expressions$numberParser = $elm$parser$Parser$oneO
 			$elm$parser$Parser$int
 		]));
 var $author$project$Modules$A_Expressions$AddOp = {$: 'AddOp'};
+var $elm$parser$Parser$Advanced$map = F2(
+	function (func, _v0) {
+		var parse = _v0.a;
+		return $elm$parser$Parser$Advanced$Parser(
+			function (s0) {
+				var _v1 = parse(s0);
+				if (_v1.$ === 'Good') {
+					var p = _v1.a;
+					var a = _v1.b;
+					var s1 = _v1.c;
+					return A3(
+						$elm$parser$Parser$Advanced$Good,
+						p,
+						func(a),
+						s1);
+				} else {
+					var p = _v1.a;
+					var x = _v1.b;
+					return A2($elm$parser$Parser$Advanced$Bad, p, x);
+				}
+			});
+	});
 var $elm$parser$Parser$map = $elm$parser$Parser$Advanced$map;
 var $author$project$Modules$A_Expressions$operatorA = $elm$parser$Parser$oneOf(
 	_List_fromArray(
@@ -7591,7 +7105,7 @@ var $author$project$Modules$A_Expressions$expressionAAux = F2(
 							$elm$parser$Parser$keeper,
 							$elm$parser$Parser$succeed($elm$core$Tuple$pair),
 							$author$project$Modules$A_Expressions$operatorA),
-						$author$project$Modules$A_Expressions$cyclic$expressionA())),
+						$author$project$Modules$A_Expressions$cyclic$termAExpr())),
 					$elm$parser$Parser$lazy(
 					function (_v2) {
 						return $elm$parser$Parser$succeed(
@@ -7643,26 +7157,728 @@ try {
 	};
 } catch ($) {
 	throw 'Some top-level definitions from `Modules.A_Expressions` are causing infinite recursion:\n\n  ┌─────┐\n  │    expressionA\n  │     ↓\n  │    expressionAAux\n  │     ↓\n  │    termAExpr\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';}
-var $author$project$Modules$LPBig_Parser$conditionBigProp = A2(
+var $author$project$Modules$B_Expressions$condition = A2(
 	$elm$parser$Parser$keeper,
 	A2(
 		$elm$parser$Parser$keeper,
 		A2(
 			$elm$parser$Parser$keeper,
-			$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$createCondition),
+			$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$createCondition),
 			$author$project$Modules$A_Expressions$expressionA),
-		$author$project$Modules$LPBig_Parser$compConditionBigProp),
+		$author$project$Modules$B_Expressions$compCondition),
 	$author$project$Modules$A_Expressions$expressionA);
-var $author$project$Modules$LPBig_Parser$listconditionBigProp = $elm$parser$Parser$oneOf(
+var $author$project$Modules$B_Expressions$And = F2(
+	function (a, b) {
+		return {$: 'And', a: a, b: b};
+	});
+var $author$project$Modules$B_Expressions$AndOp = {$: 'AndOp'};
+var $author$project$Modules$B_Expressions$Or = F2(
+	function (a, b) {
+		return {$: 'Or', a: a, b: b};
+	});
+var $author$project$Modules$B_Expressions$finalize = F2(
+	function (revOps, finalExpr) {
+		finalize:
+		while (true) {
+			if (!revOps.b) {
+				return finalExpr;
+			} else {
+				if (revOps.a.b.$ === 'AndOp') {
+					var _v1 = revOps.a;
+					var expr = _v1.a;
+					var _v2 = _v1.b;
+					var otherRevOps = revOps.b;
+					var $temp$revOps = otherRevOps,
+						$temp$finalExpr = A2($author$project$Modules$B_Expressions$And, expr, finalExpr);
+					revOps = $temp$revOps;
+					finalExpr = $temp$finalExpr;
+					continue finalize;
+				} else {
+					if (revOps.b.b && (revOps.b.a.b.$ === 'AndOp')) {
+						var _v3 = revOps.a;
+						var expr = _v3.a;
+						var _v4 = _v3.b;
+						var _v5 = revOps.b;
+						var _v6 = _v5.a;
+						var expr2 = _v6.a;
+						var _v7 = _v6.b;
+						var otherRevOps = _v5.b;
+						return A2(
+							$author$project$Modules$B_Expressions$Or,
+							A2(
+								$author$project$Modules$B_Expressions$finalize,
+								A2(
+									$elm$core$List$cons,
+									_Utils_Tuple2(expr2, $author$project$Modules$B_Expressions$AndOp),
+									otherRevOps),
+								expr),
+							finalExpr);
+					} else {
+						var _v8 = revOps.a;
+						var expr = _v8.a;
+						var _v9 = _v8.b;
+						var otherRevOps = revOps.b;
+						var $temp$revOps = otherRevOps,
+							$temp$finalExpr = A2($author$project$Modules$B_Expressions$Or, expr, finalExpr);
+						revOps = $temp$revOps;
+						finalExpr = $temp$finalExpr;
+						continue finalize;
+					}
+				}
+			}
+		}
+	});
+var $author$project$Modules$B_Expressions$OrOp = {$: 'OrOp'};
+var $author$project$Modules$B_Expressions$operatorB = $elm$parser$Parser$oneOf(
+	_List_fromArray(
+		[
+			A2(
+			$elm$parser$Parser$map,
+			function (_v0) {
+				return $author$project$Modules$B_Expressions$AndOp;
+			},
+			$elm$parser$Parser$symbol('AND')),
+			A2(
+			$elm$parser$Parser$map,
+			function (_v1) {
+				return $author$project$Modules$B_Expressions$OrOp;
+			},
+			$elm$parser$Parser$symbol('OR'))
+		]));
+var $author$project$Modules$B_Expressions$expressionBAux = F2(
+	function (revOps, bExpr) {
+		return $elm$parser$Parser$oneOf(
+			_List_fromArray(
+				[
+					A2(
+					$elm$parser$Parser$andThen,
+					function (_v2) {
+						var op = _v2.a;
+						var newExpr = _v2.b;
+						return A2(
+							$author$project$Modules$B_Expressions$expressionBAux,
+							A2(
+								$elm$core$List$cons,
+								_Utils_Tuple2(bExpr, op),
+								revOps),
+							newExpr);
+					},
+					A2(
+						$elm$parser$Parser$keeper,
+						A2(
+							$elm$parser$Parser$keeper,
+							$elm$parser$Parser$succeed($elm$core$Tuple$pair),
+							$author$project$Modules$B_Expressions$operatorB),
+						$author$project$Modules$B_Expressions$cyclic$termBExpr())),
+					$elm$parser$Parser$lazy(
+					function (_v3) {
+						return $elm$parser$Parser$succeed(
+							A2($author$project$Modules$B_Expressions$finalize, revOps, bExpr));
+					})
+				]));
+	});
+function $author$project$Modules$B_Expressions$cyclic$expressionB() {
+	return A2(
+		$elm$parser$Parser$andThen,
+		$author$project$Modules$B_Expressions$expressionBAux(_List_Nil),
+		$author$project$Modules$B_Expressions$cyclic$termBExpr());
+}
+function $author$project$Modules$B_Expressions$cyclic$termBExpr() {
+	return $elm$parser$Parser$oneOf(
+		_List_fromArray(
+			[
+				A2(
+				$elm$parser$Parser$ignorer,
+				$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$T),
+				$elm$parser$Parser$symbol('T')),
+				A2(
+				$elm$parser$Parser$ignorer,
+				$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$F),
+				$elm$parser$Parser$symbol('F')),
+				A2(
+				$elm$parser$Parser$keeper,
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$Not),
+					$elm$parser$Parser$symbol('NOT')),
+				$elm$parser$Parser$lazy(
+					function (_v0) {
+						return $author$project$Modules$B_Expressions$cyclic$expressionB();
+					})),
+				A2(
+				$elm$parser$Parser$keeper,
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$succeed($author$project$Modules$B_Expressions$Cond),
+					$elm$parser$Parser$symbol('[')),
+				A2(
+					$elm$parser$Parser$ignorer,
+					$author$project$Modules$B_Expressions$condition,
+					$elm$parser$Parser$symbol(']'))),
+				A2(
+				$elm$parser$Parser$keeper,
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$succeed($elm$core$Basics$identity),
+					$elm$parser$Parser$symbol('(')),
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$lazy(
+						function (_v1) {
+							return $author$project$Modules$B_Expressions$cyclic$expressionB();
+						}),
+					$elm$parser$Parser$symbol(')')))
+			]));
+}
+try {
+	var $author$project$Modules$B_Expressions$expressionB = $author$project$Modules$B_Expressions$cyclic$expressionB();
+	$author$project$Modules$B_Expressions$cyclic$expressionB = function () {
+		return $author$project$Modules$B_Expressions$expressionB;
+	};
+	var $author$project$Modules$B_Expressions$termBExpr = $author$project$Modules$B_Expressions$cyclic$termBExpr();
+	$author$project$Modules$B_Expressions$cyclic$termBExpr = function () {
+		return $author$project$Modules$B_Expressions$termBExpr;
+	};
+} catch ($) {
+	throw 'Some top-level definitions from `Modules.B_Expressions` are causing infinite recursion:\n\n  ┌─────┐\n  │    expressionB\n  │     ↓\n  │    expressionBAux\n  │     ↓\n  │    termBExpr\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';}
+var $author$project$Modules$LPBig_Parser$AndOp = {$: 'AndOp'};
+var $author$project$Modules$LPBig_Parser$ImplOp = {$: 'ImplOp'};
+var $author$project$Modules$LPBig_Parser$OrOp = {$: 'OrOp'};
+var $author$project$Modules$LPBig_Parser$finalize = F2(
+	function (revOps, finalExpr) {
+		finalize:
+		while (true) {
+			_v0$6:
+			while (true) {
+				_v0$10:
+				while (true) {
+					if (!revOps.b) {
+						return finalExpr;
+					} else {
+						switch (revOps.a.b.$) {
+							case 'AndOp':
+								var _v1 = revOps.a;
+								var expr = _v1.a;
+								var _v2 = _v1.b;
+								var otherRevOps = revOps.b;
+								var $temp$revOps = otherRevOps,
+									$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Conj, expr, finalExpr);
+								revOps = $temp$revOps;
+								finalExpr = $temp$finalExpr;
+								continue finalize;
+							case 'OrOp':
+								if (revOps.b.b && (revOps.b.a.b.$ === 'AndOp')) {
+									var _v3 = revOps.a;
+									var expr = _v3.a;
+									var _v4 = _v3.b;
+									var _v5 = revOps.b;
+									var _v6 = _v5.a;
+									var expr2 = _v6.a;
+									var _v7 = _v6.b;
+									var otherRevOps = _v5.b;
+									return A2(
+										$author$project$Modules$LPBig_Parser$Disj,
+										A2(
+											$author$project$Modules$LPBig_Parser$finalize,
+											A2(
+												$elm$core$List$cons,
+												_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$AndOp),
+												otherRevOps),
+											expr),
+										finalExpr);
+								} else {
+									var _v8 = revOps.a;
+									var expr = _v8.a;
+									var _v9 = _v8.b;
+									var otherRevOps = revOps.b;
+									var $temp$revOps = otherRevOps,
+										$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Disj, expr, finalExpr);
+									revOps = $temp$revOps;
+									finalExpr = $temp$finalExpr;
+									continue finalize;
+								}
+							case 'ImplOp':
+								if (revOps.b.b) {
+									switch (revOps.b.a.b.$) {
+										case 'AndOp':
+											var _v10 = revOps.a;
+											var expr = _v10.a;
+											var _v11 = _v10.b;
+											var _v12 = revOps.b;
+											var _v13 = _v12.a;
+											var expr2 = _v13.a;
+											var _v14 = _v13.b;
+											var otherRevOps = _v12.b;
+											return A2(
+												$author$project$Modules$LPBig_Parser$Impl,
+												A2(
+													$author$project$Modules$LPBig_Parser$finalize,
+													A2(
+														$elm$core$List$cons,
+														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$AndOp),
+														otherRevOps),
+													expr),
+												finalExpr);
+										case 'OrOp':
+											var _v15 = revOps.a;
+											var expr = _v15.a;
+											var _v16 = _v15.b;
+											var _v17 = revOps.b;
+											var _v18 = _v17.a;
+											var expr2 = _v18.a;
+											var _v19 = _v18.b;
+											var otherRevOps = _v17.b;
+											return A2(
+												$author$project$Modules$LPBig_Parser$Impl,
+												A2(
+													$author$project$Modules$LPBig_Parser$finalize,
+													A2(
+														$elm$core$List$cons,
+														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$OrOp),
+														otherRevOps),
+													expr),
+												finalExpr);
+										default:
+											break _v0$6;
+									}
+								} else {
+									break _v0$6;
+								}
+							default:
+								if (revOps.b.b) {
+									switch (revOps.b.a.b.$) {
+										case 'AndOp':
+											var _v22 = revOps.a;
+											var expr = _v22.a;
+											var _v23 = _v22.b;
+											var _v24 = revOps.b;
+											var _v25 = _v24.a;
+											var expr2 = _v25.a;
+											var _v26 = _v25.b;
+											var otherRevOps = _v24.b;
+											return A2(
+												$author$project$Modules$LPBig_Parser$Equi,
+												A2(
+													$author$project$Modules$LPBig_Parser$finalize,
+													A2(
+														$elm$core$List$cons,
+														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$AndOp),
+														otherRevOps),
+													expr),
+												finalExpr);
+										case 'OrOp':
+											var _v27 = revOps.a;
+											var expr = _v27.a;
+											var _v28 = _v27.b;
+											var _v29 = revOps.b;
+											var _v30 = _v29.a;
+											var expr2 = _v30.a;
+											var _v31 = _v30.b;
+											var otherRevOps = _v29.b;
+											return A2(
+												$author$project$Modules$LPBig_Parser$Equi,
+												A2(
+													$author$project$Modules$LPBig_Parser$finalize,
+													A2(
+														$elm$core$List$cons,
+														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$OrOp),
+														otherRevOps),
+													expr),
+												finalExpr);
+										case 'ImplOp':
+											var _v32 = revOps.a;
+											var expr = _v32.a;
+											var _v33 = _v32.b;
+											var _v34 = revOps.b;
+											var _v35 = _v34.a;
+											var expr2 = _v35.a;
+											var _v36 = _v35.b;
+											var otherRevOps = _v34.b;
+											return A2(
+												$author$project$Modules$LPBig_Parser$Equi,
+												A2(
+													$author$project$Modules$LPBig_Parser$finalize,
+													A2(
+														$elm$core$List$cons,
+														_Utils_Tuple2(expr2, $author$project$Modules$LPBig_Parser$ImplOp),
+														otherRevOps),
+													expr),
+												finalExpr);
+										default:
+											break _v0$10;
+									}
+								} else {
+									break _v0$10;
+								}
+						}
+					}
+				}
+				var _v37 = revOps.a;
+				var expr = _v37.a;
+				var _v38 = _v37.b;
+				var otherRevOps = revOps.b;
+				var $temp$revOps = otherRevOps,
+					$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Equi, expr, finalExpr);
+				revOps = $temp$revOps;
+				finalExpr = $temp$finalExpr;
+				continue finalize;
+			}
+			var _v20 = revOps.a;
+			var expr = _v20.a;
+			var _v21 = _v20.b;
+			var otherRevOps = revOps.b;
+			var $temp$revOps = otherRevOps,
+				$temp$finalExpr = A2($author$project$Modules$LPBig_Parser$Impl, expr, finalExpr);
+			revOps = $temp$revOps;
+			finalExpr = $temp$finalExpr;
+			continue finalize;
+		}
+	});
+var $elm$parser$Parser$Optional = {$: 'Optional'};
+var $author$project$Modules$LPBig_Parser$createIdent = F2(
+	function (str, li) {
+		return {name: str, values: li};
+	});
+var $author$project$Modules$LPBig_Parser$nameIdentBigProp = $elm$parser$Parser$variable(
+	{
+		inner: $elm$core$Char$isUpper,
+		reserved: $elm$core$Set$fromList(_List_Nil),
+		start: $elm$core$Char$isUpper
+	});
+var $elm$parser$Parser$Advanced$loopHelp = F4(
+	function (p, state, callback, s0) {
+		loopHelp:
+		while (true) {
+			var _v0 = callback(state);
+			var parse = _v0.a;
+			var _v1 = parse(s0);
+			if (_v1.$ === 'Good') {
+				var p1 = _v1.a;
+				var step = _v1.b;
+				var s1 = _v1.c;
+				if (step.$ === 'Loop') {
+					var newState = step.a;
+					var $temp$p = p || p1,
+						$temp$state = newState,
+						$temp$callback = callback,
+						$temp$s0 = s1;
+					p = $temp$p;
+					state = $temp$state;
+					callback = $temp$callback;
+					s0 = $temp$s0;
+					continue loopHelp;
+				} else {
+					var result = step.a;
+					return A3($elm$parser$Parser$Advanced$Good, p || p1, result, s1);
+				}
+			} else {
+				var p1 = _v1.a;
+				var x = _v1.b;
+				return A2($elm$parser$Parser$Advanced$Bad, p || p1, x);
+			}
+		}
+	});
+var $elm$parser$Parser$Advanced$loop = F2(
+	function (state, callback) {
+		return $elm$parser$Parser$Advanced$Parser(
+			function (s) {
+				return A4($elm$parser$Parser$Advanced$loopHelp, false, state, callback, s);
+			});
+	});
+var $elm$parser$Parser$Advanced$Done = function (a) {
+	return {$: 'Done', a: a};
+};
+var $elm$parser$Parser$Advanced$Loop = function (a) {
+	return {$: 'Loop', a: a};
+};
+var $elm$parser$Parser$Advanced$revAlways = F2(
+	function (_v0, b) {
+		return b;
+	});
+var $elm$parser$Parser$Advanced$skip = F2(
+	function (iParser, kParser) {
+		return A3($elm$parser$Parser$Advanced$map2, $elm$parser$Parser$Advanced$revAlways, iParser, kParser);
+	});
+var $elm$parser$Parser$Advanced$sequenceEndForbidden = F5(
+	function (ender, ws, parseItem, sep, revItems) {
+		var chompRest = function (item) {
+			return A5(
+				$elm$parser$Parser$Advanced$sequenceEndForbidden,
+				ender,
+				ws,
+				parseItem,
+				sep,
+				A2($elm$core$List$cons, item, revItems));
+		};
+		return A2(
+			$elm$parser$Parser$Advanced$skip,
+			ws,
+			$elm$parser$Parser$Advanced$oneOf(
+				_List_fromArray(
+					[
+						A2(
+						$elm$parser$Parser$Advanced$skip,
+						sep,
+						A2(
+							$elm$parser$Parser$Advanced$skip,
+							ws,
+							A2(
+								$elm$parser$Parser$Advanced$map,
+								function (item) {
+									return $elm$parser$Parser$Advanced$Loop(
+										A2($elm$core$List$cons, item, revItems));
+								},
+								parseItem))),
+						A2(
+						$elm$parser$Parser$Advanced$map,
+						function (_v0) {
+							return $elm$parser$Parser$Advanced$Done(
+								$elm$core$List$reverse(revItems));
+						},
+						ender)
+					])));
+	});
+var $elm$parser$Parser$Advanced$sequenceEndMandatory = F4(
+	function (ws, parseItem, sep, revItems) {
+		return $elm$parser$Parser$Advanced$oneOf(
+			_List_fromArray(
+				[
+					A2(
+					$elm$parser$Parser$Advanced$map,
+					function (item) {
+						return $elm$parser$Parser$Advanced$Loop(
+							A2($elm$core$List$cons, item, revItems));
+					},
+					A2(
+						$elm$parser$Parser$Advanced$ignorer,
+						parseItem,
+						A2(
+							$elm$parser$Parser$Advanced$ignorer,
+							ws,
+							A2($elm$parser$Parser$Advanced$ignorer, sep, ws)))),
+					A2(
+					$elm$parser$Parser$Advanced$map,
+					function (_v0) {
+						return $elm$parser$Parser$Advanced$Done(
+							$elm$core$List$reverse(revItems));
+					},
+					$elm$parser$Parser$Advanced$succeed(_Utils_Tuple0))
+				]));
+	});
+var $elm$parser$Parser$Advanced$sequenceEndOptional = F5(
+	function (ender, ws, parseItem, sep, revItems) {
+		var parseEnd = A2(
+			$elm$parser$Parser$Advanced$map,
+			function (_v0) {
+				return $elm$parser$Parser$Advanced$Done(
+					$elm$core$List$reverse(revItems));
+			},
+			ender);
+		return A2(
+			$elm$parser$Parser$Advanced$skip,
+			ws,
+			$elm$parser$Parser$Advanced$oneOf(
+				_List_fromArray(
+					[
+						A2(
+						$elm$parser$Parser$Advanced$skip,
+						sep,
+						A2(
+							$elm$parser$Parser$Advanced$skip,
+							ws,
+							$elm$parser$Parser$Advanced$oneOf(
+								_List_fromArray(
+									[
+										A2(
+										$elm$parser$Parser$Advanced$map,
+										function (item) {
+											return $elm$parser$Parser$Advanced$Loop(
+												A2($elm$core$List$cons, item, revItems));
+										},
+										parseItem),
+										parseEnd
+									])))),
+						parseEnd
+					])));
+	});
+var $elm$parser$Parser$Advanced$sequenceEnd = F5(
+	function (ender, ws, parseItem, sep, trailing) {
+		var chompRest = function (item) {
+			switch (trailing.$) {
+				case 'Forbidden':
+					return A2(
+						$elm$parser$Parser$Advanced$loop,
+						_List_fromArray(
+							[item]),
+						A4($elm$parser$Parser$Advanced$sequenceEndForbidden, ender, ws, parseItem, sep));
+				case 'Optional':
+					return A2(
+						$elm$parser$Parser$Advanced$loop,
+						_List_fromArray(
+							[item]),
+						A4($elm$parser$Parser$Advanced$sequenceEndOptional, ender, ws, parseItem, sep));
+				default:
+					return A2(
+						$elm$parser$Parser$Advanced$ignorer,
+						A2(
+							$elm$parser$Parser$Advanced$skip,
+							ws,
+							A2(
+								$elm$parser$Parser$Advanced$skip,
+								sep,
+								A2(
+									$elm$parser$Parser$Advanced$skip,
+									ws,
+									A2(
+										$elm$parser$Parser$Advanced$loop,
+										_List_fromArray(
+											[item]),
+										A3($elm$parser$Parser$Advanced$sequenceEndMandatory, ws, parseItem, sep))))),
+						ender);
+			}
+		};
+		return $elm$parser$Parser$Advanced$oneOf(
+			_List_fromArray(
+				[
+					A2($elm$parser$Parser$Advanced$andThen, chompRest, parseItem),
+					A2(
+					$elm$parser$Parser$Advanced$map,
+					function (_v0) {
+						return _List_Nil;
+					},
+					ender)
+				]));
+	});
+var $elm$parser$Parser$Advanced$sequence = function (i) {
+	return A2(
+		$elm$parser$Parser$Advanced$skip,
+		$elm$parser$Parser$Advanced$token(i.start),
+		A2(
+			$elm$parser$Parser$Advanced$skip,
+			i.spaces,
+			A5(
+				$elm$parser$Parser$Advanced$sequenceEnd,
+				$elm$parser$Parser$Advanced$token(i.end),
+				i.spaces,
+				i.item,
+				$elm$parser$Parser$Advanced$token(i.separator),
+				i.trailing)));
+};
+var $elm$parser$Parser$Advanced$Forbidden = {$: 'Forbidden'};
+var $elm$parser$Parser$Advanced$Mandatory = {$: 'Mandatory'};
+var $elm$parser$Parser$Advanced$Optional = {$: 'Optional'};
+var $elm$parser$Parser$toAdvancedTrailing = function (trailing) {
+	switch (trailing.$) {
+		case 'Forbidden':
+			return $elm$parser$Parser$Advanced$Forbidden;
+		case 'Optional':
+			return $elm$parser$Parser$Advanced$Optional;
+		default:
+			return $elm$parser$Parser$Advanced$Mandatory;
+	}
+};
+var $elm$parser$Parser$Expecting = function (a) {
+	return {$: 'Expecting', a: a};
+};
+var $elm$parser$Parser$toToken = function (str) {
+	return A2(
+		$elm$parser$Parser$Advanced$Token,
+		str,
+		$elm$parser$Parser$Expecting(str));
+};
+var $elm$parser$Parser$sequence = function (i) {
+	return $elm$parser$Parser$Advanced$sequence(
+		{
+			end: $elm$parser$Parser$toToken(i.end),
+			item: i.item,
+			separator: $elm$parser$Parser$toToken(i.separator),
+			spaces: i.spaces,
+			start: $elm$parser$Parser$toToken(i.start),
+			trailing: $elm$parser$Parser$toAdvancedTrailing(i.trailing)
+		});
+};
+var $elm$parser$Parser$Advanced$spaces = $elm$parser$Parser$Advanced$chompWhile(
+	function (c) {
+		return _Utils_eq(
+			c,
+			_Utils_chr(' ')) || (_Utils_eq(
+			c,
+			_Utils_chr('\n')) || _Utils_eq(
+			c,
+			_Utils_chr('\r')));
+	});
+var $elm$parser$Parser$spaces = $elm$parser$Parser$Advanced$spaces;
+var $author$project$Modules$LPBig_Parser$valuesIdentBigProp = $elm$parser$Parser$oneOf(
 	_List_fromArray(
 		[
 			$elm$parser$Parser$sequence(
-			{end: '}', item: $author$project$Modules$LPBig_Parser$conditionBigProp, separator: ',', spaces: $elm$parser$Parser$spaces, start: '{', trailing: $elm$parser$Parser$Optional}),
+			{
+				end: '#',
+				item: $elm$parser$Parser$oneOf(
+					_List_fromArray(
+						[
+							A2(
+							$elm$parser$Parser$keeper,
+							A2(
+								$elm$parser$Parser$ignorer,
+								$elm$parser$Parser$succeed($elm$core$Basics$negate),
+								$elm$parser$Parser$symbol('-')),
+							$elm$parser$Parser$int),
+							$elm$parser$Parser$int
+						])),
+				separator: ',',
+				spaces: $elm$parser$Parser$spaces,
+				start: ':',
+				trailing: $elm$parser$Parser$Optional
+			}),
 			A2(
-			$elm$parser$Parser$ignorer,
-			$elm$parser$Parser$succeed(_List_Nil),
-			$elm$parser$Parser$symbol('#'))
+			$elm$parser$Parser$keeper,
+			A2(
+				$elm$parser$Parser$keeper,
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$succeed($elm$core$List$range),
+					$elm$parser$Parser$symbol('[')),
+				A2(
+					$elm$parser$Parser$ignorer,
+					$elm$parser$Parser$oneOf(
+						_List_fromArray(
+							[
+								A2(
+								$elm$parser$Parser$keeper,
+								A2(
+									$elm$parser$Parser$ignorer,
+									$elm$parser$Parser$succeed($elm$core$Basics$negate),
+									$elm$parser$Parser$symbol('-')),
+								$elm$parser$Parser$int),
+								$elm$parser$Parser$int
+							])),
+					$elm$parser$Parser$symbol(':'))),
+			A2(
+				$elm$parser$Parser$ignorer,
+				$elm$parser$Parser$oneOf(
+					_List_fromArray(
+						[
+							A2(
+							$elm$parser$Parser$keeper,
+							A2(
+								$elm$parser$Parser$ignorer,
+								$elm$parser$Parser$succeed($elm$core$Basics$negate),
+								$elm$parser$Parser$symbol('-')),
+							$elm$parser$Parser$int),
+							$elm$parser$Parser$int
+						])),
+				$elm$parser$Parser$symbol(']')))
 		]));
+var $author$project$Modules$LPBig_Parser$identBigProp = A2(
+	$elm$parser$Parser$keeper,
+	A2(
+		$elm$parser$Parser$keeper,
+		$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$createIdent),
+		$author$project$Modules$LPBig_Parser$nameIdentBigProp),
+	$author$project$Modules$LPBig_Parser$valuesIdentBigProp);
+var $author$project$Modules$LPBig_Parser$listIdentBigProp = $elm$parser$Parser$sequence(
+	{end: '}', item: $author$project$Modules$LPBig_Parser$identBigProp, separator: ',', spaces: $elm$parser$Parser$spaces, start: '{', trailing: $elm$parser$Parser$Optional});
 var $author$project$Modules$LPBig_Parser$EquivOp = {$: 'EquivOp'};
 var $author$project$Modules$LPBig_Parser$operator = $elm$parser$Parser$oneOf(
 	_List_fromArray(
@@ -7751,10 +7967,16 @@ function $author$project$Modules$LPBig_Parser$cyclic$termBigProp() {
 								$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$BAnd),
 								$elm$parser$Parser$symbol('&')),
 							$elm$parser$Parser$symbol('_')),
-						$author$project$Modules$LPBig_Parser$listIdentBigProp),
+						A2(
+							$elm$parser$Parser$ignorer,
+							$author$project$Modules$LPBig_Parser$listIdentBigProp,
+							$elm$parser$Parser$symbol('{'))),
 					A2(
 						$elm$parser$Parser$ignorer,
-						$author$project$Modules$LPBig_Parser$listconditionBigProp,
+						A2(
+							$elm$parser$Parser$ignorer,
+							$author$project$Modules$B_Expressions$expressionB,
+							$elm$parser$Parser$symbol('}')),
 						$elm$parser$Parser$symbol('('))),
 				A2(
 					$elm$parser$Parser$ignorer,
@@ -7776,10 +7998,16 @@ function $author$project$Modules$LPBig_Parser$cyclic$termBigProp() {
 								$elm$parser$Parser$succeed($author$project$Modules$LPBig_Parser$BOr),
 								$elm$parser$Parser$symbol('|')),
 							$elm$parser$Parser$symbol('_')),
-						$author$project$Modules$LPBig_Parser$listIdentBigProp),
+						A2(
+							$elm$parser$Parser$ignorer,
+							$author$project$Modules$LPBig_Parser$listIdentBigProp,
+							$elm$parser$Parser$symbol('{'))),
 					A2(
 						$elm$parser$Parser$ignorer,
-						$author$project$Modules$LPBig_Parser$listconditionBigProp,
+						A2(
+							$elm$parser$Parser$ignorer,
+							$author$project$Modules$B_Expressions$expressionB,
+							$elm$parser$Parser$symbol('}')),
 						$elm$parser$Parser$symbol('('))),
 				A2(
 					$elm$parser$Parser$ignorer,
@@ -7929,29 +8157,29 @@ var $author$project$Modules$A_Expressions$toStringAExpr = function (aExpr) {
 		case 'Add':
 			var p = aExpr.a;
 			var q = aExpr.b;
-			return $author$project$Modules$A_Expressions$toStringAExpr(p) + (' + ' + $author$project$Modules$A_Expressions$toStringAExpr(q));
+			return '(' + ($author$project$Modules$A_Expressions$toStringAExpr(p) + ('+' + ($author$project$Modules$A_Expressions$toStringAExpr(q) + ')')));
 		case 'Dif':
 			var p = aExpr.a;
 			var q = aExpr.b;
-			return $author$project$Modules$A_Expressions$toStringAExpr(p) + (' - ' + $author$project$Modules$A_Expressions$toStringAExpr(q));
+			return '(' + ($author$project$Modules$A_Expressions$toStringAExpr(p) + ('-' + ($author$project$Modules$A_Expressions$toStringAExpr(q) + ')')));
 		case 'Mul':
 			var p = aExpr.a;
 			var q = aExpr.b;
-			return $author$project$Modules$A_Expressions$toStringAExpr(p) + (' · ' + $author$project$Modules$A_Expressions$toStringAExpr(q));
+			return '(' + ($author$project$Modules$A_Expressions$toStringAExpr(p) + ('*' + ($author$project$Modules$A_Expressions$toStringAExpr(q) + ')')));
 		case 'Div':
 			var p = aExpr.a;
 			var q = aExpr.b;
-			return $author$project$Modules$A_Expressions$toStringAExpr(p) + (' / ' + $author$project$Modules$A_Expressions$toStringAExpr(q));
+			return '(' + ($author$project$Modules$A_Expressions$toStringAExpr(p) + ('/' + ($author$project$Modules$A_Expressions$toStringAExpr(q) + ')')));
 		case 'Mod':
 			var p = aExpr.a;
 			var q = aExpr.b;
-			return $author$project$Modules$A_Expressions$toStringAExpr(p) + (' mod ' + $author$project$Modules$A_Expressions$toStringAExpr(q));
+			return '(' + ($author$project$Modules$A_Expressions$toStringAExpr(p) + ('%' + ($author$project$Modules$A_Expressions$toStringAExpr(q) + ')')));
 		default:
 			var p = aExpr.a;
-			return 'Error: ' + p;
+			return 'Error:' + p;
 	}
 };
-var $author$project$Modules$LPBig_Parser$toStringComparator = function (c) {
+var $author$project$Modules$B_Expressions$toStringComparator = function (c) {
 	switch (c.$) {
 		case 'EQ':
 			return '=';
@@ -7967,37 +8195,40 @@ var $author$project$Modules$LPBig_Parser$toStringComparator = function (c) {
 			return '<=';
 	}
 };
-var $author$project$Modules$LPBig_Parser$toStringConditionBigProp = function (c) {
+var $author$project$Modules$B_Expressions$toStringCondition = function (c) {
 	return _Utils_ap(
 		$author$project$Modules$A_Expressions$toStringAExpr(c.fmember),
 		_Utils_ap(
-			$author$project$Modules$LPBig_Parser$toStringComparator(c.comp),
+			$author$project$Modules$B_Expressions$toStringComparator(c.comp),
 			$author$project$Modules$A_Expressions$toStringAExpr(c.smember)));
 };
-var $author$project$Modules$LPBig_Parser$toStringListConditionBigProp = function (lcond) {
-	var aux = F2(
-		function (lp, str) {
-			aux:
-			while (true) {
-				if (!lp.b) {
-					return '{' + (str + '}');
-				} else {
-					if (!lp.b.b) {
-						var i = lp.a;
-						return '{' + (str + ($author$project$Modules$LPBig_Parser$toStringConditionBigProp(i) + '}'));
-					} else {
-						var i = lp.a;
-						var rlp = lp.b;
-						var $temp$lp = rlp,
-							$temp$str = str + ($author$project$Modules$LPBig_Parser$toStringConditionBigProp(i) + ',');
-						lp = $temp$lp;
-						str = $temp$str;
-						continue aux;
-					}
-				}
-			}
-		});
-	return A2(aux, lcond, '');
+var $author$project$Modules$B_Expressions$toStringB_ExpressionAux = function (bexpr) {
+	switch (bexpr.$) {
+		case 'T':
+			return 'T';
+		case 'F':
+			return 'F';
+		case 'And':
+			var e1 = bexpr.a;
+			var e2 = bexpr.b;
+			return '(' + ($author$project$Modules$B_Expressions$toStringB_ExpressionAux(e1) + ('AND' + ($author$project$Modules$B_Expressions$toStringB_ExpressionAux(e2) + ')')));
+		case 'Or':
+			var e1 = bexpr.a;
+			var e2 = bexpr.b;
+			return '(' + ($author$project$Modules$B_Expressions$toStringB_ExpressionAux(e1) + ('OR' + ($author$project$Modules$B_Expressions$toStringB_ExpressionAux(e2) + ')')));
+		case 'Not':
+			var e = bexpr.a;
+			return '( NOT' + ($author$project$Modules$B_Expressions$toStringB_ExpressionAux(e) + ')');
+		case 'Cond':
+			var c = bexpr.a;
+			return '[' + ($author$project$Modules$B_Expressions$toStringCondition(c) + ']');
+		default:
+			var s = bexpr.a;
+			return s;
+	}
+};
+var $author$project$Modules$B_Expressions$toStringB_Expression = function (bexpr) {
+	return '{' + ($author$project$Modules$B_Expressions$toStringB_ExpressionAux(bexpr) + '}');
 };
 var $author$project$Modules$LPBig_Parser$toStringIdentBigProp = function (i) {
 	return _Utils_ap(
@@ -8065,12 +8296,12 @@ var $author$project$Modules$LPBig_Parser$toStringBigProp = function (prop) {
 			var li = prop.a;
 			var lc = prop.b;
 			var p = prop.c;
-			return '∧_' + ($author$project$Modules$LPBig_Parser$toStringListIdentBigProp(li) + ($author$project$Modules$LPBig_Parser$toStringListConditionBigProp(lc) + ('(' + ($author$project$Modules$LPBig_Parser$toStringBigProp(p) + ')'))));
+			return '∧_' + ($author$project$Modules$LPBig_Parser$toStringListIdentBigProp(li) + ($author$project$Modules$B_Expressions$toStringB_Expression(lc) + ('(' + ($author$project$Modules$LPBig_Parser$toStringBigProp(p) + ')'))));
 		case 'BOr':
 			var li = prop.a;
 			var lc = prop.b;
 			var p = prop.c;
-			return '∨_' + ($author$project$Modules$LPBig_Parser$toStringListIdentBigProp(li) + ($author$project$Modules$LPBig_Parser$toStringListConditionBigProp(lc) + ('(' + ($author$project$Modules$LPBig_Parser$toStringBigProp(p) + ')'))));
+			return '∨_' + ($author$project$Modules$LPBig_Parser$toStringListIdentBigProp(li) + ($author$project$Modules$B_Expressions$toStringB_Expression(lc) + ('(' + ($author$project$Modules$LPBig_Parser$toStringBigProp(p) + ')'))));
 		default:
 			var err = prop.a;
 			return 'Error:' + err;
@@ -8108,7 +8339,7 @@ var $author$project$Modules$LPBig_Parser$replaceVars = F2(
 		}
 	});
 var $author$project$Modules$LPBig_Parser$expandBForm = F4(
-	function (s, li, lc, p) {
+	function (s, li, bexpr, p) {
 		var keys = A2(
 			$elm$core$List$map,
 			function (x) {
@@ -8125,19 +8356,12 @@ var $author$project$Modules$LPBig_Parser$expandBForm = F4(
 			$elm$core$List$filter,
 			function (x) {
 				return A2(
-					$elm$core$List$all,
-					function (y) {
-						return y;
-					},
+					$elm$core$Maybe$withDefault,
+					false,
 					A2(
-						$elm$core$List$map,
-						function (y) {
-							return A2(
-								$author$project$Modules$LPBig_Parser$evalCond,
-								y,
-								_Utils_Tuple2(keys, x));
-						},
-						lc));
+						$author$project$Modules$B_Expressions$evaluateBExpr,
+						bexpr,
+						_Utils_Tuple2(keys, x)));
 			},
 			$elm_community$list_extra$List$Extra$cartesianProduct(values));
 		return _Utils_eq(posibilities, _List_Nil) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
@@ -8463,6 +8687,27 @@ var $author$project$Modules$LPBig_Parser$symbInBigProp = function (f) {
 		}
 	}
 };
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
 var $elm$core$List$member = F2(
 	function (x, xs) {
 		return A2(
@@ -8491,6 +8736,18 @@ var $author$project$Modules$LPBig_Parser$setBigPSymbols = function (xs) {
 		$elm$core$List$concat(
 			A2($elm$core$List$map, $author$project$Modules$LPBig_Parser$distinctSymbInBigProp, xs)));
 };
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$List$all = F2(
+	function (isOkay, list) {
+		return !A2(
+			$elm$core$List$any,
+			A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
+			list);
+	});
 var $author$project$Modules$LPClausalForms$compareClauses = F2(
 	function (a, b) {
 		return _Utils_eq(

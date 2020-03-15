@@ -1,4 +1,5 @@
 
+
 function hover(element) {
     var l_index =  element.getAttribute("src").lastIndexOf("/");
     var route =  element.getAttribute("src").substring(0, l_index+1);
@@ -36,3 +37,21 @@ function plotDot(text){
         .fade(false)
         .renderDot(text);
 }
+
+function readTextFile(file){
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                alert(allText);
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
