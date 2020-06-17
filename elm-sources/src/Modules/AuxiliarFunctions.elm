@@ -81,3 +81,7 @@ boolToString x =
 
     else
         "False"
+
+powerset : List a -> List (List a)
+powerset = 
+  List.foldr (\x acc -> acc ++ List.map ((::) x) acc) [[]]

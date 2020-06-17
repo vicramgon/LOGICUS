@@ -115,7 +115,7 @@ setSymbols xs = List.map distinctSymbInProp xs |> List.concat |> unique
 -- Definition of setInterpretations function that represents all posible interpretations of a set of propositional formulas
 
 allSetInterpretations : List Prop -> List Interpretation
-allSetInterpretations xs = List.map allInterpretations xs |> List.concat |> unique
+allSetInterpretations xs = powerset <| setSymbols xs
 
 -- Definition of setModel function that represents if an interpretation is model forall formulas in the set
 
@@ -138,12 +138,16 @@ isConsistence : List Prop -> Bool
 isConsistence xs = not (isInconsistence xs)
 
 isInconsistence : List Prop -> Bool
-isInconsistence xs = allSetModels xs |> List.isEmpty
+isInconsistence xs = 
+    case xs of
+        [] -> False
+        _ -> allSetModels xs |> List.isEmpty
 
 -- Definition of logic consecuence
 
 isConsecuence : List Prop -> Prop -> Bool
-isConsecuence xs x = List.filter (\y -> not(valuation x y)) (allSetModels xs) |> List.isEmpty
+isConsecuence xs x = isInconsistence (xs ++ [Neg x])
+
 
 -- ToString of a Formulas set
 toStringSet : List Prop -> String
