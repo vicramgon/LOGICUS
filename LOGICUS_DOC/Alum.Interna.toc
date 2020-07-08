@@ -1,0 +1,14 @@
+\babel@toc {spanish}{}
+\babel@toc {spanish}{}
+\contentsline {chapter}{\numberline {1}Introducción. Objetivos y organización del proyecto}{2}%
+\contentsline {chapter}{\numberline {2}LP I. Sintaxis y Semántica}{3}%
+\contentsline {chapter}{\numberline {3}LP II. Tableros Semánticos}{4}%
+\contentsline {chapter}{\numberline {4}LP III. Formas Normales y DPLL}{5}%
+\contentsline {chapter}{\numberline {5}LP IV. Sistemas Deductivos}{6}%
+\contentsline {chapter}{\numberline {6}LP V. Algoritmo de Resolución}{7}%
+\contentsline {chapter}{\numberline {7}LP VI. Modelado y Resolución de PSR a través de la LP}{8}%
+\contentsline {chapter}{\numberline {8}LPO I. Sintaxis y Semántica}{9}%
+\contentsline {chapter}{\numberline {9}LPO II. Tableros Semánticos}{10}%
+\contentsline {chapter}{\numberline {10}LPO III. Forma Prenex, Skolem y Teorema de Herbrand}{11}%
+\contentsline {chapter}{\numberline {11}LPO V. Algoritmos de Unificación y Resolución}{12}%
+\contentsline {chapter}{\numberline {12}LPO VI. Modelado y Resolución de PSR a través de la Lógica de Primer Orden}{13}%

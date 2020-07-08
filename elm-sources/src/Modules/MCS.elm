@@ -5,11 +5,10 @@ import Html.Attributes exposing (..)
 import List exposing (..)
 
 import Modules.LP_Parser exposing (..)
-import Modules.AuxiliarFunctions exposing (powerset)
+import Modules.AuxiliarFunctions exposing (powerset, unionLs)
 import Modules.LPNormalForms exposing (..)
 import Modules.SintaxSemanticsLP exposing (..)
 import Modules.LPClausalForms exposing (propClause)
-import Modules.AuxiliarFunctions exposing (unionLs)
 
 maximalSets : List (List Prop) -> List (List Prop)
 maximalSets pss = 
