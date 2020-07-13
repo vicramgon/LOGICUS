@@ -1,0 +1,14 @@
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.1}Introducción. Descripción general del capítulo}{\reset@font\mtcSfont 6}{section.2.1}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.2}Módulo SintaxSemanticsLP}{\reset@font\mtcSfont 7}{section.2.2}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.2.1}Aspectos Sintácticos}{\reset@font\mtcSSfont 7}{subsection.2.2.1}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Átomo y Fórmula Proposicional}{\reset@font\mtcSSSfont 7}{section*.2}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Conjuntos de fórmulas}{\reset@font\mtcSSSfont 8}{section*.3}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.2.2}Aspectos Semánticos}{\reset@font\mtcSSfont 8}{subsection.2.2.2}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Interpretaciones y Valor de verdad de fórmulas proposicionales. }{\reset@font\mtcSSSfont 8}{section*.4}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Modelos (tablas de verdad, satisfactibilidad y validez lógica)}{\reset@font\mtcSSSfont 9}{section*.5}}
+{\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Conjuntos de Fórmulas. Modelos, Consistencia, Validez y Consecuencia Lógica}{\reset@font\mtcSSSfont 10}{section*.6}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.3}Módulo LP\_toString}{\reset@font\mtcSfont 11}{section.2.3}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.4}Módulo A\_Expressions (Expr. Aritméticas)}{\reset@font\mtcSfont 11}{section.2.4}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.5}Módulo B\_Expressions (Expr. Booleanas)}{\reset@font\mtcSfont 11}{section.2.5}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.6}Módulo LP\_Parser}{\reset@font\mtcSfont 11}{section.2.6}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.7}Módulo LPBig\_Parser}{\reset@font\mtcSfont 11}{section.2.7}}

@@ -1,13 +1,18 @@
-module Modules.SintaxSemanticsLP exposing (..)
+module Modules.SintaxSemanticsLP exposing (
+    PSymb, Prop, Interpretation,PropSet,
+    valuation, truthTable, models, countermodels, satisfactibility, 
+    validity, insatisfactibility, setSymbols, allSetInterpretations,
+    isSetModel, allSetModels, allSetCounterModels, isConsistent,
+    isInconsistent, isConsecuence)
 
-import List exposing (..)
+import List
+import Set
+import Modules.AuxiliarFunctions as Aux 
 
-import Modules.AuxiliarFunctions as Aux exposing (..)
 
-
---Definition of types for propositional symbols ("PSymb") and for propositional formulas ("Prop"). 
---Propositional formulas can be an atomic formula, a negation os a formula, a conjunction of two formulas, an union of two formula, a implication of two formular o an equivalence of two formulas.
-
+-----------
+-- TYPES --
+-----------
 type alias PSymb = String 
 
 type Prop = Atom PSymb
@@ -17,145 +22,74 @@ type Prop = Atom PSymb
           | Impl Prop Prop
           | Equi Prop Prop
 
--- Definition of how we're going to show the formulas
-
-toStringProp : Prop -> String
-toStringProp prop =
-    case prop of
-        Atom p -> p
-        Neg p -> "¬ " ++ (toStringProp p) 
-        Conj p q -> "( " ++ (toStringProp p) ++ " ∧ "  ++ (toStringProp q) ++ " )"
-        Disj p q -> "( " ++ (toStringProp p) ++ " ∨ "  ++ (toStringProp q) ++ " )"
-        Impl p q -> "( " ++ (toStringProp p) ++ " ⟶ "  ++ (toStringProp q) ++ " )"
-        Equi p q -> "( " ++ (toStringProp p) ++ " ⟷ "  ++ (toStringProp q) ++ " )"
-
-
--- Function for the serching of all propositional symbols in a formula (allowed an not allowed reply elements)
-symbInProp : Prop -> List PSymb
-
-symbInProp f=
-    case f of
-        Atom p -> [p]
-        Neg p -> symbInProp p
-        Conj p q -> symbInProp p ++ symbInProp q
-        Disj p q -> symbInProp p ++ symbInProp q
-        Impl p q -> symbInProp p ++ symbInProp q
-        Equi p q -> symbInProp p ++ symbInProp q
-
-distinctSymbInProp : Prop -> List PSymb
-distinctSymbInProp p = unique (symbInProp p)
-
--- Definition of type Interpretations that represents the interpretations as an atoms list
-
 type alias Interpretation = List PSymb
+type alias PropSet = List Prop
 
--- Definition of function valuation that represents the valuation of a formula with a some interpretation
+-------------
+-- METHODS --
+-------------
 
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =
     case pr of
-    Atom p -> List.member p i
-    Neg p -> not (valuation p i)
-    Conj p q -> (valuation p i) && (valuation q i)
-    Disj p q ->  (valuation p i) || (valuation q i)
-    Impl p q ->  (not (valuation p i)) || (valuation q i)
-    Equi p q ->  (valuation (Impl p q) i) && (valuation (Impl q p) i)
+        Atom p -> List.member p i
+        Neg p -> not (valuation p i)
+        Conj p q -> valuation p i &&  valuation q i
+        Disj p q ->   valuation p i ||  valuation q i
+        Impl p q ->   not (valuation p i) ||  valuation q i
+        Equi p q ->   valuation (Impl p q) i &&  valuation (Impl q p) i
 
--- Definition of function allInterpretations that represents all posibles interpretations of some propsitional formula
+symbInProp : Prop -> Set.Set PSymb
 
-subsets : List PSymb -> List (List PSymb)
-subsets xs = 
-    if (List.isEmpty xs)  then [[]]
-    else 
-        let xss = subsets (fromJustLPsymb (List.tail xs))
-        in 
-            (subsetsAux (fromJustPsymb (List.head xs)) xss) ++ xss
-
-subsetsAux : PSymb -> List (List PSymb) -> List (List PSymb)
-subsetsAux x xss = List.map (\ys -> x::ys) xss
-
-
-fromJustLPsymb : Maybe (List PSymb) -> List PSymb
-fromJustLPsymb xs = 
-    case xs of 
-        Nothing -> []
-        Just value -> value
-
-fromJustPsymb : Maybe PSymb -> PSymb
-fromJustPsymb x = 
-    case x of
-        Nothing -> ""
-        Just value -> value
-
+symbInProp f=
+    case f of
+        Atom p -> Set.singleton p
+        Neg p -> symbInProp p
+        Conj p q -> Set.union (symbInProp p ) (symbInProp q)
+        Disj p q -> Set.union (symbInProp p ) (symbInProp q)
+        Impl p q -> Set.union (symbInProp p ) (symbInProp q)
+        Equi p q -> Set.union (symbInProp p ) (symbInProp q)
 
 allInterpretations : Prop -> List Interpretation
-allInterpretations x =  subsets (distinctSymbInProp x)
+allInterpretations x =  Aux.powerset <| List.sort <| Set.toList <| symbInProp x
 
--- Definition of all models of a some propositional formula
+truthTable : Prop -> List (Interpretation, Bool)
+truthTable x = List.map (\xs ->  (xs,valuation x xs)) <| allInterpretations x
 
 models : Prop -> List Interpretation
 models x = List.filter (\y -> valuation x y) (allInterpretations x)
 
--- Definition of satisfactibility, insatisfactibility and validity of a formula
+countermodels : Prop -> List Interpretation
+countermodels x = List.filter (\y -> not(valuation x y)) (allInterpretations x)
 
 satisfactibility : Prop -> Bool
-satisfactibility x = not (insatisfactibility x)
-
+satisfactibility x = List.any (\xs-> valuation x xs) (allInterpretations x)
+validity : Prop -> Bool
+validity x = models x== allInterpretations x
 insatisfactibility : Prop -> Bool
 insatisfactibility x = List.isEmpty (models x)
 
-validity : Prop -> Bool
-validity x = (models x) == (allInterpretations x)
-
--- Definition of setSymbols function that represents all symbols in a set of propositional formulas
-
-setSymbols : List Prop -> List PSymb
-setSymbols xs = List.map distinctSymbInProp xs |> List.concat |> unique
-
--- Definition of setInterpretations function that represents all posible interpretations of a set of propositional formulas
+setSymbols : List Prop -> Set.Set PSymb
+setSymbols xs = List.foldr (\x acc -> Set.union acc (symbInProp x)) Set.empty xs
 
 allSetInterpretations : List Prop -> List Interpretation
-allSetInterpretations xs = powerset <| setSymbols xs
+allSetInterpretations xs = Aux.powerset <| Set.toList <| setSymbols xs
 
--- Definition of setModel function that represents if an interpretation is model forall formulas in the set
+isSetModel : List Prop -> Interpretation -> Bool
+isSetModel xs i =  List.all (\x -> valuation x i) xs
 
-setModel : List Prop -> Interpretation -> Bool
-setModel xs i =  List.filter (\x -> not (valuation x i)) xs |> List.isEmpty
-
--- Definition of allSetModels function that represents all models of a set
 allSetModels : List Prop -> List Interpretation
-allSetModels xs = List.filter (setModel xs) (allSetInterpretations xs)
+allSetModels xs = List.filter (isSetModel xs) (allSetInterpretations xs)
 
 allSetCounterModels : List Prop -> List Interpretation
-allSetCounterModels xs = List.filter (\x -> not(setModel xs x)) <| allSetInterpretations xs
+allSetCounterModels xs = List.filter (\x -> not(isSetModel xs x)) <| allSetInterpretations xs
 
-allSetCounterPropModels : List Prop -> List (List Prop)
-allSetCounterPropModels xs =  List.map (\x -> (List.map(\y -> Atom y) x) ++ (List.map (\y -> Neg (Atom y)) <|List.filter (\y -> not (member y x)) <| setSymbols xs))<| allSetCounterModels xs
+isConsistent : List Prop -> Bool
+isConsistent xs = List.any (\x -> isSetModel xs x) <| allSetInterpretations xs
 
--- Definition of consitency and inconsistency of sets
-
-isConsistence : List Prop -> Bool
-isConsistence xs = not (isInconsistence xs)
-
-isInconsistence : List Prop -> Bool
-isInconsistence xs = 
-    case xs of
-        [] -> False
-        _ -> allSetModels xs |> List.isEmpty
-
--- Definition of logic consecuence
+isInconsistent: List Prop -> Bool
+isInconsistent xs = not(isConsistent xs)
 
 isConsecuence : List Prop -> Prop -> Bool
-isConsecuence xs x = isInconsistence (xs ++ [Neg x])
-
-
--- ToString of a Formulas set
-toStringSet : List Prop -> String
-toStringSet xs = "{" ++ toStringListPropAux xs  ++ "}" 
-
-toStringListPropAux : List Prop -> String
-toStringListPropAux xs = case List.head xs of
-    Nothing -> ""
-
-    Just y -> if List.length xs == 1 then toStringProp y else  toStringProp y ++ "," ++ toStringListPropAux (Aux.deleteFirstLs xs)
-        
+--isConsecuence xs x = List.all (\y -> valuation x y) <| allSetModels xs
+isConsecuence xs x = isInconsistent (xs ++ [Neg x])
