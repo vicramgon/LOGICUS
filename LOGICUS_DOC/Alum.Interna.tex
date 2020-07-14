@@ -12,6 +12,9 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{multicol}
+\usepackage{float}
+\usepackage{array}
+\usepackage[none]{hyphenat}
 
 \hypersetup{
     colorlinks=true, % make the links colored
@@ -23,7 +26,8 @@
 \lstset{
 basicstyle=\ttfamily,
 captionpos=b,
-frame=single
+frame=single,
+texcl=true
 }
 
 \def\blankpage{%
@@ -43,10 +47,16 @@ frame=single
   \date{Septiembre 2020}
 }
 
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+
+
 \setlength{\parskip}{1em} 
  
 \sloppy
 \begin{document}
+
+\renewcommand{\tablename}{Tabla}
 
 \dominitoc
 
@@ -113,7 +123,7 @@ En este primer capítulo vamos a estudiar, desde un punto de vista práctico, a 
 
 Recordemos que las expresiones están formadas por símbolos proposicionales, organizados en átomos (expresiones básicas) y relaciones entre ellas (conectivas), de acuerdo a esto, podemos definir un símbolo proposicional como una cadena de texto:\\
 
-\begin{lstlisting}[caption= Definición de Símbolo Proposicional como alias de String.]
+\begin{lstlisting}[caption={Definición de Símbolo Proposicional como alias de String.}]
 type alias PSymb = String 
 \end{lstlisting}
 
@@ -313,14 +323,403 @@ isConsecuence xs x = isInconsistent (xs ++ [Neg x])
 \end{lstlisting}
 
 \subsection{Código del módulo y resumen de funciones}
+\subsubsection{Código del módulo}
+\begin{lstlisting}[caption={Módulo SintaxSemanticsLP}]
+module Modules.SintaxSemanticsLP exposing (
+    PSymb, Prop, Interpretation,PropSet,
+    valuation, truthTable, models, countermodels, satisfactibility, 
+    validity, insatisfactibility, isSetModel, allSetModels, 
+    allSetCounterModels, isConsistent, isInconsistent, isConsecuence)
+
+import List
+import Set
+import Modules.AuxiliarFunctions as Aux 
+
+
+-----------
+-- TYPES --
+-----------
+type alias PSymb = String 
+
+type Prop = Atom PSymb
+          | Neg Prop
+          | Conj Prop Prop
+          | Disj Prop Prop
+          | Impl Prop Prop
+          | Equi Prop Prop
+
+type alias Interpretation = List PSymb
+type alias PropSet = List Prop
+
+
+
+-------------
+-- METHODS --
+-------------
+
+valuation : Prop -> Interpretation -> Bool
+valuation pr i =
+    case pr of
+        Atom p -> List.member p i
+        Neg p -> not (valuation p i)
+        Conj p q -> valuation p i &&  valuation q i
+        Disj p q ->   valuation p i ||  valuation q i
+        Impl p q ->   not (valuation p i) ||  valuation q i
+        Equi p q ->   valuation (Impl p q) i &&  valuation (Impl q p) i
+
+symbInProp : Prop -> Set.Set PSymb
+
+symbInProp f=
+    case f of
+        Atom p -> Set.singleton p
+        Neg p -> symbInProp p
+        Conj p q -> Set.union (symbInProp p ) (symbInProp q)
+        Disj p q -> Set.union (symbInProp p ) (symbInProp q)
+        Impl p q -> Set.union (symbInProp p ) (symbInProp q)
+        Equi p q -> Set.union (symbInProp p ) (symbInProp q)
+
+allInterpretations : Prop -> List Interpretation
+allInterpretations x =  
+    Aux.powerset <| List.sort <| Set.toList <| symbInProp x
+
+truthTable : Prop -> List (Interpretation, Bool)
+truthTable x = List.map (\xs ->  (xs,valuation x xs)) <| allInterpretations x
+
+models : Prop -> List Interpretation
+models x = List.filter (\y -> valuation x y) (allInterpretations x)
+
+countermodels : Prop -> List Interpretation
+countermodels x =
+    List.filter (\y -> not(valuation x y)) (allInterpretations x)
+
+satisfactibility : Prop -> Bool
+satisfactibility x = List.any (\xs-> valuation x xs) (allInterpretations x)
+validity : Prop -> Bool
+validity x = models x== allInterpretations x
+insatisfactibility : Prop -> Bool
+insatisfactibility x = List.isEmpty (models x)
+
+setSymbols : List Prop -> Set.Set PSymb
+setSymbols xs = 
+    List.foldr (\x acc -> Set.union acc (symbInProp x)) Set.empty xs
+
+allSetInterpretations : List Prop -> List Interpretation
+allSetInterpretations xs = Aux.powerset <| Set.toList <| setSymbols xs
+
+isSetModel : List Prop -> Interpretation -> Bool
+isSetModel xs i =  List.all (\x -> valuation x i) xs
+
+allSetModels : List Prop -> List Interpretation
+allSetModels xs = List.filter (isSetModel xs) (allSetInterpretations xs)
+
+
+
+allSetCounterModels : List Prop -> List Interpretation
+allSetCounterModels xs = 
+    List.filter (\x -> not(isSetModel xs x)) <| allSetInterpretations xs
+
+isConsistent : List Prop -> Bool
+isConsistent xs = 
+    List.any (\x -> isSetModel xs x) <| allSetInterpretations xs
+
+isInconsistent: List Prop -> Bool
+isInconsistent xs = not(isConsistent xs)
+
+isConsecuence : List Prop -> Prop -> Bool
+--isConsecuence xs x = List.all (\y -> valuation x y) <| allSetModels xs
+isConsecuence xs x = isInconsistent (xs ++ [Neg x])
+\end{lstlisting}
+
+
+\subsubsection{Funciones disponibles}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{3cm} p{13.2cm}}
+\hline
+Tipo & Descripción\\
+\hline
+\hline
+\textit{PSymb} & Alias de \textit{String}. Representa los símbolos proposicionales.\\
+\hline
+\textit{Prop}& Representa a las proposiciones o fórmulas proposicionales. Posee varios constructores según el tipo de fórmula proposicional: (\textit{Atom, Neg, Conj, Disj, Impl, Equi}).\\
+\hline
+\textit{Interpretation}& Alias de \textit{List PSymb}. Representa una interpretación, de forma que se consideran verdaderos los símbolos proposicionales que aparecen en la lista, y falsos aquellos que no aparecen.\\
+\hline
+\textit{PropSet}& Alias de \textit{List Prop}. Representa conjuntos de fórmulas.\\
+\hline
+\end{tabular}
+\caption{Módulo SintaxSemanticsLP I. Tipos}
+\vspace{0.5cm}
+\begin{tabular}{p{3cm} p{13.2cm}}
+\hline
+Método & Descripción\\
+\hline
+\hline
+\textit{valuation}& \textit{valuation: Prop -> Interpretation -> Prop}\\
+& Calcula el valor de verdad de una proposición según la interpretación dada.\\
+\hline
+\textit{truthTable}& \textit{truthTable: Prop -> List (Interpretation, Bool
+)}\\
+& Calcula la tabla de verdad asociada a una fórmula proposicional, devolviéndola como una lista de pares (Interpretación, Valoración).\\
+\hline
+\textit{models}& \textit{models: Prop -> List Interpretation}\\
+& Calcula los modelos de una fórmula proposicional.\\
+\hline
+\textit{countermodels}& \textit{countermodels: Prop -> List Interpretation}\\
+& Calcula los contramodelos de una fórmula proposicional.\\
+\hline
+\textit{satisfactibility}& \textit{satisfactibility: Prop -> Bool}\\
+& Decide si una fórmula proposicional es satisfactible o no.\\
+\hline
+\textit{validity}& \textit{validity: Prop -> Bool}\\
+& Decide si una fórmula proposicional es tautología o no.\\
+\hline
+\textit{insatisfactibility}& \textit{insatisfactibility: Prop -> Bool}\\
+& Decide si una fórmula proposicional es insatisfactible o no.\\
+\hline
+\textit{isSetModel}& \textit{isSetModel: List Prop -> Interpretation ->Bool}\\
+& Decide si una interpretación es modelo de un conjunto de fórmulas proposicionales o no.\\
+\hline
+\textit{allSetModels}& \textit{allSetModels: List Prop -> List Interpretation}\\
+& Calcula los modelos asociados a un conjunto de fórmulas proposicionales.\\
+\hline
+\textit{allSetCounterModels}& \textit{allSetCounterModels: List Prop -> List Interpretation}\\
+& Calcula los contramodelos asociados a un conjunto de fórmulas proposicionales.\\
+\hline
+\textit{isConsistent}& \textit{isConsistent: List Prop -> Bool}\\
+& Decide si un conjunto de fórmulas proposicionales es consistente o no.\\
+\hline
+\textit{isInconsistent}& \textit{isInconsistent: List Prop -> Bool}\\
+& Decide si un conjunto de fórmulas proposicionales es inconsistente o no.\\
+\hline
+\textit{isConsecuence}& \textit{isConsecuence: List Prop -> Prop -> Bool}\\
+& Decide si una fórmula es consecuencia lógica de un conjunto de fórmulas proposicionales.\\
+\hline
+\end{tabular}
+\caption{Módulo SintaxSemanticsLP II. Funciones}
+\end{table}
+
+\newpage
+
+\section{LP Parser I. Módulo LP\_Parser}
+
+En la sección anterior se ha mostrado el desarrollo necesario para la definición de las fórmulas proposicionales, pero como ya comentamos realizarlo a través de los constructores puede ser una tarea pesada por ello vamos a definir un lenguaje (a través de un Parser), que nos permita escribir las fórmulas de forma más natural, utilizando operadores infijos (\textit{LP\_Parser}) o utilizar operadores \textit{Big}, que nos permitan expresar la conjunción/disyunción de muchas fórmulas análogas sin necesidad de tener que escribirlas una a una (\textit{LPBig\_Parser})
+
+En esta sección vamos a definir un Parser que nos permita trasladar la definición de las fórmulas desde un lenguaje mucho más cercano al lenguaje de escritura de la lógica a los constructores que se han definido en el módulo anterior, y con los que trabajaran los distintos algoritmos que se van a ir desarrollando. Para ello vamos a hacer uso de algunas herramientas que nos provee Elm para la construcción del Parser.
+
+Vamos a definir las reglas asociadas a nuestro lenguaje:
+
+\begin{itemize}
+\item Las variables proposicionales (símbolos proposicionales) han de comenzar por una letra minúscula y han de contener exclusivamente caracteres alfanuméricos.
+
+\item Cada una de las fórmulas debe ir escrita entre paréntesis. Aunque en nuestro lenguaje esto es fundamental, la función parseadora de fórmulas ya incorpora estos paréntesis a la cadena leída, por lo que no es necesario que se escriban explícitamente los paréntesis.
+
+\item Se admiten los siguientes operadores:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{P{3cm} p{5cm}}
+\hline
+Operador & Descripción\\
+\hline
+\hline
+¬ & Representa la Negación.\\
+\hline
+\& & Representa la Conjunción.\\
+\hline
+| & Representa la Disjunción.\\
+\hline
+-> & Representa la Implicación.\\
+\hline
+<-> & Representa la Equivalencia.\\
+\hline
+\end{tabular}
+\caption{LP\_Parser. Operadores Proposicionales}
+\end{table}
+
+\item Se admiten espacios (pero no son obligatorios) entre los símbolos proposicionales y los operadores.
+
+\item La prioridad de los operadores viene dada según el orden de prioridad definido por la lógica proposicional, según el orden en el que aparecen en la tabla anterior.
+
+\item Para la definición de conjuntos de fórmulas proposicionales, seguir las reglas anteriores para cada una de las fórmulas, separando éstas por el símbolo \textit{;} .
+\end{itemize}
+
+\subsection{Código del módulo y resumen de funciones}
+
+\subsubsection{Código del módulo}
+
+\begin{lstlisting}[caption={Módulo LP\_Parser}, mathescape=true]
+
+module Modules.LP_Parser exposing(parserProp, parserPropSet)
+
+import Char
+import Set
+import String
+import Maybe
+
+import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), 
+                        (|=), symbol, lazy, andThen)
+
+import Modules.SintaxSemanticsLP exposing (PSymb, Prop, atomProp, negProp, 
+                                           conjProp, disjProp, implProp, 
+                                           equiProp)
+
+parserProp : String -> (Maybe (Prop), String)
+parserProp x =
+  if x == "" then
+        (Maybe.Nothing, "Argument is empty")
+  else
+    case run lpParser ("(" ++ x ++ ")") of
+      
+      Ok y-> (Maybe.Just y, "")
+
+      Err y -> (Maybe.Nothing, Debug.toString y)
+
+parserPropSet : String -> List (Maybe(Prop), String)
+parserPropSet x =  List.map parserProp <| String.split ";" x
+
+typeVar : Parser PSymb
+typeVar =
+  variable
+    { start = Char.isLower
+    , inner = \c -> Char.isAlphaNum c
+    , reserved = Set.fromList []
+    }
+
+lpParser : Parser Prop
+lpParser =
+  oneOf 
+  [ 
+    succeed atomProp
+      |. spaces
+      |= typeVar
+      |. spaces
+
+  , succeed identity 
+    |. symbol "("
+    |. spaces
+    |= lazy(\_ -> expression)
+    |. spaces
+    |. symbol ")"
+    |. spaces  
+  
+  , succeed negProp
+    |.spaces
+    |.symbol "$\neg$"
+    |.spaces
+    |= lazy(\_ -> lpParser)
+  ]
+
+expression : Parser Prop
+expression =
+  lpParser |> andThen (expressionAux [])
+
+type Operator = AndOp | OrOp | ImplOp | EquivOp
+
+operator : Parser Operator
+operator = 
+    oneOf
+    [ Parser.map (\_ -> AndOp) (symbol "&")
+    , Parser.map (\_ -> OrOp) (symbol "|")
+    , Parser.map (\_ -> ImplOp) (symbol "->")
+    , Parser.map (\_ -> EquivOp) (symbol "<->")
+    ]
+
+expressionAux : List (Prop, Operator) -> Prop -> Parser Prop
+expressionAux revOps expr =
+  oneOf
+    [ succeed Tuple.pair
+        |. spaces
+        |= operator
+        |. spaces
+        |= lpParser
+        |> andThen 
+             (\(op, newExpr) -> expressionAux ((expr,op) :: revOps) newExpr)
+    , lazy (\_ -> succeed (finalize revOps expr))
+    ]
+
+finalize : List (Prop, Operator) -> Prop -> Prop
+finalize revOps finalExpr =
+  case revOps of
+    [] ->
+      finalExpr
+
+     
+    (expr, AndOp) :: otherRevOps ->
+      finalize otherRevOps (conjProp expr finalExpr)
+
+
+    (expr, OrOp) :: (expr2, AndOp) :: otherRevOps ->
+      disjProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+
+    (expr, OrOp) :: otherRevOps ->
+      finalize otherRevOps (disjProp expr finalExpr)
+
+
+    (expr, ImplOp) :: (expr2, AndOp) :: otherRevOps ->
+      implProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+
+    (expr, ImplOp) :: (expr2, OrOp) :: otherRevOps ->
+       implProp (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
+
+    (expr, ImplOp) :: otherRevOps ->
+      finalize otherRevOps (implProp expr finalExpr)
+
+
+    (expr, EquivOp) :: (expr2, AndOp) :: otherRevOps ->
+      equiProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+
+    (expr, EquivOp) :: (expr2, OrOp) :: otherRevOps ->
+       equiProp (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
+
+    (expr, EquivOp) :: (expr2, ImplOp) :: otherRevOps ->
+       equiProp (finalize ( (expr2, ImplOp) :: otherRevOps) expr) finalExpr
+
+    (expr, EquivOp) :: otherRevOps ->
+      finalize otherRevOps (equiProp expr finalExpr)
+      
+\end{lstlisting}
+
+
+En el anexo \textit{A1. El Lenguaje Elm. Parsers} se explica cada una de las funciones del módulo Parser utilizadas en el código anterior.
+
+\subsubsection{Funciones disponibles}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{3cm} p{13.2cm}}
+\hline
+Método & Descripción\\
+\hline
+\hline
+\textit{parserProp}& \textit{parserProp : String -> (Maybe (Prop), String)}\\
+& Recibe una String y devuelve una tupla que contiene una Maybe Prop (Just Prop [si no hay errores] o Nothing [en caso de error], y una String (vacía ("") [si no hay error] o mensaje del error [en caso de error]).\\
+\hline
+\textit{parserPropSet}& \textit{parserPropSet : String -> List (Maybe(Prop), String)}\\
+& Recibe una String y devuelve una lista de tuplas (análogas a las proporcionadas por \textit{parserPropSet}) con cada una de las lecturas de las fórmulas.\\
+\hline
+\end{tabular}
+\caption{Módulo LP\_Parser. Funciones disponibles}
+\end{table}
+
+\section{LP Parser II. Módulo LPBig\_Parser}
+En la sección anterior desarrollamos un Parser para simplificar la escritura de las fórmulas. En esta vamos a realizar otro Parser que nos va a permitir utilizar los operadores \textit{bigAnd} ($\bigwedge$) y \textit{bigOr} ($\bigvee$), enfocado, principalmente, al modelado de restricciones para CSPs (\textit{Constraint Satisfaction Problems}).
+
+En este caso la complejidad del Parser es más alta, ya que hemos de recojer el conjunto de valores, que participarán en las formulas definida y estarán sujetos a una serie de filtros o condiciones (expresiones aritmetico-booleanas), por tanto hemos de realizar la adaptación de todos estos aspectos. Vamos a tratar de resumir los requisitos más relevantes y mostrar las reglas de sintáctico-semánticas asociadas a este lenguaje:
+
+\begin{itemize}
+
+\end{itemize}
+
+
+\subsection{Módulo A\_Expressions (Expr. Aritméticas)}
+\subsection{Módulo B\_Expressions (Expr. Booleanas)}
+\subsection{Módulo LPBig\_Parser}
 
 \section{Módulo LP\_toString}
 
 
-\section{Módulo A\_Expressions (Expr. Aritméticas)}
-\section{Módulo B\_Expressions (Expr. Booleanas)}
-\section{Módulo LP\_Parser}
-\section{Módulo LPBig\_Parser}
 
 \chapter{LP II. Tableros Semánticos}
 \renewcommand{\mtctitle}{}

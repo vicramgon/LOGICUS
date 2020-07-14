@@ -10,18 +10,20 @@
 \BOOKMARK [2][-]{subsection.2.2.1}{Aspectos Sint\341cticos}{section.2.2}% 10
 \BOOKMARK [2][-]{subsection.2.2.2}{Aspectos Sem\341nticos}{section.2.2}% 11
 \BOOKMARK [2][-]{subsection.2.2.3}{C\363digo del m\363dulo y resumen de funciones}{section.2.2}% 12
-\BOOKMARK [1][-]{section.2.3}{M\363dulo LP\137toString}{chapter.2}% 13
-\BOOKMARK [1][-]{section.2.4}{M\363dulo A\137Expressions \(Expr. Aritm\351ticas\)}{chapter.2}% 14
-\BOOKMARK [1][-]{section.2.5}{M\363dulo B\137Expressions \(Expr. Booleanas\)}{chapter.2}% 15
-\BOOKMARK [1][-]{section.2.6}{M\363dulo LP\137Parser}{chapter.2}% 16
-\BOOKMARK [1][-]{section.2.7}{M\363dulo LPBig\137Parser}{chapter.2}% 17
-\BOOKMARK [0][-]{chapter.3}{LP II. Tableros Sem\341nticos}{}% 18
-\BOOKMARK [0][-]{chapter.4}{LP III. Formas Normales y DPLL}{}% 19
-\BOOKMARK [0][-]{chapter.5}{LP IV. Sistemas Deductivos}{}% 20
-\BOOKMARK [0][-]{chapter.6}{LP V. Algoritmo de Resoluci\363n}{}% 21
-\BOOKMARK [0][-]{chapter.7}{LP VI. Modelado y Resoluci\363n de PSR a trav\351s de la LP}{}% 22
-\BOOKMARK [0][-]{chapter.8}{LPO I. Sintaxis y Sem\341ntica}{}% 23
-\BOOKMARK [0][-]{chapter.9}{LPO II. Tableros Sem\341nticos}{}% 24
-\BOOKMARK [0][-]{chapter.10}{LPO III. Forma Prenex, Skolem y Teorema de Herbrand}{}% 25
-\BOOKMARK [0][-]{chapter.11}{LPO V. Algoritmos de Unificaci\363n y Resoluci\363n}{}% 26
-\BOOKMARK [0][-]{chapter.12}{LPO VI. Modelado y Resoluci\363n de PSR a trav\351s de la L\363gica de Primer Orden}{}% 27
+\BOOKMARK [1][-]{section.2.3}{LP Parser I. M\363dulo LP\137Parser}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.3.1}{C\363digo del m\363dulo y resumen de funciones}{section.2.3}% 14
+\BOOKMARK [1][-]{section.2.4}{LP Parser II. M\363dulo LPBig\137Parser}{chapter.2}% 15
+\BOOKMARK [2][-]{subsection.2.4.1}{M\363dulo A\137Expressions \(Expr. Aritm\351ticas\)}{section.2.4}% 16
+\BOOKMARK [2][-]{subsection.2.4.2}{M\363dulo B\137Expressions \(Expr. Booleanas\)}{section.2.4}% 17
+\BOOKMARK [2][-]{subsection.2.4.3}{M\363dulo LPBig\137Parser}{section.2.4}% 18
+\BOOKMARK [1][-]{section.2.5}{M\363dulo LP\137toString}{chapter.2}% 19
+\BOOKMARK [0][-]{chapter.3}{LP II. Tableros Sem\341nticos}{}% 20
+\BOOKMARK [0][-]{chapter.4}{LP III. Formas Normales y DPLL}{}% 21
+\BOOKMARK [0][-]{chapter.5}{LP IV. Sistemas Deductivos}{}% 22
+\BOOKMARK [0][-]{chapter.6}{LP V. Algoritmo de Resoluci\363n}{}% 23
+\BOOKMARK [0][-]{chapter.7}{LP VI. Modelado y Resoluci\363n de PSR a trav\351s de la LP}{}% 24
+\BOOKMARK [0][-]{chapter.8}{LPO I. Sintaxis y Sem\341ntica}{}% 25
+\BOOKMARK [0][-]{chapter.9}{LPO II. Tableros Sem\341nticos}{}% 26
+\BOOKMARK [0][-]{chapter.10}{LPO III. Forma Prenex, Skolem y Teorema de Herbrand}{}% 27
+\BOOKMARK [0][-]{chapter.11}{LPO V. Algoritmos de Unificaci\363n y Resoluci\363n}{}% 28
+\BOOKMARK [0][-]{chapter.12}{LPO VI. Modelado y Resoluci\363n de PSR a trav\351s de la L\363gica de Primer Orden}{}% 29
