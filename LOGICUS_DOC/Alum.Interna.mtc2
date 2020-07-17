@@ -15,7 +15,7 @@
 {\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Código del módulo}{\reset@font\mtcSSSfont 15}{section*.9}}
 {\reset@font\mtcSSSfont\mtc@string\contentsline{subsubsection}{\noexpand \leavevmode Funciones disponibles}{\reset@font\mtcSSSfont 18}{section*.10}}
 {\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.4}LP Parser II. Módulo LPBig\_Parser}{\reset@font\mtcSfont 18}{section.2.4}}
-{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.4.1}Módulo A\_Expressions (Expr. Aritméticas)}{\reset@font\mtcSSfont 18}{subsection.2.4.1}}
-{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.4.2}Módulo B\_Expressions (Expr. Booleanas)}{\reset@font\mtcSSfont 18}{subsection.2.4.2}}
-{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.4.3}Módulo LPBig\_Parser}{\reset@font\mtcSSfont 18}{subsection.2.4.3}}
-{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.5}Módulo LP\_toString}{\reset@font\mtcSfont 18}{section.2.5}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.4.1}Módulo A\_Expressions (Expr. Aritméticas)}{\reset@font\mtcSSfont 19}{subsection.2.4.1}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.4.2}Módulo B\_Expressions (Expr. Booleanas)}{\reset@font\mtcSSfont 19}{subsection.2.4.2}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {2.4.3}Módulo LPBig\_Parser}{\reset@font\mtcSSfont 19}{subsection.2.4.3}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {2.5}Módulo LP\_toString}{\reset@font\mtcSfont 19}{section.2.5}}

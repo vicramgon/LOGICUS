@@ -706,11 +706,41 @@ Método & Descripción\\
 \section{LP Parser II. Módulo LPBig\_Parser}
 En la sección anterior desarrollamos un Parser para simplificar la escritura de las fórmulas. En esta vamos a realizar otro Parser que nos va a permitir utilizar los operadores \textit{bigAnd} ($\bigwedge$) y \textit{bigOr} ($\bigvee$), enfocado, principalmente, al modelado de restricciones para CSPs (\textit{Constraint Satisfaction Problems}).
 
-En este caso la complejidad del Parser es más alta, ya que hemos de recojer el conjunto de valores, que participarán en las formulas definida y estarán sujetos a una serie de filtros o condiciones (expresiones aritmetico-booleanas), por tanto hemos de realizar la adaptación de todos estos aspectos. Vamos a tratar de resumir los requisitos más relevantes y mostrar las reglas de sintáctico-semánticas asociadas a este lenguaje:
+En este caso la complejidad del Parser es más alta, ya que hemos de recojer el conjunto de valores, que participarán en las formulas definida y estarán sujetos a una serie de filtros o condiciones (expresiones aritmetico-booleanas), por tanto hemos de realizar la adaptación de todos estos aspectos. Vamos a tratar de resumir los requisitos más relevantes y mostrar las reglas de sintáctico-semánticas asociadas a este lenguaje, y después veremos el desarrollo que se ha desarrollado de cada uno de los puntos.
+
+\noindent\underline{Reglas Sintáctico-Semánticas}
 
 \begin{itemize}
+\item Lo primero que vamos a presentar es la estructura general de las fórmulas con operadores \textit{Big}, a lo largo de la sección iremos desarrollando cada una de las partes de estas expresiones. Mostremos la estructura:
+\begin{center} \textit{Operador} \textit{\{Declar. índices\}} \textit{\{Restricc. índices\} }  \textit{Fórmula}\end{center} 
+
+\item \textbf{\textit{Operador}}. Existen 2 posibles operadores, el operador de conjunción múltiple (\textit{BigAnd}), representado mediante el símbolo `\&\_'; y el operador de disyunción múltiple (\textit{BigOr}), representado por el símbolo `|\_'
+
+\item \textbf{\textit{Declaración de índices}}. Corresponde a la declaración de las variables que actuarán de índices de los símbolos proposicionales de las fórmulas. Además hemos de establecer los valores (numéricos enteros) que se permiten para los índices. La sintaxis de estas declaraciones es sencilla, el identificador debe comenzar por el símbolo `\_' y ha de seguir por un secuencia de caracteres alfabéticos (en mayúsculas) y/o dígitos numéricos y seguido, los valores que puede tomar dicha variable. Para ello, se permiten 2 alternativas, declaración por valores o declaración por rango. La declaración por valores consiste en definir los valores concretos que tomará la variable, para ello se da la secuencia de valores entre llaves y separados por comas (ej. \_I$\{1,2,3,4\}$). En la declaración por rango se da el rango de valores en el que se moverá la variable. Para ello se da, entre corchetes, el primer número del rango seguido de \textit{`:'} y seguido del último número del rango (ej \_I$[1:4]$). 
+
+\item \textbf{\textit{Restricción de índices}}. Podemos establecer una restricción (y sólo una) sobre los valores de las variables, que puede afectar a todas (o sólo a algunas) de las variables declaradas. Corresponde a una expresión booleana que modela las posibles restricciones sobre los valores que pueden tomar las variables. Aunque solo se permite una única restricción, esta puede estar formada por varias condiciones, así tenemos distintas estructuras y operadores que podemos utilizar en estas expresiones:
+
+\begin{itemize}
+\item \textit{Condiciones}. Establecen posibles restricciones del problema modelado.
+\begin{itemize}
+\item \underline{Condiciones básicas}. Representan expresamente el valor de verdad de la condición. \textit{`T'} corresponde a \textit{True} y \textit{`F'} corresponde a \textit{False}.
+
+\item \underline{Condiciones comparativas}. Escrita entre corchetes, compara dos expresiones aritméticas. Está compuesta por tres elementos, las expresiones que son comparadas (\textit{LHS} y \textit{RHS}) y el operador comparador, que puede ser uno de \textit{mayor o igual} (>=), \textit{menor o igual} (>=), \textit{mayor que} (>), \textit{igual} (=), \textit{distinto} (!=).\\
+\newpage
+Las expresiones aritméticas corresponden a una expresión que puede contener valores numéricos enteros, variables de índices, de las previamente declaradas, y/o operadores aritméticos: \textit{suma} (`+'), \textit{diferencia} (`-'), \textit{producto} (`*'), \textit{cociente entero} (`/') y módulo (`\%'). \\
+
+Ejemplo: 
+\textrm{\small`\&\_ {\_I[0:7], \_J[0:7]}{T}(p\_I\_J -> \&\_ {\_K[-7:7],\_U[0:7],\_V[0:7]} {[\_K!=0]AND[\_U=\_I+\_K]AND[\_V=\_J-\_K]} ($\neg$ p\_U\_V));'} 
 
 \end{itemize}
+\end{itemize}
+
+
+
+\end{itemize}
+
+
+
 
 
 \subsection{Módulo A\_Expressions (Expr. Aritméticas)}

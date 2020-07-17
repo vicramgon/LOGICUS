@@ -1,10 +1,9 @@
 module Modules.SintaxSemanticsLP exposing (
     PSymb, Prop, Interpretation,PropSet, atomProp, negProp, conjProp, 
-    disjProp, implProp, equiProp,
+    disjProp, implProp, equiProp, insatProp,
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
-    allSetCounterModels, isConsistent, isInconsistent, isConsecuence)
-
+    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, toStringProp, toStringSet)
 import List
 import Set
 import Modules.AuxiliarFunctions as Aux 
@@ -21,6 +20,7 @@ type Prop = Atom PSymb
           | Disj Prop Prop
           | Impl Prop Prop
           | Equi Prop Prop
+          | Insat
 
 type alias Interpretation = List PSymb
 type alias PropSet = List Prop
@@ -47,6 +47,9 @@ implProp = Impl
 equiProp: Prop -> Prop -> Prop
 equiProp = Equi
 
+insatProp: Prop
+insatProp = Insat
+
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =
     case pr of
@@ -56,6 +59,7 @@ valuation pr i =
         Disj p q ->   valuation p i ||  valuation q i
         Impl p q ->   not (valuation p i) ||  valuation q i
         Equi p q ->   valuation (Impl p q) i &&  valuation (Impl q p) i
+        Insat -> Basics.False
 
 symbInProp : Prop -> Set.Set PSymb
 
@@ -67,6 +71,7 @@ symbInProp f=
         Disj p q -> Set.union (symbInProp p ) (symbInProp q)
         Impl p q -> Set.union (symbInProp p ) (symbInProp q)
         Equi p q -> Set.union (symbInProp p ) (symbInProp q)
+        Insat -> Set.empty
 
 allInterpretations : Prop -> List Interpretation
 allInterpretations x =  Aux.powerset <| List.sort <| Set.toList <| symbInProp x
@@ -111,3 +116,28 @@ isInconsistent xs = not(isConsistent xs)
 isConsecuence : List Prop -> Prop -> Bool
 --isConsecuence xs x = List.all (\y -> valuation x y) <| allSetModels xs
 isConsecuence xs x = isInconsistent (xs ++ [Neg x])
+
+
+toStringProp : Prop -> String
+toStringProp prop =
+    case prop of
+        Atom p -> p
+        Neg p -> "¬ " ++ toStringProp p
+        Conj p q -> "( " ++ toStringProp p ++ " ∧ "  ++ toStringProp q ++ " )"
+        Disj p q -> "( " ++ toStringProp p ++ " ∨ "  ++ toStringProp q ++ " )"
+        Impl p q -> "( " ++ toStringProp p ++ " ⟶ "  ++ toStringProp q ++ " )"
+        Equi p q -> "( " ++ toStringProp p ++ " ⟷ "  ++ toStringProp q ++ " )"
+        Insat -> "⊥"
+        
+toStringSet : List Prop -> String
+toStringSet xs = "{" ++ toStringListPropAux xs  ++ "}" 
+
+toStringListPropAux : List Prop -> String
+toStringListPropAux xs = case xs of
+    [] -> ""
+
+    x::[] -> toStringProp x
+
+    x::ys -> toStringProp x ++ "," ++ toStringListPropAux ys
+   
+        

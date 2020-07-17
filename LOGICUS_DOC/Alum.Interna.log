@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.7.4)  14 JUL 2020 15:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.7.4)  17 JUL 2020 18:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -796,7 +796,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.35 ... de PSR a través de la LP}{23}{chapter.7}
+l.35 ... de PSR a través de la LP}{24}{chapter.7}
                                                   % [1
 
 ])
@@ -942,71 +942,93 @@ Overfull \hbox (1.23767pt too wide) in paragraph at lines 691--703
  [][] 
  []
 
-[17] [18pdfTeX warning (ext4): destination with the same identifier (name{table
-.2.4}) has been already used, duplicate ignored
+[17]
+Underfull \hbox (badness 1360) in paragraph at lines 726--727
+[]$[]$\T1/cmr/m/n/10 . Re-pre-sen-tan ex-pre-sa-men-te el va-lor de ver-dad de 
+la con-di-ci�n. \T1/cmr/m/it/10 `T'
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 728--729
+
+ []
+
+[18pdfTeX warning (ext4): destination with the same identifier (name{table.2.4}
+) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.720 \chapter
-              {LP II. Tableros Semánticos}]
+l.729 \newpage
+              ]
+Underfull \hbox (badness 10000) in paragraph at lines 730--731
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 732--734
+[]\T1/cmr/m/n/10 Ejemplo: \T1/cmr/m/n/9 `&_- _-I[0:7], _-J[0:7]T(p_-I_-J ->&_- 
+_-K[-7:7],_-U[0:7],_-V[0:7]
+ []
+
+[19]
 Cap\'{\i }tulo 3.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc3 is empty on input line 724.
-[19
+(minitoc)             Alum.Interna.mtc3 is empty on input line 758.
+[20
 
 ]
 Cap\'{\i }tulo 4.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc4 is empty on input line 729.
-[20
+(minitoc)             Alum.Interna.mtc4 is empty on input line 763.
+[21
 
 ]
 Cap\'{\i }tulo 5.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc5 is empty on input line 734.
-[21
+(minitoc)             Alum.Interna.mtc5 is empty on input line 768.
+[22
 
 ]
 Cap\'{\i }tulo 6.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc6 is empty on input line 739.
-[22
+(minitoc)             Alum.Interna.mtc6 is empty on input line 773.
+[23
 
 ]
 Cap\'{\i }tulo 7.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc7 is empty on input line 744.
-[23
+(minitoc)             Alum.Interna.mtc7 is empty on input line 778.
+[24
 
 ]
 Cap\'{\i }tulo 8.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc8 is empty on input line 750.
-[24
+(minitoc)             Alum.Interna.mtc8 is empty on input line 784.
+[25
 
 ]
 Cap\'{\i }tulo 9.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc9 is empty on input line 755.
-[25
+(minitoc)             Alum.Interna.mtc9 is empty on input line 789.
+[26
 
 ]
 Cap\'{\i }tulo 10.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc10 is empty on input line 760.
-[26
+(minitoc)             Alum.Interna.mtc10 is empty on input line 794.
+[27
 
 ]
 Cap\'{\i }tulo 11.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc11 is empty on input line 765.
-[27
+(minitoc)             Alum.Interna.mtc11 is empty on input line 799.
+[28
 
 ]
 Cap\'{\i }tulo 12.
 Package minitoc Info: I0006
-(minitoc)             Alum.Interna.mtc12 is empty on input line 770.
-[28
+(minitoc)             Alum.Interna.mtc12 is empty on input line 804.
+[29
 
 ]
 Package minitoc Info: I0009
@@ -1025,48 +1047,50 @@ Package minitoc(hints) Warning: W0024
 (minitoc(hints))                Some hints have been written 
 (minitoc(hints))                in the Alum.Interna.log file.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 772.
-[29]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 772.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 806.
+[30]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 806.
  (./Alum.Interna.aux
 LaTeX Info: Redefining \. on input line 24.
 LaTeX Info: Redefining \% on input line 24.
 LaTeX Info: Redefining \. on input line 25.
 LaTeX Info: Redefining \% on input line 25.
 )
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 772.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 772.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 806.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 806.
 Package rerunfilecheck Info: File `Alum.Interna.out' has not changed.
 (rerunfilecheck)             Checksum: 963CE5F858252305746F066662D332EB;2335.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 772.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 806.
  ) 
 Here is how much of TeX's memory you used:
- 13000 strings out of 481239
- 185536 string characters out of 5920378
+ 13006 strings out of 481239
+ 185612 string characters out of 5920378
  535609 words of memory out of 5000000
- 27391 multiletter control sequences out of 15000+600000
- 552272 words of font info for 73 fonts, out of 8000000 for 9000
+ 27395 multiletter control sequences out of 15000+600000
+ 552973 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,18n,45p,619b,1863s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texmf
-/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texlive/texmf-dist/fonts/
+ 40i,18n,45p,1077b,1863s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/share/texmf/
+fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx0900.pfb></u
-sr/share/texmf/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf/fonts
-/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/cm-sup
-er/sfbx1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx2074.pfb></us
-r/share/texmf/fonts/type1/public/cm-super/sfbx2488.pfb></usr/share/texmf/fonts/
-type1/public/cm-super/sfrm0900.pfb></usr/share/texmf/fonts/type1/public/cm-supe
-r/sfrm1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr
-/share/texmf/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf/fonts/t
-ype1/public/cm-super/sfti1000.pfb></usr/share/texmf/fonts/type1/public/cm-super
-/sfti1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb>
-Output written on Alum.Interna.pdf (33 pages, 952428 bytes).
+ts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmsy9.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbi1000.pfb></usr/shar
+e/texmf/fonts/type1/public/cm-super/sfbx0900.pfb></usr/share/texmf/fonts/type1/
+public/cm-super/sfbx1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx
+1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share
+/texmf/fonts/type1/public/cm-super/sfbx2074.pfb></usr/share/texmf/fonts/type1/p
+ublic/cm-super/sfbx2488.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0
+900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/
+texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/pu
+blic/cm-super/sfrm1728.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti10
+00.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti1200.pfb></usr/share/t
+exmf/fonts/type1/public/cm-super/sftt1000.pfb>
+Output written on Alum.Interna.pdf (34 pages, 992094 bytes).
 PDF statistics:
- 885 PDF objects out of 1000 (max. 8388607)
- 812 compressed objects within 9 object streams
- 408 named destinations out of 1000 (max. 500000)
+ 898 PDF objects out of 1000 (max. 8388607)
+ 822 compressed objects within 9 object streams
+ 409 named destinations out of 1000 (max. 500000)
  253 words of extra memory for PDF output out of 10000 (max. 10000000)
 

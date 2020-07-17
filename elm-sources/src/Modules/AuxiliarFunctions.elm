@@ -1,4 +1,4 @@
-module Modules.AuxiliarFunctions exposing (powerset, init)
+module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs)
 
 import List
 
@@ -6,11 +6,12 @@ powerset : List a -> List (List a)
 powerset = 
   List.foldr (\x acc -> acc ++ List.map ((::) x) acc) [[]]
 
-init : List a -> List a
-init xs =
-    case xs of
-        [] ->
+deleteFirstLs : List a -> List a
+deleteFirstLs xs =
+    case List.tail xs of
+        Nothing ->
             []
 
-        _ ->
-            List.reverse <| List.drop 1 <| List.reverse xs
+        Just ys ->
+            ys
+

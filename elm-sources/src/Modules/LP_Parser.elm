@@ -8,7 +8,7 @@ import Maybe
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen)
 
 
-import Modules.SintaxSemanticsLP exposing (PSymb, Prop, atomProp, negProp, conjProp, disjProp, implProp, equiProp)
+import Modules.SintaxSemanticsLP exposing (PSymb, Prop, atomProp, negProp, conjProp, disjProp, implProp, equiProp, insatProp)
 
 parserProp : String -> (Maybe (Prop), String)
 parserProp x =
@@ -54,6 +54,11 @@ lpParser =
     |.symbol "¬"
     |.spaces
     |= lazy(\_ -> lpParser)
+
+  , succeed insatProp
+    |.spaces
+    |.symbol "!"
+    |.spaces
   ]
 
 expression : Parser Prop
@@ -128,3 +133,5 @@ finalize revOps finalExpr =
 
     (expr, EquivOp) :: otherRevOps ->
       finalize otherRevOps (equiProp expr finalExpr)
+
+

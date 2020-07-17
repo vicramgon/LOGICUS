@@ -24,17 +24,17 @@
 \contentsline {subsubsection}{Código del módulo}{15}{section*.9}%
 \contentsline {subsubsection}{Funciones disponibles}{18}{section*.10}%
 \contentsline {section}{\numberline {2.4}LP Parser II. Módulo LPBig\_Parser}{18}{section.2.4}%
-\contentsline {subsection}{\numberline {2.4.1}Módulo A\_Expressions (Expr. Aritméticas)}{18}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Módulo B\_Expressions (Expr. Booleanas)}{18}{subsection.2.4.2}%
-\contentsline {subsection}{\numberline {2.4.3}Módulo LPBig\_Parser}{18}{subsection.2.4.3}%
-\contentsline {section}{\numberline {2.5}Módulo LP\_toString}{18}{section.2.5}%
-\contentsline {chapter}{\numberline {3}LP II. Tableros Semánticos}{19}{chapter.3}%
-\contentsline {chapter}{\numberline {4}LP III. Formas Normales y DPLL}{20}{chapter.4}%
-\contentsline {chapter}{\numberline {5}LP IV. Sistemas Deductivos}{21}{chapter.5}%
-\contentsline {chapter}{\numberline {6}LP V. Algoritmo de Resolución}{22}{chapter.6}%
-\contentsline {chapter}{\numberline {7}LP VI. Modelado y Resolución de PSR a través de la LP}{23}{chapter.7}%
-\contentsline {chapter}{\numberline {8}LPO I. Sintaxis y Semántica}{24}{chapter.8}%
-\contentsline {chapter}{\numberline {9}LPO II. Tableros Semánticos}{25}{chapter.9}%
-\contentsline {chapter}{\numberline {10}LPO III. Forma Prenex, Skolem y Teorema de Herbrand}{26}{chapter.10}%
-\contentsline {chapter}{\numberline {11}LPO V. Algoritmos de Unificación y Resolución}{27}{chapter.11}%
-\contentsline {chapter}{\numberline {12}LPO VI. Modelado y Resolución de PSR a través de la Lógica de Primer Orden}{28}{chapter.12}%
+\contentsline {subsection}{\numberline {2.4.1}Módulo A\_Expressions (Expr. Aritméticas)}{19}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Módulo B\_Expressions (Expr. Booleanas)}{19}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Módulo LPBig\_Parser}{19}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Módulo LP\_toString}{19}{section.2.5}%
+\contentsline {chapter}{\numberline {3}LP II. Tableros Semánticos}{20}{chapter.3}%
+\contentsline {chapter}{\numberline {4}LP III. Formas Normales y DPLL}{21}{chapter.4}%
+\contentsline {chapter}{\numberline {5}LP IV. Sistemas Deductivos}{22}{chapter.5}%
+\contentsline {chapter}{\numberline {6}LP V. Algoritmo de Resolución}{23}{chapter.6}%
+\contentsline {chapter}{\numberline {7}LP VI. Modelado y Resolución de PSR a través de la LP}{24}{chapter.7}%
+\contentsline {chapter}{\numberline {8}LPO I. Sintaxis y Semántica}{25}{chapter.8}%
+\contentsline {chapter}{\numberline {9}LPO II. Tableros Semánticos}{26}{chapter.9}%
+\contentsline {chapter}{\numberline {10}LPO III. Forma Prenex, Skolem y Teorema de Herbrand}{27}{chapter.10}%
+\contentsline {chapter}{\numberline {11}LPO V. Algoritmos de Unificación y Resolución}{28}{chapter.11}%
+\contentsline {chapter}{\numberline {12}LPO VI. Modelado y Resolución de PSR a través de la Lógica de Primer Orden}{29}{chapter.12}%
