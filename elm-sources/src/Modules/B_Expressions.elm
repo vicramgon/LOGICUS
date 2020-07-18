@@ -1,7 +1,7 @@
-module Modules.B_Expressions exposing (..)
+module Modules.B_Expressions exposing (B_Expr, evaluateBExpr, expressionB, parseBExpr, toStringB_Expression)
 
-import Modules.A_Expressions exposing (..)
-import Parser exposing (..)
+import Modules.A_Expressions exposing (A_Expr, expressionA, evaluateAExpr, toStringAExpr)
+import Parser exposing (Parser, run, oneOf, succeed, (|.), (|=), symbol, lazy, andThen)
 import List.Extra exposing (zip)
 
 type Comparator
@@ -26,11 +26,9 @@ compCondition : Parser Comparator
 compCondition=
     oneOf
         [ succeed GE
-            |. symbol ">"
-            |. symbol "="
+            |. symbol ">="
         , succeed LE
-            |. symbol "<"
-            |. symbol "="
+            |. symbol "<="
         , succeed NE
             |. symbol "!"
             |. symbol "="
@@ -129,7 +127,7 @@ evaluateBExpr expr (ls, li)= case expr of
     
     Cond c -> Just <| evalCond c (ls, li)
 
-    Error s -> Nothing
+    Error _ -> Nothing
 
 parseBExpr : String -> B_Expr
 parseBExpr str =  if str == "" then

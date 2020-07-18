@@ -1,9 +1,9 @@
-module Modules.LPBig_Parser exposing (parseBigProp, parseSetBigProp, toProp)
+module Modules.LPBig_Parser exposing (parseBigProp, parseSetBigProp, toProp, checkCorrectReadFormula, checkCorrectReadFormulaSet)
 
 import List exposing (filter, map)
 import List.Extra exposing (cartesianProduct, zip)
 import Maybe exposing (withDefault)
-import Modules.SintaxSemanticsLP exposing (Prop, atomProp, negProp, conjProp, disjProp, implProp, equiProp, insatProp)
+import Modules.SintaxSemanticsLP exposing (Prop(..))
 import Modules.B_Expressions exposing (B_Expr, evaluateBExpr, expressionB)
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen, int, Trailing(..), getChompedString, chompWhile)
 import Set exposing (fromList)
@@ -11,6 +11,7 @@ import String exposing (replace, split)
 import File exposing (toString)
 import Dict exposing (Dict)
 
+--import Html exposing (Html)
 
 type alias Ident =
     { name : String
@@ -327,30 +328,34 @@ toPropAux : BigProp -> Prop
 toPropAux x = 
     case x of
         Atom p ->
-            atomProp p
+            Modules.SintaxSemanticsLP.Atom p
 
         Neg p ->
-            negProp (toPropAux p)
+            Modules.SintaxSemanticsLP.Neg (toPropAux p)
 
         Conj p q ->
-            conjProp (toPropAux p) (toPropAux q)
+            Modules.SintaxSemanticsLP.Conj (toPropAux p) (toPropAux q)
         
         Disj p q ->
-            disjProp (toPropAux p) (toPropAux q)
+            Modules.SintaxSemanticsLP.Disj (toPropAux p) (toPropAux q)
 
         Impl p q ->
-            implProp (toPropAux p) (toPropAux q)
+            Modules.SintaxSemanticsLP.Impl (toPropAux p) (toPropAux q)
 
         Equi p q ->
-            equiProp (toPropAux p) (toPropAux q)
+            Modules.SintaxSemanticsLP.Equi (toPropAux p) (toPropAux q)
 
         _ ->
-            insatProp
+            Modules.SintaxSemanticsLP.Insat
 
-{-
-import Html
+checkCorrectReadFormula : (Maybe BigProp, String) -> Bool
+checkCorrectReadFormula (_, s) = s == ""
+
+checkCorrectReadFormulaSet : List (Maybe BigProp, String) -> Bool
+checkCorrectReadFormulaSet lp = List.all checkCorrectReadFormula lp
+
+{-main : Html msg
 main =
-    case parseBigProp <| "&_{_I{0,1,2}}{T}(|_{_J[0:1]}{T}(p_I_J | !));" of
-       (Just y, _)-> Html.text <| Debug.toString <| toProp y
-       (Nothing, mes) ->  Html.text <| mes
--}
+    let ls = parseSetBigProp <| "&_{_I{0,1,2},_J{0,1,2}}{[_I=_J]}(p_I_J); &_{_I{0,1,2},_J{0,1,2}}{[_I!=_J]}(¬p_I_J)" in
+       Html.text <| String.join "," <| List.map (\(x,y) -> if y /= "" then y else Debug.toString <| toProp <| Maybe.withDefault Insat x) ls-}
+       

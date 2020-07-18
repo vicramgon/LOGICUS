@@ -3,10 +3,10 @@ module Modules.A_Expressions exposing (A_Expr, evaluateAExpr, expressionA, parse
 import List exposing (filter, head)
 import Maybe exposing (withDefault)
 import Maybe.Extra exposing (isNothing)
-import Parser exposing (..)
+import Parser exposing (Parser, run, variable, oneOf, succeed, (|.), (|=), symbol, lazy, andThen, int)
 import Set exposing (fromList)
 import Tuple exposing (first, second)
-import Html exposing (text)
+-- import Html exposing (text)
 
 
 type A_Expr
@@ -18,34 +18,6 @@ type A_Expr
     | Div A_Expr A_Expr
     | Mod A_Expr A_Expr
     | Error String
-
-
-varsInA_Expr : A_Expr -> List String
-varsInA_Expr expr =
-    case expr of
-        Number i ->
-            []
-
-        Var s ->
-            [ s ]
-
-        Add e1 e2 ->
-            varsInA_Expr e1 ++ varsInA_Expr e2
-
-        Dif e1 e2 ->
-            varsInA_Expr e1 ++ varsInA_Expr e2
-
-        Mul e1 e2 ->
-            varsInA_Expr e1 ++ varsInA_Expr e2
-
-        Div e1 e2 ->
-            varsInA_Expr e1 ++ varsInA_Expr e2
-
-        Mod e1 e2 ->
-            varsInA_Expr e1 ++ varsInA_Expr e2
-
-        Error s ->
-            []
 
 
 evaluateAExpr : A_Expr -> List ( String, Int ) -> Maybe Int
@@ -97,7 +69,7 @@ evaluateAExpr expr ls =
             else
                 Just (modBy (withDefault 1 (evaluateAExpr e2 ls)) (withDefault 0 (evaluateAExpr e1 ls)))
 
-        Error s ->
+        Error _ ->
             Nothing
 
 
@@ -112,7 +84,7 @@ parseAExpr str =
                 y
 
             Err y ->
-                Error "Syntax Error"
+                Error ("Syntax Error" ++ Debug.toString y)
 
 
 numberParser : Parser Int
@@ -128,8 +100,8 @@ numberParser =
 varAExpr : Parser String
 varAExpr =
     variable
-        { start = Char.isUpper
-        , inner = Char.isUpper
+        { start = \c -> c == '_'
+        , inner = \c -> Char.isUpper c || Char.isDigit c
         , reserved = Set.fromList []
         }
 
@@ -268,4 +240,4 @@ toStringAExpr aExpr =
             "Error:" ++ p
 
 
-main = text <| toStringAExpr <| parseAExpr <| "4*7%2+5+3"
+-- main = text <| toStringAExpr <| parseAExpr <| "4*7%2+5+3"

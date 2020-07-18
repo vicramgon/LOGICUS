@@ -1,9 +1,8 @@
 module Modules.SintaxSemanticsLP exposing (
-    PSymb, Prop, Interpretation,PropSet, atomProp, negProp, conjProp, 
-    disjProp, implProp, equiProp, insatProp,
+    PSymb, Prop(..), Interpretation,PropSet,
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
-    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, toStringProp, toStringSet)
+    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, toStringProp, toStringSet, setSymbols)
 import List
 import Set
 import Modules.AuxiliarFunctions as Aux 
@@ -28,27 +27,6 @@ type alias PropSet = List Prop
 -------------
 -- METHODS --
 -------------
-
-atomProp: PSymb -> Prop
-atomProp = Atom
-
-negProp: Prop -> Prop
-negProp = Neg
-
-conjProp: Prop -> Prop -> Prop
-conjProp = Conj 
-
-disjProp: Prop -> Prop -> Prop
-disjProp = Disj
-
-implProp: Prop -> Prop -> Prop
-implProp = Impl
-
-equiProp: Prop -> Prop -> Prop
-equiProp = Equi
-
-insatProp: Prop
-insatProp = Insat
 
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =

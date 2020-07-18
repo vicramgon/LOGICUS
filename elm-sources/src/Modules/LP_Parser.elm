@@ -8,7 +8,7 @@ import Maybe
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen)
 
 
-import Modules.SintaxSemanticsLP exposing (PSymb, Prop, atomProp, negProp, conjProp, disjProp, implProp, equiProp, insatProp)
+import Modules.SintaxSemanticsLP exposing (PSymb, Prop(..))
 
 parserProp : String -> (Maybe (Prop), String)
 parserProp x =
@@ -36,7 +36,7 @@ lpParser : Parser Prop
 lpParser =
   oneOf 
   [ 
-    succeed atomProp
+    succeed Atom
       |. spaces
       |= typeVar
       |. spaces
@@ -49,13 +49,13 @@ lpParser =
     |. symbol ")"
     |. spaces  
   
-  , succeed negProp
+  , succeed Neg
     |.spaces
     |.symbol "¬"
     |.spaces
     |= lazy(\_ -> lpParser)
 
-  , succeed insatProp
+  , succeed Insat
     |.spaces
     |.symbol "!"
     |.spaces
@@ -98,40 +98,40 @@ finalize revOps finalExpr =
       -- And operation have the maximum priorty, so module have a unique case
 
     (expr, AndOp) :: otherRevOps ->
-      finalize otherRevOps (conjProp expr finalExpr)
+      finalize otherRevOps (Conj expr finalExpr)
 
       -- OR EXPRESSIONS CASES
       -- Or have the second maximum priority, so we need to determine how parser's going to do if it searches an and after, and if it searches something different.
 
     (expr, OrOp) :: (expr2, AndOp) :: otherRevOps ->
-      disjProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+      Disj (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
 
     (expr, OrOp) :: otherRevOps ->
-      finalize otherRevOps (disjProp expr finalExpr)
+      finalize otherRevOps (Disj expr finalExpr)
 
     -- IMPLICATION EXPRESSIONS CASES
 
     (expr, ImplOp) :: (expr2, AndOp) :: otherRevOps ->
-      implProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+      Impl (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
 
     (expr, ImplOp) :: (expr2, OrOp) :: otherRevOps ->
-       implProp (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
+       Impl (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
 
     (expr, ImplOp) :: otherRevOps ->
-      finalize otherRevOps (implProp expr finalExpr)
+      finalize otherRevOps (Impl expr finalExpr)
 
     -- EQUIVALATION EXPRESSIONS CASES
 
     (expr, EquivOp) :: (expr2, AndOp) :: otherRevOps ->
-      equiProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
+      Equi (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
 
     (expr, EquivOp) :: (expr2, OrOp) :: otherRevOps ->
-       equiProp (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
+       Equi (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
 
     (expr, EquivOp) :: (expr2, ImplOp) :: otherRevOps ->
-       equiProp (finalize ( (expr2, ImplOp) :: otherRevOps) expr) finalExpr
+       Equi (finalize ( (expr2, ImplOp) :: otherRevOps) expr) finalExpr
 
     (expr, EquivOp) :: otherRevOps ->
-      finalize otherRevOps (equiProp expr finalExpr)
+      finalize otherRevOps (Equi expr finalExpr)
 
 

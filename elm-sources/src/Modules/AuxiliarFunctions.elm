@@ -1,4 +1,4 @@
-module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs)
+module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs, unionLs, unique, uniqueBy)
 
 import List
 
@@ -14,4 +14,36 @@ deleteFirstLs xs =
 
         Just ys ->
             ys
+
+unique : List a -> List a
+unique xs =
+    List.foldl
+        (\x ac ->
+            if List.member x ac then
+                ac
+
+            else
+                x :: ac
+        )
+        []
+        xs
+
+
+uniqueBy : (a -> a -> Bool) -> List a -> List a
+uniqueBy p xs =
+    List.foldr
+        (\x ac ->
+            if List.any (\y -> p x y) ac then
+                ac
+
+            else
+                x :: ac
+        )
+        []
+        xs
+
+
+unionLs : List a -> List a -> List a
+unionLs xs ys =
+    unique <| xs ++ ys
 
