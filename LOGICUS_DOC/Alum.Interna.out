@@ -11,16 +11,19 @@
 \BOOKMARK [2][-]{subsection.2.1.1}{Estructura del cap\355tulo}{section.2.1}% 11
 \BOOKMARK [1][-]{section.2.2}{Conceptos b\341sicos de la L\363gica Proposicional}{chapter.2}% 12
 \BOOKMARK [2][-]{subsection.2.2.1}{Caracetizaci\363n b\341sica de la L\363gica Proposicional}{section.2.2}% 13
-\BOOKMARK [1][-]{section.2.3}{M\363dulo SintaxSemanticsLP}{chapter.2}% 14
+\BOOKMARK [1][-]{section.2.3}{Sint\341xis y Sem\341ntica de LP. M\363dulo SintaxSemanticsLP}{chapter.2}% 14
 \BOOKMARK [2][-]{subsection.2.3.1}{Aspectos Sint\341cticos}{section.2.3}% 15
 \BOOKMARK [2][-]{subsection.2.3.2}{Aspectos Sem\341nticos}{section.2.3}% 16
-\BOOKMARK [1][-]{section.2.4}{M\363dulo SintaxSemanticLPO}{chapter.2}% 17
-\BOOKMARK [1][-]{section.2.5}{C\363digo y funciones de los m\363dulos}{chapter.2}% 18
-\BOOKMARK [2][-]{subsection.2.5.1}{SintaxSemanticsLP}{section.2.5}% 19
-\BOOKMARK [1][-]{section.2.6}{Ejercicios Propuestos}{chapter.2}% 20
-\BOOKMARK [1][-]{section.2.7}{Resoluci\363n de los Ejercicios Propuestos}{chapter.2}% 21
-\BOOKMARK [0][-]{chapter.3}{LP II. Tableros Sem\341nticos}{}% 22
-\BOOKMARK [0][-]{section*.11}{Anexos}{}% 23
-\BOOKMARK [0][-]{appendix.Alph1}{Parsers}{}% 24
-\BOOKMARK [1][-]{section.Alph1.1}{M\363dulo LP\137Parser}{appendix.Alph1}% 25
-\BOOKMARK [2][-]{subsection.Alph1.1.1}{C\363digo del m\363dulo y resumen de funciones}{section.Alph1.1}% 26
+\BOOKMARK [1][-]{section.2.4}{Algoritmos de decisi\363n en LP}{chapter.2}% 17
+\BOOKMARK [1][-]{section.2.5}{Origen y Conceptos B\341sicos de L\363gica de Primer Orden}{chapter.2}% 18
+\BOOKMARK [2][-]{subsection.2.5.1}{Limitaciones de la L\363gica Proposicional}{section.2.5}% 19
+\BOOKMARK [2][-]{subsection.2.5.2}{Caracterizaci\363n de la L\363gica de Primer Orden}{section.2.5}% 20
+\BOOKMARK [1][-]{section.2.6}{Sint\341xis y Sem\341ntica en LPO M\363dulo SintaxSemanticLPO}{chapter.2}% 21
+\BOOKMARK [1][-]{section.2.7}{C\363digo y funciones de los m\363dulos presentados}{chapter.2}% 22
+\BOOKMARK [2][-]{subsection.2.7.1}{SintaxSemanticsLP}{section.2.7}% 23
+\BOOKMARK [2][-]{subsection.2.7.2}{SintaxSemanticsLPO}{section.2.7}% 24
+\BOOKMARK [1][-]{section.2.8}{Ejercicios Propuestos}{chapter.2}% 25
+\BOOKMARK [1][-]{section.2.9}{Resoluci\363n de los ejercicios propuestos utilizando LIUS}{chapter.2}% 26
+\BOOKMARK [0][-]{section*.13}{Anexos}{}% 27
+\BOOKMARK [0][-]{appendix.Alph1}{Parsers}{}% 28
+\BOOKMARK [1][-]{section.Alph1.1}{M\363dulo LP\137Parser}{appendix.Alph1}% 29

@@ -18,6 +18,8 @@
 \usepackage{appendix}
 \usepackage[pdf]{graphviz}
 
+\graphicspath{ {images/} }
+
 \hypersetup{
     colorlinks=true, % make the links colored
     linkcolor=black, % color TOC links in blue
@@ -63,6 +65,7 @@ texcl=true
 \renewcommand{\appendixtocname}{Anexos}
 \renewcommand{\appendixpagename}{Anexos}
 
+\newcommand{\toDo}{\fbox{TO DO}}
 \dominitoc
 
 \includepdf[pages={1}]{archivos/titlepage.pdf}
@@ -197,12 +200,12 @@ De manera que para abordar este problema desde el punto de vista lógico-proposi
 
 \item Una definición clara de qué se entiende por \textit{afirmación cierta} (\underline{Semántica})
 
-\item Mecanismos efectivos (y a poder ser eficientes) que garanticen la corrección (y preferentemente la completitud) en las deducciones. (\underline{Algoritmos de resolución})
+\item Mecanismos efectivos (y a poder ser eficientes) que garanticen la corrección (y preferentemente la completitud) en las deducciones. (\underline{Algoritmos de decisión})
 \end{itemize}
 
 A lo largo de los distintos capítulos abordaremos estos puntos para las dos representaciones más comunes, la Lógica Proposicional (\textit{LP} o \textit{PL}) y la Lógica de Primer Orden (\textit{LPO} o \textit{FOL}).
-P
-or el momento vamos a comenzar este primer capítulo abordando los dos primeros puntos para la Lógica Proposicional y la Lógica de Primer Orden, mientras que el desarrollo de las técnicas deductivas se abordará a lo largo del resto de capítulos.
+
+Por el momento vamos a comenzar este primer capítulo abordando los dos primeros puntos para la Lógica Proposicional y la Lógica de Primer Orden, dando una somera introducción al tercero para cada caso dejando el desarrollo de los algoritmos de decisión, que se irán abordando a lo largo del resto de capítulos.
 
 \subsubsection{Características fundamentales de la LP.}
 
@@ -224,13 +227,13 @@ or el momento vamos a comenzar este primer capítulo abordando los dos primeros 
 
 Profundizaremos en este aspecto en la próxima sección, cuando veamos la \textit{Sintaxis de la LP}.
 
-\item El lenguaje sólo permite modelar este tipo de afirmaciones, por lo que muchas veces puede ser difícil (o imposible) representar el problema en este tipo de Lógica, y es necesario recurrir a otras más ricas (\textit{LPO, Lógicas Modales, Lógica Fuzzy, etc}).
+\item El lenguaje sólo permite modelar este tipo de afirmaciones, por lo que muchas veces puede ser difícil (o imposible) representar el problema en este tipo de Lógica, y es necesario recurrir a otras más ricas (\textit{LPO, Lógicas Modales, Lógica Fuzzy, etc}). Especificaremos este apartado cuando tratemos las limitaciones de la LP e introduzcamos la LPO.
 
-\item Aunque esta Lógica puede resultar de una aparente sencillez, el problema \textit{SAT} corresponde a la categoría de problemas NP-completos, esto es, no existe ningún algoritmo capaz de resolver el problema planteado en un tiempo polinomial de ejecución.
+\item Aunque esta Lógica puede resultar de una aparente sencillez, el problema \textit{SAT} corresponde a la categoría de problemas NP-completos, esto es, no existe ningún algoritmo capaz de resolver el problema planteado en un tiempo polinomial de ejecución. Trataremos de nuevo este aspecto en la introducción a los algoritmos de decisión.
 
 \end{itemize}
 
-\section{Módulo SintaxSemanticsLP}
+\section{Sintáxis y Semántica de LP. Módulo SintaxSemanticsLP}
 
 En este primera sección vamos a abordar desde un punto de vista teórico-práctico, los elementos base que conforman la Lógica Proposicional, esto es la Síntaxis y la Semántica, mostrando unificadamente los desarrollos formales como las implementaciones llevadas a cabo para modelar cada uno de ellos.
 
@@ -272,7 +275,7 @@ En el lenguaje LIUS (en la definición fundamental) no son necesarios, ya que la
 
 \subsubsection{Fórmula Proposicional}
 
-Una fórmula proposicional corresponde a una fórmula atómica (un símbolo proposicional) o a conjunto de símbolos proposicionales (con cardinalidad mayor o igual que 2), relacionados entre sí por alguna de las conectivas lógicas. Formalmente, El conjunto de las fórmulas proposicionales, \textbf{PROP}, es el menor conjunto de expresiones que verifica:
+Una fórmula proposicional corresponde a una fórmula atómica (un símbolo proposicional) o a conjunto de símbolos proposicionales (con cardinalidad mayor o igual que 2), relacionados entre sí por alguna de las conectivas lógicas. Formalmente, El conjunto de las fórmulas proposicionales, $PROP$, es el menor conjunto de expresiones que verifica:
 
 \begin{itemize}
 \item $VP \subseteq PROP$
@@ -296,6 +299,7 @@ type Prop = Atom PSymb
           | Equi Prop Prop
 \end{lstlisting}
 
+\newpage
 \noindent\underline{Prioridad de las conectivas y Reducción de Paréntesis}
 
 \begin{enumerate}
@@ -346,15 +350,48 @@ A partir de este momento todas las fórmulas de los ejemplos se definirán utili
 
 Los árboles de formación corresponden a grafos de tipo árbol que muestran el desarrollo de formación de las fórmulas (siguiendo la definición recursiva de las mismas) por lo que el árbol de formación asociado a una fórmula es esencialmente único.
 
-En el lenguaje LIUS podemos generar estos árboles de formación utilizando la función \textit{formTree} definida en el módulo que estamos tratando. En la siguiente página se muestra el código de implementación de la función. (La complejidad del código reside más en aspectos técnicos relacionados con el lenguaje más que en el algoritmo, por lo que no es necesario entender el código, es suficiente con entender el método y conocer la existencia de la función).
+De hecho, en el lenguaje LIUS, podemos ver una correspondencia directa entre el árbol de formación y la definición de las fórmulas mediante el uso de los constructores. Si tomamos el ejemplo \textit{(b)}, se puede apreciar claramente como el código de definición y el árbol de formación son claramente análogos:\\
+\newpage
 
-Para poder visualizar el árbol de formación: 
+\begin{lstlisting}[caption= {Definición de $ (p \wedge r) \vee (\neg p \wedge q) \rightarrow \neg q$.}]
+b = Impl 
+        (Disj 
+            (Conj 
+            	(Atom "p") 
+            	(Atom "r")) 
+            (Conj 
+            	(Neg 
+            		(Atom "p")) 
+            	(Atom "q"))) 
+        (Neg 
+        	(Atom "q"))
+\end{lstlisting}
 
-$\Longrightarrow$ \textit{COMPLETAR}
+\begin{figure}[H]
+\centering
+\fbox{
+\includegraphics[scale=0.5]{c2s3ss1A.png}}
+\caption{Árbol de formación de la fórmula $ (p \wedge r) \vee (\neg p \wedge q) \rightarrow \neg q$}
+\end{figure}
+
+Además LIUS posee algunas funciones que nos permiten generar estos árboles de formación para poder visualizarlos.
+
+Utilizando la función \textit{formTree} definida en el módulo que estamos tratando, podemos generar un objeto \textit{Graph} que corresponde al árbol de formación. Para poder visualizarlo, podemos pasar dicho objeto \textit{Graph} a una \textit{String} que representa el Grafo en formato \textit{DOT}, con la función \textit{formTree2DOT}. 
+
+\noindent\fbox{
+\begin{minipage}{\textwidth - 0.3cm}
+\color{gray}
+\begin{center}
+\underline{PROVISIONAL}
+\end{center}
+Para visualizarl el árbol de formación podemos utilizar una herramienta externa como \url{https://dreampuf.github.io/GraphvizOnline/}, insertando el código DOT obtenido de \textit{formTree2DOT}
+\end{minipage}}
+
+A continuación se muestra el código de implementación de las funciones anteriores. La complejidad del código reside más en aspectos técnicos relacionados con el lenguaje \textit{Elm} que en el propio algoritmo, por lo que no es necesario entender el código, es suficiente con entender el método y conocer la existencia de las funciones.\\
 
 \newpage
 
-\begin{lstlisting}[caption= Definición de la función formTree]
+\begin{lstlisting}[caption= Definición de las funciones \textit{formTree} y \textit{formTree2DOT}]
 formTree : Prop -> Graph String ()
 formTree x =
     case x of
@@ -371,6 +408,7 @@ formTree x =
                 fromNodesAndEdges 
                     (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
                     ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+
         Disj p q -> 
             let 
                 (nodes1, edges1) = formTreeAux p 1
@@ -397,6 +435,7 @@ formTree x =
                     ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
         Insat -> fromNodesAndEdges [Node 0 (toStringProp x)] []
 
+
 formTreeAux : Prop -> NodeId -> (List (Node String), List (Edge ()))
 formTreeAux x nodeid=
     case x of
@@ -411,10 +450,8 @@ formTreeAux x nodeid=
                     (nodes, edges) = formTreeAux p nextid 
                 in
                     (Node nodeid (toStringProp x)::nodes, 
-                                        Edge nodeid nextid ()::edges)
-                                        
-                                        
-                                        
+                                        Edge nodeid nextid ()::edges)                               
+        
         Conj p q -> 
             let 
                 nextid1 =  Maybe.withDefault 0 
@@ -463,6 +500,19 @@ formTreeAux x nodeid=
                    ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
                        [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
                                                            edges1 ++ edges2)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         Equi p q -> 
            let 
                 nextid1 =  Maybe.withDefault 0 
@@ -480,32 +530,149 @@ formTreeAux x nodeid=
                        [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
                                                            edges1 ++ edges2)
         Insat -> ([Node nodeid (toStringProp x)], [])
+        
+formTree2DOT : Graph String () -> String
+formTree2DOT ft =
+    let myStyles =
+            { defaultStyles | 
+                node = "shape=plaintext, color=black"
+                , edge = "dir=none"}
+    in 
+        outputWithStyles myStyles (\x -> Just x) (\_ -> Nothing) ft
 \end{lstlisting}
+
+\subsubsection{Principio de inducción sobre fórmulas}
+
+Gracias a la definición de $PROP$ (y su estructura recursiva), para probar que toda fórmula proposicional satisface una cierta propiedad ($\Psi$), podemos hacerlo aplicando el método de inducción sobre fórmulas.
+
+De esta forma, probamos:
+
+\begin{enumerate}
+\item (\textit{Caso base}). Probar que todos los elementos de $VP$ tienen la propiedad $\Psi$.
+\item (\textit{Paso de inducción}).
+\begin{enumerate}
+\item Si $F \in PROP$ tiene la propiedad $\Psi$, entonces $\neg F$ tiene la propiedad $\Psi$.
+\item Si $F, G \in PROP$, tienen la propiedad $\Psi$ entonces  $(F \wedge G), (F \vee G), (F \rightarrow G), (F \leftrightarrow G) \in PROP$ tienen la propiedad $\Psi$
+\end{enumerate}
+\end{enumerate}
 
 \subsubsection{Conjuntos de fórmulas}
 
-Definidas las fórmulas proposicionales, definiremos los conjuntos de fórmulas como listas de fórmulas proposicionales de manera que una misma fórmula puede aperecer varias veces en el conjunto. De esta forma: \\
+Definido $PROP$, los conjuntos de fórmulas no son más que subconjuntos de $PROP$, estoes, corresponden a agrupaciones de fórmulas proposicionales. 
+
+En el lengaje LIUS, los conjuntos proposicionales se definen como listas de fórmulas proposicionales. De esta forma: \\
 
 \begin{lstlisting}[caption= Definición de Conjunto de Fórmulas como Lista de Fórmulas Proposicionales]
 type alias PropSet = List Prop
 \end{lstlisting}
 
+De forma que la definición de estos se realiza como listas de objetos \textit{Prop}. Como ejemplo, el conjunto $ \left\lbrace (p \wedge q) \vee (p \wedge r), (p \wedge r) \vee (\neg p \wedge q) \rightarrow \neg q, (p \leftrightarrow q) \wedge (p \rightarrow \neg q) \wedge p \right\rbrace$\\
+
+
+\begin{lstlisting}[caption= {Ejemplo de definición de conjuntos proposicionales.}]
+a : Prop
+a = Disj (Conj (Atom "p") (Atom "q")) (Conj (Atom "p") (Atom "r"))
+ 
+b : Prop   
+b = Impl 
+        (Disj 
+            (Conj (Atom "p") (Atom "r")) 
+            (Conj (Neg (Atom "p")) (Atom "q"))
+        ) 
+        (Neg (Atom "q"))
+
+c : Prop
+c = Conj 
+        (Conj 
+            (Equi (Atom "p") (Atom "q")) 
+            (Impl (Atom "p") (Neg (Atom "q"))) 
+        (Atom "p")
+
+M: PropSet      
+M = [a, b, c]
+\end{lstlisting}
+
+Para facilitar su escritura, en el módulo \textit{LP\_Parser}, se incluye la función \textit{parserPropSet}, que nos permite definirlos como lo hacemos con el Parser de funciones proposicionales, separando éstas por `\textit{;}'. Recomendamos vea la definición, explicación y ejemplos en el (\hyperref[sec:A1.LPParser]{\textit{\underline{Anexo A1. LP\_Parser}}}).
+
 \subsection{Aspectos Semánticos}
 \subsubsection{Interpretaciones y Valor de verdad de fórmulas proposicionales. }
 
-Una vez provista la sintaxis, pasamos a desarrollar la semántica de la Lógica Proposicional. Aunque en secciones futuras mostraremos la implementación del parser, por ahora vasta conocer la estructura de las fórmulas para hacer abordable la implementación que se ha llevado a cabo de la semática del lenguaje de la lógica de proposiciones.
+Una vez provista la sintaxis, pasamos a desarrollar la semántica de la Lógica Proposicional. Como ya comentamos, hemos de abordar la interpretación de certeza o veracidad de las fórmulas. Para esto es necesario conocer los conceptos de \textit{valor de verdad} y \textit{función de verdad}.
 
-Como ya se ha comentado, y explicado en los fundamentos teóricos, hemos de abordar la interpretación de las fórmulas, y para ello hemos de crear las estructuras necesarias que nos permitan representar interpretaciones, esto es, definir los símbolos proposicionales con valor de verdad 1 y aquellos con valor 0. Para ello, hemos elegido una representación "dispersa" de manera que una interpretación corresponde a una lista de símbolos proposicionales que son los que son considerados verdaderos, los términos que no aparecen en la lista serán considerados como falsos.\\
+\begin{itemize}
+\item \textbf{Valor de verdad}. Los elementos del conjunto $\{0,1\}$ se denominan valores de verdad o valores booleanos. Representan si un hecho es cierto o no, de forma que el valor $1$ se asocia a \textit{verdadero} y el valor $0$ a \textit{falso}.
+
+\item \textbf{Funciones de verdad}. Corresponden a funciones que devuelven un valor de verdad según el valor de verdad de los argumentos. Así, el significado (valor de verdad asociado) de cada una de las conectivas lógicas viene dado por una función de verdad, de forma que:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item 
+$H_{\neg}(i) = \left\lbrace \begin{array}{l l}
+1 & \textrm{si } i = 0\\
+0 & \textrm{si } i = 1\\
+\end{array} \right.$
+
+\item 
+$H_{\wedge}(i,j) = \left\lbrace \begin{array}{l l}
+1 & \textrm{si } i = j = 1\\
+0 & \textrm{e.o.c}\\
+\end{array} \right.$
+
+\item 
+$H_{\vee}(i,j) = \left\lbrace \begin{array}{l l}
+0 & \textrm{si } i = j = 0\\
+1 & \textrm{e.o.c}\\
+\end{array} \right.$
+
+\item 
+$H_{\rightarrow}(i,j) = \left\lbrace \begin{array}{l l}
+0 & \textrm{si } i = 1, j = 0\\
+1 & \textrm{e.o.c}\\
+\end{array} \right.$
+
+\item 
+$H_{\leftrightarrow}(i,j) = \left\lbrace \begin{array}{l l}
+1 & \textrm{si } i = j\\
+0 & \textrm{e.o.c}\\
+\end{array} \right.$
+\end{itemize}
+\end{multicols}
+
+\end{itemize}
+
+Visto esto, pasamos a estudiar el valor de verdad de las fórmulas proposicionales. Para ello debemos definir el valor de verdad de las variables proposicionales, (denominadas \textit{valoraciones} o \textit{interpretaciones}) y a partir de estas y las funciones de verdad de las conectivas,podemos extender cada valoración,$v$,de forma única,al conjunto de todas las fórmulas de manera que para cada fórmula $F$ se verifique:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item $v(\neg F)= H_{\neg}(v(F))$
+\item $v((F \wedge G))= H_{\wedge}(v(F), v(G))$
+\item $v((F \vee G))= H_{\vee}(v(F), v(G))$
+\item $v((F \rightarrow G))= H_{\rightarrow}(v(F), v(G))$
+\item $v((F \leftrightarrow G))= H_{\leftrightarrow}(v(F), v(G))$
+\end{itemize}
+\end{multicols}
+
+Se dice que $v(F)$ es el valor de verdad de $F$ respecto de la valoración $v$.
+
+De esta forma, es sencillo realizar el cálculo del valor de verdad de una fórmula respecto de una valoración, recurriendo al árbol de formación de la fórmula, evaluando las subfórmulas, desde las hojas (variables proposicionales) hasta el nodo raíz (la fórmula completa). Por ejemplo el cálculo de la valoración de $F \equiv \neg(\neg(p \vee q)\vee(\neg r \vee s))$ respecto de $v \equiv \{p=1, q=1, r=0, s=0\}$:
+
+\begin{figure}[H]
+\centering
+\fbox{
+\includegraphics[scale=0.5]{c2s3ss2A.png}}
+\caption{Ejmplo del cálculo de la valoración a través del árbol de formación}
+\end{figure}
+
+Para poder modelar la semántica de la LP, en el lenguaje LIUS, se han definido las estructuras necesarias que nos permitan representar las interpretaciones (o valoraciones). Para ello, hemos elegido una representación "dispersa" de manera que una interpretación corresponde a una lista de símbolos proposicionales (variables proposicionales) que son los que son considerados verdaderos, los términos que no aparecen en la lista serán considerados como falsos.\\
 
 \begin{lstlisting}[caption= Definición de Interpretación como Lista de Símbolos Proposicionales]
 type alias Interpretation = List PSymb
 \end{lstlisting}
 
-De esta forma podemos definir, de forma sencilla la evaluación de las fórmulas, de forma que el valor de verdad de un símbolo se reduce a la pertenencia del mismo a la lista de interpretación, de esta forma, podemos, dada la estructura recursiva definida para las fórmulas proposicionales, establecer una función, tambieén recursiva, que nos permite evaluar las mismas:
+De esta forma podemos definir, de forma sencilla el valor de verdad de una fórmula respecto de una valoración. Como hemos señalado antes, el árbol de formación es equivalente a la definición recursiva que hemos adoptado para el modelado de las fórmulas proposicionales, de forma que podemos realizar el cálculo de igual forma que la presentada con el árbol de formación, de forma que:
 
 \begin{itemize}
 \item (\textit{Caso base}) Una fórmula atómica será verdadera si y sólo si el símbolo proposicional pertenece a la lista de interpretación.
-
 \item (Casos recursivos) Según la clase de fórmula:
 \begin{itemize}
 \item La negación de una fórmula será verdadera respecto de una interpretación si y sólo si la evaluación de la fórmula es falsa.
@@ -515,7 +682,7 @@ De esta forma podemos definir, de forma sencilla la evaluación de las fórmulas
 \item La equivalencia será verdadera respecto de una interpretación si y sólo si la evaluación del antecedente coincide con la evaluación del consecuente.\\
 \end{itemize} 
 
-\begin{lstlisting}[caption= Función de evaluación de las fórmulas proposicionales]
+\begin{lstlisting}[caption= {Función de valoración de las fórmulas proposicionales}]
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =
     case pr of
@@ -528,13 +695,22 @@ valuation pr i =
 \end{lstlisting}
 \end{itemize}
 
-\subsubsection{Modelos (tablas de verdad, satisfactibilidad y validez lógica)}
+\subsubsection{Interpretaciones. Modelos. Satisfactibilidad y Validez Lógica}
 
-Desde el punto de vista teórico las tablas de verdad corresponden a estructuras que reflejan el valor de verdad de una fórmula proposicional respecto de cada una de las posibles interpretaciones posibles para la fórmula. Entonces, para poder construir la tabla de verdad, primero hemos de calcular todas las interpretaciones posibles, que, dada la definición que hemos proporcionado para las interpretaciones, correspondería a todos los conjuntos posibles (\textit{powerset}) que podríamos construir con los símbolos proposicionales que aparecen en la fórmula. Así:\\
+Existen métodos alternativos (pero equivalentes) para el cálculo del valor de verdad de una fórmula respecto de una valoración. Dado que, dada una valoración,$v$, el valor de verdad de una fórmula $F$ respecto de $v$ está determinado por los valores de verdad de las subfórmulas de $F$, podemos construir una tabla que recorra los valores de sus subfórmulas:
 
-\newpage
+\begin{figure}[H]
+\centering
+\fbox{
+\includegraphics[scale=0.5]{c2s3ss2B.png}}
+\caption{Ejmplo del cálculo de la valoración a través de tabla}
+\end{figure}
 
-\begin{lstlisting}[caption= Función para extraer los símbolos proposicionales que intervienen en una fórmula]
+Una tabla de verdad corresponde a una estructura similar a la anterior (nosotros sólo reflejaremos el valor de las variables proposicionales y el valor de verdad de la fórmula completa), en la que en cada fila se presenta la valoración y el valor de verdad de la fórmula respecto a la misma, para toda interpretación posible (que corresponda a las variables proposicionales presentes en la fórmula).
+
+En el lenguaje LIUS, para poder construir la tabla de verdad, primero hemos de calcular todas las interpretaciones posibles, que, dada la definición dispersa que hemos adoptado, correspondería a todos los posibles subconjuntos (\textit{powerset}) que podríamos construir con los símbolos proposicionales que aparecen en la fórmula. Así:\\
+
+\begin{lstlisting}[caption= {Función para extraer los símbolos proposicionales que intervienen en una fórmula}]
 symbInProp : Prop -> Set PSymb
 
 symbInProp f=
@@ -547,7 +723,7 @@ symbInProp f=
         Equi p q -> Set.union (symbInProp p ) (symbInProp q)
 \end{lstlisting}
 
-\begin{lstlisting}[caption= Función para extraer las posibles interpretaciones para una fórmula propsicional]
+\begin{lstlisting}[caption= {Función para extraer las posibles interpretaciones para una fórmula propsicional}]
 allInterpretations : Prop -> List Interpretation
 allInterpretations x =  Aux.powerset <| List.sort <| Set.toList 
                                                          <| symbInProp x
@@ -555,14 +731,37 @@ allInterpretations x =  Aux.powerset <| List.sort <| Set.toList
 
 De esta forma podemos expresar la tabla de verdad como una lista de tuplas en las que el primer elemento corresponde a la interpretación y el segundo corresponde a la evaluación de la fórmula respecto de dicha valoración:\\
 
-\begin{lstlisting}[caption= Función para la construcción de la tabla de verdad de una fórmula]
+\begin{lstlisting}[caption= {Función para la construcción de la tabla de verdad de una fórmula}]
 truthTable : Prop -> List (Interpretation, Bool)
 truthTable x = List.map (\xs ->  (xs,valuation x xs)) <| allInterpretations x
 \end{lstlisting}
 
-Una vez estudiado lo anterior, los modelos corresponden a las interpretaciones que son evaluadas verdaderas, esto es, de las posibles interpretaciones aquellas hacen la fórmula verdadera. Aquellas interpretaciones que hacen la fórmula falasa se denominan contramodelos. Así:\\
+\noindent\underline{Modelos. Validez y Satisfactibilidad}
 
-\begin{lstlisting}[caption= Función para el cálculo de los modelos de una fórmula proposicional]
+Una vez estudiado lo anterior, vamos dar unas cuantas definiciones:
+
+\begin{itemize}
+\item \textbf{Modelo.} Se dice que una fórmula $F$ es válida en una valoración $v$ o equivalentemente que $v$ es \textbf{modelo} de $F$ si $v(F)=1$ y se denota por $v \models F$. En caso contrario, se dice que $v$ es \textbf{contramodelo} de $F$ y se denota $v \not \models F$.
+
+\item \textbf{Satisfactibilidad.} Una fórmula $F$ se dice \textbf{satisfactible} (o consistente) si existe una valoración $v$ que es modelo de $F$. En caso contrario se dice que $F$ es \textbf{insatisfactible} (o inconsistente), y se representa por $\perp$.
+
+\item \textbf{Validez lógica o Tautología}. Una fórmula $F$ se dice \textbf{tautología} (o (lógicamente) válida) si toda valoración es modelo de $F$ y se denota $\models F$.
+
+\end{itemize} 
+
+\noindent \textit{Relación entre Validez y Satisfactibilidad}
+
+\fbox{\begin{minipage}{\textwidth - 0.7cm}
+LEMA: Para cada $F \in PROP$ se verifica:
+\begin{enumerate}
+\item Si $F$ es tautología, entonces $F$ es satisfactible.
+\item $F$ es tautología si y sólo si $F$ es insatisfactible.
+\end{enumerate}
+\end{minipage}}
+
+Como se ha expuesto, los modelos corresponden a las interpretaciones que son evaluadas verdaderas, esto es, de las posibles interpretaciones aquellas hacen la fórmula verdadera. Aquellas interpretaciones que hacen la fórmula falas se denominan contramodelos. Así:\\
+
+\begin{lstlisting}[caption= {Función para el cálculo de los modelos de una fórmula proposicional}]
 models : Prop -> List Interpretation
 models x = List.filter (\y -> valuation x y) (allInterpretations x)
 
@@ -571,17 +770,8 @@ countermodels x = List.filter (\y -> not (valuation x y))
                                                (allInterpretations x)
 \end{lstlisting}
 
-Definidos los modelos, podemos así mismo definir (funcionalmente) los conceptos de satisfactibilidad y validez, de forma que:
+Definidos los modelos, podemos así mismo definir (funcionalmente) los conceptos de satisfactibilidad y validez, de acuerdo a las definiciones expuestas:\\
 
-\begin{itemize}
-\item Una fórmula es satisfactible si posee al menos un modelo.
-\item Una fórmula es lógicamente válida o tautología si toda interpretación es modelo de la fórmula.
-\item Una fórmula es insatisfactible o contradicción si no posee ningún modelo.
-\end{itemize}
-
-De esta forma:
-
-\newpage
 
 \begin{lstlisting}[caption={Funciones de Satisfactibilidad, Validez e Insatisfactibilidad}]
 satisfactibility : Prop -> Bool
@@ -594,9 +784,17 @@ insatisfactibility : Prop -> Bool
 insatisfactibility x = not (satisfactibility x)
 \end{lstlisting}
 
-\subsubsection{Conjuntos de Fórmulas. Modelos, Consistencia, Validez y Consecuencia Lógica}
+\subsubsection{Conjuntos de Fórmulas. Modelos y Consistencia.}
 
-Vista la satisfactibilidad, modelos, etc. aplicadas a una fórmula, pasamos a desarrollar los métodos necesarios para el estudio de la satisfactibilidad (consistencia) , inconsistencia en conjuntos de fórmulas. Ahora los modelos del conjunto de fórmulas corresponden a las interpretaciones tales que hacen verdaderas todas las fórmulas del conjunto. Para obtener los modelos hemos, al igual que en el caso de las fórmulas, obtener el conjunto de símbolos proposicionales y a partir de estos el conjunto de todas las posibles interpretaciones. De forma que:\\
+De forma análoga a la presentada para las fórmulas proposicionales podemos definir los conceptos anteriores, aplicados a conjuntos de fórmulas de forma que:
+
+\begin{itemize}
+\item \textbf{Modelo.} Se dice que una valoración $v$ es \textbf{modelo} de un conjunto de fórmulas $U$ si para toda fórmula $F \in U$ se tiene que $v(F)=1$ y se denota por $v \models U$. En caso contrario, se dice \textbf{contramodelo}.
+
+\item \textbf{Consistencia} Un conjunto de fórmulas $U$ se dice \textbf{consistente} si existe una valoración $v$ que es modelo de $U$. En caso contrario se dice que $U$ es \textbf{inconsistente}.
+\end{itemize}
+
+Funcionalmente la definición de los conceptos anteriores es análoga a la de las fórmulas. De forma que:\\
 
 \begin{lstlisting}[caption={Modelos y contramodelos en conjuntos de fórmulas proposicionales}]
 setSymbols : List Prop -> Set PSymb
@@ -618,7 +816,7 @@ allSetCounterModels xs =
 \end{lstlisting}
 
 
-De forma que ahora, es sencillo, comprobar la consistencia de un conjunto a partir de la definición: \textit{`Un conjunto es consistente si posee, al menos, un modelo. En caso contrario es inconsistente'}\\
+De forma que ahora, es sencillo, comprobar la consistencia de un conjunto a partir de la definición:
 
 \begin{lstlisting}[caption={Consistencia e Inconsistencia en Conjuntos Proposicionales}]
 isConsistent : List Prop -> Bool
@@ -629,7 +827,30 @@ isInconsistent: List Prop -> Bool
 isInconsistent xs = not(isConsistent xs)
 \end{lstlisting}
 
-Por último nos queda definir el concepto de consecuencia lógica. Acudiendo a la definición: \textit{`Una fórmula es consecuencia lógica de un conjunto de fórmulas si y sólo si todo modelo del conjunto es también modelo de la fórmula'}, pero también \textit{`Una fórmula es consecuencia lógica de un conjunto de fórmulas si la unión del conjunto y el conjunto formado por la negación del la fórmula es inconsistente.'}. De esta forma podemos plantear dos desarrollos alternativos:\\
+\subsubsection{Consecuencia Lógica.}
+
+Por último nos queda definir el concepto de \textbf{consecuencia lógica}. Una fórmula $F$ es consecuencia lógica (o se sigue) de un conjunto de fórmulas $U$, y se denota por $U \models F$, si toda valoración que es modelo de $U$ es también modelo de $F$.
+
+Es precisamente este concepto el que permite formular el problema básico en el marco de la lógica proposicional, que planteamos como objetivo de la LP.
+
+\noindent\textit{Relación entre consecuencia lógica, consistencia y validez}
+
+\fbox{\begin{minipage}{\textwidth - 0.7cm}
+PROPOSICIÓN: Sea $\{F_1, F_2, \ldots, F_n \} \in PROP$ y $F \in PROP$ son equivalentes:
+\begin{enumerate}
+\item $\{F_1, F_2, \ldots, F_n \} \models F$
+\item $(F_1 \wedge F_2 \wedge \ldots \wedge F_n \rightarrow F) \in TAUT$
+\item $\{F_1 , F_2 , \ldots , F_n , \neg F\}\equiv \perp$
+\end{enumerate}
+\end{minipage}}
+
+
+Funcionalmente, podemos plantear dos desarrollos alternativos para el concepto de Consecuencia Lógica:
+\begin{enumerate}
+\setlength{\leftskip}{0.5cm}
+\item Acudiendo a la propia definición.
+\item Acudiendo al tercer punto de la proposición anterior.
+\end{enumerate}
 
 \begin{lstlisting}[caption={Consecuencia Lógica}]
 isConsecuence : List Prop -> Prop -> Bool
@@ -639,26 +860,64 @@ isConsecuence : List Prop -> Prop -> Bool
 isConsecuence xs x = isInconsistent (xs ++ [Neg x])
 \end{lstlisting}
 
+\section{Algoritmos de decisión en LP}
 
+Como hemos señalado vamos a presentar de forma somera los algoritmos de decisión en LP, e iremos desarrollando algunos de los algoritmos más importantes a lo largo de los distintos capítulos.
 
+Dado un conjunto de fórmulas $U$, un \textbf{algoritmo de decisión} para $U$ es aquél que dada una fórmula $A \in PROP$, devuelve \texttt{SI} cuando $A \in U$ y \texttt{NO} cuando $A \not\in U$
+
+Esto da pie a la definición de algunos problemas con un especial interés:
+\begin{itemize}
+\item $SAT = \{A \in PROP: \, A \textit{ es satisfactible}\}$.
+\item $TAUT = \{A \in PROP: \, A \textit{ es tautología}\}$.
+\item Fijado $U \subseteq PROP$, la \textbf{Teoría de $U$} corresponde a: $\mathcal{T}(U) = \{A \in PROP: \, U \models A\}$. 
+\end{itemize}
+
+Precisamente, un algoritmo de decisión para $\mathcal{T}(U)$ proporciona una respuesta al Problema Básico que planteamos al comienzo del capítulo. Por tanto, podemos reducir dicho problema a uno nuevo: Obtener un algoritmo que, dado un conjunto finito de fórmulas proposicionales, $U$, y una fórmula, $F$, decida si $U \models F$.
+
+Y este a su vez se reduce a comprobar la satisfactibilidad de una cierta fórmula (o bien la validez de otra), hemos aquí el problema conocido como \textit{Problema $SAT$}. 
+
+Notemos que ya hemos visto un algoritmo, el de las Tablas de Verdad, que resuelve el problema, pero la complejidad de dicho algoritmo es exponencial en el número de símbolos proposicionales, lo que lo hace inabordable para fórmulas de cierta complejidad , incluso computacionalmente.
+
+Hemos de señalar que existen otros algoritmos de decisión del problema $SAT$, algunos de los cuales abordaremos a lo largo de los siguientes capítulos, pero aún no se ha encontrado ninguno capaz de resolver el problema eficientemente (complejidad polinomial), y, de hecho, se duda de la existencia del mismo. De hecho, determinar la satisfactibilidad de una fórmula proposicional se trata de un problema NP-completo.
+
+\section{Origen y Conceptos Básicos de Lógica de Primer Orden}
+
+\subsection{Limitaciones de la Lógica Proposicional}
+
+Aunque a lógica proposicional posee un semántica sencilla y existen algoritmos de decisión (poco eficientes) para sus problemas básicos, como $SAT$ o la consecuencia lógica, la expresividad de LP es bastante limitada, esto hace que muchos problemas no sean modelables en LP, bien porque requieren un gran número de fórmulas o fórmulas de gran tamaño, o bien porque no puedan ni siquiera expresarse en este lenguaje. 
 \newpage
+El siguiente ejemplo presenta un razonamiento que es válido, sin embargo no es expresable en LP:
+\begin{center}
+1. Todo hombre es mortal. \quad 2. Sócrates es hombre. \quad 3. Por tanto, Sócrates es mortal.
+\end{center}
 
-\section{Módulo SintaxSemanticLPO}
+Es aquí precisamente donde comienza el ámbito de la Lógica de Primer Orden.
 
-\section{Código y funciones de los módulos}
+\subsection{Caracterización de la Lógica de Primer Orden}
+
+\toDo
+
+\section{Sintáxis y Semántica en LPO Módulo SintaxSemanticLPO}
+\toDo
+
+\section{Código y funciones de los módulos presentados}
 \subsection{SintaxSemanticsLP}
 \subsubsection{Código del módulo}
-\begin{lstlisting}[caption={Módulo SintaxSemanticsLP}]
+\begin{lstlisting}[caption={Módulo SintaxSemanticsLP}, mathescape=true]
 module Modules.SintaxSemanticsLP exposing (
-    PSymb, Prop, Interpretation,PropSet,
-    valuation, truthTable, models, countermodels, satisfactibility, 
-    validity, insatisfactibility, isSetModel, allSetModels, 
-    allSetCounterModels, isConsistent, isInconsistent, isConsecuence)
+    PSymb, Prop(..), Interpretation,PropSet,
+    valuation, truthTable, models, countermodels, satisfactibility, validity, 	
+    insatisfactibility, isSetModel, allSetModels, allSetCounterModels, 
+    isConsistent, isInconsistent, isConsecuence, setSymbols, formTree, 
+    formTree2DOT)
 
 import List
 import Set
-import Modules.AuxiliarFunctions as Aux 
-
+import Modules.AuxiliarFunctions as Aux
+import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
+import Graph.DOT exposing (outputWithStyles, defaultStyles)
+import Maybe exposing (Maybe(..))
 
 -----------
 -- TYPES --
@@ -671,15 +930,151 @@ type Prop = Atom PSymb
           | Disj Prop Prop
           | Impl Prop Prop
           | Equi Prop Prop
+          | Insat
 
 type alias Interpretation = List PSymb
 type alias PropSet = List Prop
 
-
-
 -------------
 -- METHODS --
 -------------
+
+formTree : Prop -> Graph String ()
+formTree x =
+    case x of
+        Atom psymb -> fromNodesAndEdges [Node 0 psymb] []
+        Neg p -> 
+            let (nodes, edges) = formTreeAux p 1 in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::nodes) (Edge 0 1 ()::edges)
+        Conj p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+
+        Disj p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Impl p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Equi p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Insat -> fromNodesAndEdges [Node 0 (toStringProp x)] []
+
+
+formTreeAux : Prop -> NodeId -> (List (Node String), List (Edge ()))
+formTreeAux x nodeid=
+    case x of
+        Atom psymb -> ([Node nodeid psymb], [])
+        Neg p -> 
+            let 
+                nextid = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1" 
+            in
+                let 
+                    (nodes, edges) = formTreeAux p nextid 
+                in
+                    (Node nodeid (toStringProp x)::nodes, 
+                                        Edge nodeid nextid ()::edges)                               
+        
+        Conj p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+        Disj p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+        Impl p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+
+        Equi p q -> 
+           let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+        Insat -> ([Node nodeid (toStringProp x)], [])
+        
+formTree2DOT : Graph String () -> String
+formTree2DOT ft =
+    let myStyles =
+            { defaultStyles | 
+                node = "shape=plaintext, color=black"
+                , edge = "dir=none"}
+    in 
+        outputWithStyles myStyles (\x -> Just x) (\_ -> Nothing) ft
+
 
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =
@@ -690,6 +1085,7 @@ valuation pr i =
         Disj p q ->   valuation p i ||  valuation q i
         Impl p q ->   not (valuation p i) ||  valuation q i
         Equi p q ->   valuation (Impl p q) i &&  valuation (Impl q p) i
+        Insat -> Basics.False
 
 symbInProp : Prop -> Set.Set PSymb
 
@@ -701,10 +1097,11 @@ symbInProp f=
         Disj p q -> Set.union (symbInProp p ) (symbInProp q)
         Impl p q -> Set.union (symbInProp p ) (symbInProp q)
         Equi p q -> Set.union (symbInProp p ) (symbInProp q)
+        Insat -> Set.empty
 
 allInterpretations : Prop -> List Interpretation
-allInterpretations x =  
-    Aux.powerset <| List.sort <| Set.toList <| symbInProp x
+allInterpretations x =  Aux.powerset <| List.sort <| Set.toList 
+                                                      <| symbInProp x
 
 truthTable : Prop -> List (Interpretation, Bool)
 truthTable x = List.map (\xs ->  (xs,valuation x xs)) <| allInterpretations x
@@ -713,19 +1110,22 @@ models : Prop -> List Interpretation
 models x = List.filter (\y -> valuation x y) (allInterpretations x)
 
 countermodels : Prop -> List Interpretation
-countermodels x =
-    List.filter (\y -> not(valuation x y)) (allInterpretations x)
+countermodels x = List.filter (\y -> not(valuation x y)) 
+                              (allInterpretations x)
 
 satisfactibility : Prop -> Bool
 satisfactibility x = List.any (\xs-> valuation x xs) (allInterpretations x)
+
 validity : Prop -> Bool
 validity x = models x== allInterpretations x
+
 insatisfactibility : Prop -> Bool
 insatisfactibility x = List.isEmpty (models x)
 
 setSymbols : List Prop -> Set.Set PSymb
-setSymbols xs = 
-    List.foldr (\x acc -> Set.union acc (symbInProp x)) Set.empty xs
+setSymbols xs = List.foldr (\x acc -> Set.union acc (symbInProp x)) 
+                           Set.empty 
+                           xs
 
 allSetInterpretations : List Prop -> List Interpretation
 allSetInterpretations xs = Aux.powerset <| Set.toList <| setSymbols xs
@@ -736,15 +1136,13 @@ isSetModel xs i =  List.all (\x -> valuation x i) xs
 allSetModels : List Prop -> List Interpretation
 allSetModels xs = List.filter (isSetModel xs) (allSetInterpretations xs)
 
-
-
 allSetCounterModels : List Prop -> List Interpretation
-allSetCounterModels xs = 
-    List.filter (\x -> not(isSetModel xs x)) <| allSetInterpretations xs
+allSetCounterModels xs = List.filter (\x -> not(isSetModel xs x)) 
+                                     (allSetInterpretations xs)
 
 isConsistent : List Prop -> Bool
-isConsistent xs = 
-    List.any (\x -> isSetModel xs x) <| allSetInterpretations xs
+isConsistent xs = List.any (\x -> isSetModel xs x)
+                           (allSetInterpretations xs)
 
 isInconsistent: List Prop -> Bool
 isInconsistent xs = not(isConsistent xs)
@@ -753,7 +1151,6 @@ isConsecuence : List Prop -> Prop -> Bool
 --isConsecuence xs x = List.all (\y -> valuation x y) <| allSetModels xs
 isConsecuence xs x = isInconsistent (xs ++ [Neg x])
 \end{lstlisting}
-
 
 \subsubsection{Funciones disponibles}
 
@@ -779,6 +1176,12 @@ Tipo & Descripción\\
 \hline
 Método & Descripción\\
 \hline
+\hline
+\textit{formTree}& \textit{formTree: Prop -> Graph String ()}\\
+& Genera un grafo con el árbol de formación de la fórmula dada.\\
+\hline
+\textit{formTree2DOT}& \textit{formTree2DOT: Graph String () -> String}\\
+& Genera el una cadena con el código en formato DOT del árbol de formación recibido.\\
 \hline
 \textit{valuation}& \textit{valuation: Prop -> Interpretation -> Prop}\\
 & Calcula el valor de verdad de una proposición según la interpretación dada.\\
@@ -824,258 +1227,27 @@ Método & Descripción\\
 \caption{Módulo SintaxSemanticsLP II. Funciones}
 \end{table}
 
-
+\newpage
+\subsection{SintaxSemanticsLPO}
+\toDo
 
 \section{Ejercicios Propuestos}
-\section{Resolución de los Ejercicios Propuestos}
+\toDo
+
+\section{Resolución de los ejercicios propuestos utilizando LIUS}
 \label{sec:2.7}
 
-
-\chapter{LP II. Tableros Semánticos}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-
+\toDo
 
 \appendix
 \clearpage
 \addappheadtotoc
 \appendixpage
 \chapter{Parsers}
+\newpage
 \section{Módulo LP\_Parser}
 \label{sec:A1.LPParser}
 
-En esta sección vamos a definir un Parser que nos permita trasladar la definición de las fórmulas desde un lenguaje mucho más cercano al lenguaje de escritura de la lógica a los constructores que se han definido en el módulo anterior, y con los que trabajaran los distintos algoritmos que se van a ir desarrollando. Para ello vamos a hacer uso de algunas herramientas que nos provee Elm para la construcción del Parser.
-
-Vamos a definir las reglas asociadas a nuestro lenguaje:
-
-\begin{itemize}
-\item Las variables proposicionales (símbolos proposicionales) han de comenzar por una letra minúscula y han de contener exclusivamente caracteres alfanuméricos.
-
-\item Cada una de las fórmulas debe ir escrita entre paréntesis. Aunque en nuestro lenguaje esto es fundamental, la función parseadora de fórmulas ya incorpora estos paréntesis a la cadena leída, por lo que no es necesario que se escriban explícitamente los paréntesis.
-
-\item Se admiten los siguientes operadores:
-
-\begin{table}[H]
-\centering
-\begin{tabular}{P{3cm} p{5cm}}
-\hline
-Operador & Descripción\\
-\hline
-\hline
-¬ & Representa la Negación.\\
-\hline
-\& & Representa la Conjunción.\\
-\hline
-| & Representa la Disjunción.\\
-\hline
--> & Representa la Implicación.\\
-\hline
-<-> & Representa la Equivalencia.\\
-\hline
-\end{tabular}
-\caption{LP\_Parser. Operadores Proposicionales}
-\end{table}
-
-\item Se admiten espacios (pero no son obligatorios) entre los símbolos proposicionales y los operadores.
-
-\item La prioridad de los operadores viene dada según el orden de prioridad definido por la lógica proposicional, según el orden en el que aparecen en la tabla anterior.
-
-\item Para la definición de conjuntos de fórmulas proposicionales, seguir las reglas anteriores para cada una de las fórmulas, separando éstas por el símbolo \textit{;} .
-\end{itemize}
-
-\subsection{Código del módulo y resumen de funciones}
-
-\subsubsection{Código del módulo}
-
-\begin{lstlisting}[caption={Módulo LP\_Parser}, mathescape=true]
-
-module Modules.LP_Parser exposing(parserProp, parserPropSet)
-
-import Char
-import Set
-import String
-import Maybe
-
-import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), 
-                        (|=), symbol, lazy, andThen)
-
-import Modules.SintaxSemanticsLP exposing (PSymb, Prop, atomProp, negProp, 
-                                           conjProp, disjProp, implProp, 
-                                           equiProp)
-
-parserProp : String -> (Maybe (Prop), String)
-parserProp x =
-  if x == "" then
-        (Maybe.Nothing, "Argument is empty")
-  else
-    case run lpParser ("(" ++ x ++ ")") of
-      
-      Ok y-> (Maybe.Just y, "")
-
-      Err y -> (Maybe.Nothing, Debug.toString y)
-
-parserPropSet : String -> List (Maybe(Prop), String)
-parserPropSet x =  List.map parserProp <| String.split ";" x
-
-typeVar : Parser PSymb
-typeVar =
-  variable
-    { start = Char.isLower
-    , inner = \c -> Char.isAlphaNum c
-    , reserved = Set.fromList []
-    }
-
-lpParser : Parser Prop
-lpParser =
-  oneOf 
-  [ 
-    succeed atomProp
-      |. spaces
-      |= typeVar
-      |. spaces
-
-  , succeed identity 
-    |. symbol "("
-    |. spaces
-    |= lazy(\_ -> expression)
-    |. spaces
-    |. symbol ")"
-    |. spaces  
-  
-  , succeed negProp
-    |.spaces
-    |.symbol "$\neg$"
-    |.spaces
-    |= lazy(\_ -> lpParser)
-  ]
-
-expression : Parser Prop
-expression =
-  lpParser |> andThen (expressionAux [])
-
-type Operator = AndOp | OrOp | ImplOp | EquivOp
-
-operator : Parser Operator
-operator = 
-    oneOf
-    [ Parser.map (\_ -> AndOp) (symbol "&")
-    , Parser.map (\_ -> OrOp) (symbol "|")
-    , Parser.map (\_ -> ImplOp) (symbol "->")
-    , Parser.map (\_ -> EquivOp) (symbol "<->")
-    ]
-
-expressionAux : List (Prop, Operator) -> Prop -> Parser Prop
-expressionAux revOps expr =
-  oneOf
-    [ succeed Tuple.pair
-        |. spaces
-        |= operator
-        |. spaces
-        |= lpParser
-        |> andThen 
-             (\(op, newExpr) -> expressionAux ((expr,op) :: revOps) newExpr)
-    , lazy (\_ -> succeed (finalize revOps expr))
-    ]
-
-finalize : List (Prop, Operator) -> Prop -> Prop
-finalize revOps finalExpr =
-  case revOps of
-    [] ->
-      finalExpr
-
-     
-    (expr, AndOp) :: otherRevOps ->
-      finalize otherRevOps (conjProp expr finalExpr)
-
-
-    (expr, OrOp) :: (expr2, AndOp) :: otherRevOps ->
-      disjProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
-
-    (expr, OrOp) :: otherRevOps ->
-      finalize otherRevOps (disjProp expr finalExpr)
-
-
-    (expr, ImplOp) :: (expr2, AndOp) :: otherRevOps ->
-      implProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
-
-    (expr, ImplOp) :: (expr2, OrOp) :: otherRevOps ->
-       implProp (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
-
-    (expr, ImplOp) :: otherRevOps ->
-      finalize otherRevOps (implProp expr finalExpr)
-
-
-    (expr, EquivOp) :: (expr2, AndOp) :: otherRevOps ->
-      equiProp (finalize ( (expr2, AndOp) :: otherRevOps) expr) finalExpr
-
-    (expr, EquivOp) :: (expr2, OrOp) :: otherRevOps ->
-       equiProp (finalize ( (expr2, OrOp) :: otherRevOps) expr) finalExpr
-
-    (expr, EquivOp) :: (expr2, ImplOp) :: otherRevOps ->
-       equiProp (finalize ( (expr2, ImplOp) :: otherRevOps) expr) finalExpr
-
-    (expr, EquivOp) :: otherRevOps ->
-      finalize otherRevOps (equiProp expr finalExpr)
-      
-\end{lstlisting}
-
-
-En el anexo \textit{A1. El Lenguaje Elm. Parsers} se explica cada una de las funciones del módulo Parser utilizadas en el código anterior.
-
-\subsubsection{Funciones disponibles}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{p{3cm} p{13.2cm}}
-\hline
-Método & Descripción\\
-\hline
-\hline
-\textit{parserProp}& \textit{parserProp : String -> (Maybe (Prop), String)}\\
-& Recibe una String y devuelve una tupla que contiene una Maybe Prop (Just Prop [si no hay errores] o Nothing [en caso de error], y una String (vacía ("") [si no hay error] o mensaje del error [en caso de error]).\\
-\hline
-\textit{parserPropSet}& \textit{parserPropSet : String -> List (Maybe(Prop), String)}\\
-& Recibe una String y devuelve una lista de tuplas (análogas a las proporcionadas por \textit{parserPropSet}) con cada una de las lecturas de las fórmulas.\\
-\hline
-\end{tabular}
-\caption{Módulo LP\_Parser. Funciones disponibles}
-\end{table}
-
-En la sección anterior desarrollamos un Parser para simplificar la escritura de las fórmulas. En esta vamos a realizar otro Parser que nos va a permitir utilizar los operadores \textit{bigAnd} ($\bigwedge$) y \textit{bigOr} ($\bigvee$), enfocado, principalmente, al modelado de restricciones para CSPs (\textit{Constraint Satisfaction Problems}).
-
-En este caso la complejidad del Parser es más alta, ya que hemos de recojer el conjunto de valores, que participarán en las formulas definida y estarán sujetos a una serie de filtros o condiciones (expresiones aritmetico-booleanas), por tanto hemos de realizar la adaptación de todos estos aspectos. Vamos a tratar de resumir los requisitos más relevantes y mostrar las reglas de sintáctico-semánticas asociadas a este lenguaje, y después veremos el desarrollo que se ha desarrollado de cada uno de los puntos.
-
-\noindent\underline{Reglas Sintáctico-Semánticas}
-
-\begin{itemize}
-\item Lo primero que vamos a presentar es la estructura general de las fórmulas con operadores \textit{Big}, a lo largo de la sección iremos desarrollando cada una de las partes de estas expresiones. Mostremos la estructura:
-\begin{center} \textit{Operador} \textit{\{Declar. índices\}} \textit{\{Restricc. índices\} }  \textit{Fórmula}\end{center} 
-
-\item \textbf{\textit{Operador}}. Existen 2 posibles operadores, el operador de conjunción múltiple (\textit{BigAnd}), representado mediante el símbolo `\&\_'; y el operador de disyunción múltiple (\textit{BigOr}), representado por el símbolo `|\_'
-
-\item \textbf{\textit{Declaración de índices}}. Corresponde a la declaración de las variables que actuarán de índices de los símbolos proposicionales de las fórmulas. Además hemos de establecer los valores (numéricos enteros) que se permiten para los índices. La sintaxis de estas declaraciones es sencilla, el identificador debe comenzar por el símbolo `\_' y ha de seguir por un secuencia de caracteres alfabéticos (en mayúsculas) y/o dígitos numéricos y seguido, los valores que puede tomar dicha variable. Para ello, se permiten 2 alternativas, declaración por valores o declaración por rango. La declaración por valores consiste en definir los valores concretos que tomará la variable, para ello se da la secuencia de valores entre llaves y separados por comas (ej. \_I$\{1,2,3,4\}$). En la declaración por rango se da el rango de valores en el que se moverá la variable. Para ello se da, entre corchetes, el primer número del rango seguido de \textit{`:'} y seguido del último número del rango (ej \_I$[1:4]$). 
-
-\item \textbf{\textit{Restricción de índices}}. Podemos establecer una restricción (y sólo una) sobre los valores de las variables, que puede afectar a todas (o sólo a algunas) de las variables declaradas. Corresponde a una expresión booleana que modela las posibles restricciones sobre los valores que pueden tomar las variables. Aunque solo se permite una única restricción, esta puede estar formada por varias condiciones, así tenemos distintas estructuras y operadores que podemos utilizar en estas expresiones:
-
-\begin{itemize}
-\item \textit{Condiciones}. Establecen posibles restricciones del problema modelado.
-\begin{itemize}
-\item \underline{Condiciones básicas}. Representan expresamente el valor de verdad de la condición. \textit{`T'} corresponde a \textit{True} y \textit{`F'} corresponde a \textit{False}.
-
-\item \underline{Condiciones comparativas}. Escrita entre corchetes, compara dos expresiones aritméticas. Está compuesta por tres elementos, las expresiones que son comparadas (\textit{LHS} y \textit{RHS}) y el operador comparador, que puede ser uno de \textit{mayor o igual} (>=), \textit{menor o igual} (>=), \textit{mayor que} (>), \textit{igual} (=), \textit{distinto} (!=).\\
-\newpage
-Las expresiones aritméticas corresponden a una expresión que puede contener valores numéricos enteros, variables de índices, de las previamente declaradas, y/o operadores aritméticos: \textit{suma} (`+'), \textit{diferencia} (`-'), \textit{producto} (`*'), \textit{cociente entero} (`/') y módulo (`\%'). \\
-
-Ejemplo: 
-\textrm{\small`\&\_ {\_I[0:7], \_J[0:7]}{T}(p\_I\_J -> \&\_ {\_K[-7:7],\_U[0:7],\_V[0:7]} {[\_K!=0]AND[\_U=\_I+\_K]AND[\_V=\_J-\_K]} ($\neg$ p\_U\_V));'} 
-
-\end{itemize}
-\end{itemize}
-
-
-
-\end{itemize}
+\toDo
 
 \end{document}

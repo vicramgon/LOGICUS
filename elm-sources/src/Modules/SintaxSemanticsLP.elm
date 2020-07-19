@@ -3,12 +3,13 @@ module Modules.SintaxSemanticsLP exposing (
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
     allSetCounterModels, isConsistent, isInconsistent, isConsecuence, toStringProp, toStringSet, setSymbols,
-    formTree)
+    formTree, formTree2DOT)
 
 import List
 import Set
 import Modules.AuxiliarFunctions as Aux
 import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
+import Graph.DOT exposing (outputWithStyles, defaultStyles)
 import Maybe exposing (Maybe(..))
 
 -----------
@@ -113,6 +114,14 @@ formTreeAux x nodeid=
                 in
                    ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
         Insat -> ([Node nodeid (toStringProp x)], [])
+
+formTree2DOT : Graph String () -> String
+formTree2DOT ft =
+    let myStyles =
+            { defaultStyles | node = "shape=plaintext, color=black", edge = "dir=none"}
+    in 
+        outputWithStyles myStyles (\x -> Just x) (\_ -> Nothing) ft
+
 
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =
