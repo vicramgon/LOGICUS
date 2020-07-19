@@ -1,6 +1,7 @@
 module Modules.B_Expressions exposing (B_Expr, evaluateBExpr, expressionB, parseBExpr, toStringB_Expression)
 
 import Modules.A_Expressions exposing (A_Expr, expressionA, evaluateAExpr, toStringAExpr)
+import Modules.AuxiliarFunctions exposing (uncurry)
 import Parser exposing (Parser, run, oneOf, succeed, (|.), (|=), symbol, lazy, andThen)
 import List.Extra exposing (zip)
 

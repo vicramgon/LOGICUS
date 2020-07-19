@@ -15,6 +15,8 @@
 \usepackage{float}
 \usepackage{array}
 \usepackage[none]{hyphenat}
+\usepackage{appendix}
+\usepackage[pdf]{graphviz}
 
 \hypersetup{
     colorlinks=true, % make the links colored
@@ -44,7 +46,7 @@ texcl=true
    E.T.S. Ingeniería Informática\\
    Universidad de Sevilla\\
   \vspace{8cm}
-  \date{Septiembre 2020}
+  \date{Curso 2019/20}
 }
 
 \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
@@ -57,6 +59,9 @@ texcl=true
 \begin{document}
 
 \renewcommand{\tablename}{Tabla}
+\renewcommand{\appendixname}{Anexo}
+\renewcommand{\appendixtocname}{Anexos}
+\renewcommand{\appendixpagename}{Anexos}
 
 \dominitoc
 
@@ -87,11 +92,31 @@ El proyecto, basado en la asignatura de Lógica Informática, busca una doble fi
 
 \section{Introducción}
 
-Tras haber cursado la asignatura de Lógica Informática con el profesor D. Fernando Sancho Caparrini, director de este proyecto, se despertó mi gusto por la Teoría de la Lógica Matemática y Computacional. Aunque desde el punto de vista teórico la asignatura presentaba los contenidos de forma completa y con total formalismo y corrección, los profesores encargados de la misma pretendían darle a la misma un enfoque más práctico de manera que estos nuevos contenidos sirvieran como complemento a los conceptos formales presentados teóricamente.
+El proyecto surge desde 2 inspiraciones: por un lado mi interés para con el desarrollo de la Teoría de la Lógica Matemática y por otro mi gusto y vocación en el ámbito docente, por lo que la idea de poder desarrollar una herramienta, enfocada al ámbito académico, para el trabajo con diversas lógicas, me despertó una gran motivación.
 
+El presente proyecto, pretende llevar a cabo el  desarrollo de una herramienta que permita dar un punto de vista más práctico de los contenidos de la Lógica Proposicional y la Lógica de Primer Orden, al mismo tiempo que sirva al alumno como complemento para la comprensión de los conceptos y la realización y razonamiento de los ejercicios relacionados con dichos conceptos.
+
+El desarrollo del proyecto se llevará a cabo bajo el paradigma de la programación funcional (con el lenguaje Elm) y la posibilidad que este ofrece para su sencilla implementación web para permitir la elaboración de una herramienta interactiva, sencilla y accesible.
+
+\section{Antecedentes del proyecto}
+
+Tras haber cursado la asignatura de Lógica Informática con el profesor D. Fernando Sancho Caparrini, director de este proyecto, se despertó mi gusto por la Teoría de la Lógica Matemática y Computacional y tras comprobar que son excasas las herramientas prácticas que abordan estos contenidos desde un punto de vista académica se planteó la realización de un proyecto análogo con el uso de otras herramientas y otros lenguajes, aunque finalmente, el proyecto no pudo llevarse a cabo.
+
+No obstante la idea del desarrollo de esta herramienta seguía en mente y tras cursar la asignatura de \textit{Programación Declarativa} con el profesor D. Miguel Ángel Martínez del Amor y el lenguaje Haskell, planteé a Fernando la posibilidad de retomar el proyecto pero bajo el lenguaje \textit{Haskell} y el paradigma funcional. Sin embargo, una herramienta similar había sido desarrollada por el profesor D. José Antonio Alonso Jiménez en su obra \textit{Lógica en Haskell}, en la que realiza un amplio desarrollo de la Lógica Proposicional y completada por D. Eduardo Paluzo en su TFG, en el que aborda con una metodología análoga al anterior los conceptos de la Lógica de Primer Orden. 
+
+Fue entonces cuando Fernando me propuso realizar una `traducción' (incorporando algunos aspectos complementarios) de dichas obras, dentro del mismo paradigma pero bajo otro lenguaje, orientado además al ámbito Web, el lenguaje \textit{Elm}.
 
 \section{Objetivos del proyecto}
-El proyecto persigue un doble objetivo,
+Como hemos comentado anteriormente, el proyecto persigue un objetivo dual:
+
+\begin{itemize}
+\item Por un lado, desarrollar una librería completa (compuesta de una serie de módulos) en el lenguaje \textit{Elm}, que nos permita llevar a cabo la definición de conjuntos de fórmulas proposicionales y de primer orden, y la aplicación de los algoritmos básicos para tratar de abordar la satisfactibilidad de los mismos, mediante la aplicación de algoritmos fundamentales.
+
+\item Por otro lado, llevar a cabo una implementación Web, de manera que el sistema sea usable por los alumnos de manera sencilla y visual, para que sirva como complemento de los conceptos y técnicas abordados en la asignatura de \textit{Lógica Informática.}
+\end{itemize}
+
+Además podemos destacar una serie de objetivos u competencias complementarias que aporta la realización de este proyecto como es la introducción al manejo de herramientas de publicación y manejo de versiones (\textit{git}) o el manejo de \textit{Latex}.
+
 
 \section{Estructura del proyecto}
 
@@ -99,37 +124,170 @@ El proyecto se estructará en 2 partes fundamentales:
 
 \subsection{Módulos funcionales}
 
-Se implementan distintos módulos, que se describen detalladamente a lo largo del proceso, en el que se desarrollarán las estructuras y métodos necesarios para abordar los algoritmos vistos en la asignatura.
+En primer lugar, se llevará a cabo desarrollo de una librería completa que nos permita trabajar, tanto con fórmulas del ámbito de la Lógica Proposicional como de la Lógica de Primer Orden mediante la implementación de distintos módulos funcionales, que se describen detalladamente a lo largo de este documento y que recogen las estructuras, algoritmos y funciones necesarias para abordar los conceptos y técnicas vistas en la asignatura de \textit{Lógica Informática}.
 
-\subsection{Interfaz gráfica}
+\subsection{Interfaz gráfica (GUI)}
 
-\chapter{LP I. Sintaxis y Semántica}
+En segundo lugar, se llevará a cabo el diseño e implementación de una interfaz web, que permita el uso del sistema desde 2 ámbitos distintos, por una parte desde el punto de vista de la definición de fórmulas y la aplicación directa de las funciones y técnicas sobre dichas fórmulas, y en segundo lugar la posibilidad de trabajar con las funciones de una manera más cercana a la \textit{Programación Declarativa}.
+
+Para ello se combinará, además del uso de los módulos funcionales, comentados anteriormente, los lenguajes \textit{Elm}, \textit{Html}, \textit{CSS} y \textit{js} para llevar a cabo la implementación de dicha interfaz. 
+
+\subsection{Propósito y Estructura de este documento}
+
+Este documento pretende cumplir un doble objetivo:
+
+\begin{itemize}
+\item Por una parte se pretene que este documento pueda servir como material didáctico, a lo largo de los capítulos integraremos el desarrollo de los conceptos teóricos con las implementaciones llevadas a cabo, de forma que dichos conceptos se vean reflejados de forma casi directa en los códigos presentados.
+
+\item Por otra parte, es objeto de este documento servir como documentación del proyecto y  manual de uso de la herramienta. Para facilitar esto, al final de cada uno de los capítulos se recogen los códigos completos de los módulos que intervienen en dicho capítulo, así como varias tablas resumen, en el que se presentan los tipos y funciones disponibles en cada uno de los módulos, junto a una somera descripción de las mismas.
+
+\end{itemize} 
+
+Así, el documento se estructura en distintos capítulos, que servirán de unidades didácticas, y un conjunto de anexos en el que se presentan un conjunto de módulos complementarios, desarrollados para el funcionamiento del sistema.
+
+
+
+\chapter{Sintaxis y Semántica}
 \renewcommand{\mtctitle}{}
 \mtcskip
 \minitoc
 \newpage
-\section{Introducción. Descripción general del capítulo}
 
-\textit{TO DO}
+\section{Descripción general del capítulo}
 
-\newpage
+En este capítulo se recogen, de forma detallada, los módulos implementados que abordan el ámbito de la sintaxis y semántica de la Lógica Proposicional y Primer Orden. Complementariamente, en el \textit{Anexo A. Parsers} se encuentra el desarrollo de varios Parsers, que nos permiten acercar la escritura natural de las fórmulas a la definición en el sistema.
+
+\subsection{Estructura del capítulo}
+
+El capítulo se encuentra estructurado en distintas secciones, a través de las cuales se abordan los conceptos fundamentales del ámbito sintáctico-semántico de la LP y la LPO, presentados conjuntamente con los módulos que implementan dichos conceptos:
+
+\underline{Módulos}
+\begin{itemize}
+\item \textbf{Módulo SintaxSemanticsLP}. Recoge las implementaciones de los tipos fundamentales relacionados con los aspectos sintáctico-semánticos de la Lógica Proposicional.
+
+\item \textbf{Módulo SintaxSemanticsLPO}. Recoge las implementaciones de los tipos fundamentales relacionados con los aspectos sintáctico-semánticos de la Lógica de Primer Orden.
+\end{itemize}
+
+\underline{Módulos Complementarios (\textit{A1. Parsers})}
+
+\begin{itemize}
+\item \textbf{Módulo LP\_Parser}. Recoge la implementación de un Parser, que permite la escritura de fórmulas LP según la estructura natural, permitiendo el uso de operadores infijos (negación, conjunción, disyunción, implicación, equivalencia).
+
+\item \textbf{Módulo LPO\_Parser}. Recoge la implementación de un Parser, que permite la escritura de fórmulas LPO según la estructura natural, permitiendo, además de los operadores LP (negación, conjunción, disyunción, implicación, equivalencia), el uso de operadores LPO (existencial y universal).
+
+\item \textbf{Módulo LP\_toString}. Recoge algunas funciones destinadas a la presentación de las fórmulas en formato de cadena de texto y en formato \textit{Latex}.
+\end{itemize}
+
+\section{Conceptos básicos de la Lógica Proposicional}
+
+\subsection{Caracetización básica de la Lógica Proposicional}
+
+La Lógica surge como método de modelado del siguiente problema:
+
+\fbox{
+\begin{minipage}{\textwidth - 1cm}
+
+Dado un conjunto de asertos (afirmaciones), $\mathcal{BC}$ (\textit{Base de conocimiento}), y una afirmación, $\mathcal{A}$, decidir si $\mathcal{A}$ ha de ser necesariamente cierta supuestas ciertas las fórmulas de $\mathcal{BC}$.
+\end{minipage}}
+
+De manera que para abordar este problema desde el punto de vista lógico-proposicional, resultan necesarios los siguientes elementos:
+
+\begin{itemize}
+\item Un lenguaje que permita expresar de forma precisa las afirmaciones. (\underline{Sintáxis})
+
+\item Una definición clara de qué se entiende por \textit{afirmación cierta} (\underline{Semántica})
+
+\item Mecanismos efectivos (y a poder ser eficientes) que garanticen la corrección (y preferentemente la completitud) en las deducciones. (\underline{Algoritmos de resolución})
+\end{itemize}
+
+A lo largo de los distintos capítulos abordaremos estos puntos para las dos representaciones más comunes, la Lógica Proposicional (\textit{LP} o \textit{PL}) y la Lógica de Primer Orden (\textit{LPO} o \textit{FOL}).
+P
+or el momento vamos a comenzar este primer capítulo abordando los dos primeros puntos para la Lógica Proposicional y la Lógica de Primer Orden, mientras que el desarrollo de las técnicas deductivas se abordará a lo largo del resto de capítulos.
+
+\subsubsection{Características fundamentales de la LP.}
+
+\begin{itemize}
+\item Sus expresiones (denominadas f\textit{órmulas proposicionales} o \textit{proposiciones}) modelan afirmaciones que pueden considerarse \textit{ciertas} o \textit{falsas}.
+
+\item Las fórmulas proposicionales (en adelante fórmulas (si no existe ambigüedad)), se construyen mediante un conjunto de expresiones básicas (\textit{fórmulas atómicas} o \textit{átomos}) y conjunto de operadores (\textit{conectivas lógicas}). Dichas conectivas permiten modelar los siguientes tipos de afirmaciones:
+
+\begin{itemize}
+\item \textit{Conjunción}: `... tal ... Y ... cual ...'
+
+\item \textit{Disyunción}: `... tal ... O ... cual ...'
+
+\item \textit{Implicación}: `SI tal ... ENTONCES ... cual ...'
+
+\item \textit{Equivalencia}: `... tal ... SI Y SÓLO SI ... cual ...'
+\item \textit{Negación}: `NO es cierto tal ...'
+\end{itemize}
+
+Profundizaremos en este aspecto en la próxima sección, cuando veamos la \textit{Sintaxis de la LP}.
+
+\item El lenguaje sólo permite modelar este tipo de afirmaciones, por lo que muchas veces puede ser difícil (o imposible) representar el problema en este tipo de Lógica, y es necesario recurrir a otras más ricas (\textit{LPO, Lógicas Modales, Lógica Fuzzy, etc}).
+
+\item Aunque esta Lógica puede resultar de una aparente sencillez, el problema \textit{SAT} corresponde a la categoría de problemas NP-completos, esto es, no existe ningún algoritmo capaz de resolver el problema planteado en un tiempo polinomial de ejecución.
+
+\end{itemize}
+
 \section{Módulo SintaxSemanticsLP}
 
-En este primer capítulo vamos a estudiar, desde un punto de vista práctico, a través de las implementaciones, los distintos elementos que conforman la Lógica Proposicional, esto es la Síntaxis y la Semántica que se han presentado en los fundamentos teóricos.
+En este primera sección vamos a abordar desde un punto de vista teórico-práctico, los elementos base que conforman la Lógica Proposicional, esto es la Síntaxis y la Semántica, mostrando unificadamente los desarrollos formales como las implementaciones llevadas a cabo para modelar cada uno de ellos.
 
 \subsection{Aspectos Sintácticos}
 
-\subsubsection{Átomo y Fórmula Proposicional}
+\subsubsection{El alfabeto proposicional}
 
-Recordemos que las expresiones están formadas por símbolos proposicionales, organizados en átomos (expresiones básicas) y relaciones entre ellas (conectivas), de acuerdo a esto, podemos definir un símbolo proposicional como una cadena de texto:\\
+El concepto `\textit{alfabeto proposicional}' referencia al conjunto de símbolos que forman parte de este lenguaje. Podemos distinguir las siguientes categorías:
+
+\begin{itemize}
+\item \textbf{Variables proposicionales o átomos}. Ya hemos señalado previamente que todo problema está representado por relaciones entre un conjunto finito de afirmaciones básicas, dichas afirmaciones se representan por símbolos proposicionales: $VP = \{p_0, p_1, \ldots, p, q, r\}$. 
+
+En el lenguaje LIUS, corresponden a cadenas de caracteres:\\
 
 \begin{lstlisting}[caption={Definición de Símbolo Proposicional como alias de String.}]
 type alias PSymb = String 
 \end{lstlisting}
 
-Y las conectivas lógicas como categorías del tipo recursivo \textit{Prop}, de forma que:\\
+Aunque esta definición admite cualquier cadena como símbolo proposicional, vamos a adoptar algunas reglas de notación, que presentaremos a lo largo del capítulo y que vamos a implementar en el parser que nos permitirá pasar de cadenas que representan fórmulas en un lenguaje cercano al lenguaje formal de la lógica a fórmulas proposicionales reconocidas por el sistema. Adoptamos el siguiente criterio en relación a los símbolos proposicionales: 
 
-\begin{lstlisting}[caption= Definición del tipo Prop (Proposición).]
+`\textit{Los símbolos proposicionales deben comenzar por una letra minúscula, seguida (opcionalmente) de otros caractéres en minúscula o dígitos numéricos, exclusivamente.}'
+
+[Ver la implementación del módulo \textit{LP\_Parser} para ver la implementación de dicho criterio. (\hyperref[sec:A1.LPParser]{\textit{\underline{Ver A1. LP\_Parser}}})]
+
+\item \textbf{Conectivas Lógicas}. Modelan las relaciones entre las distintas afirmaciones básicas (si es que las hay). Podemos distinguir:
+\begin{itemize}
+\item De aridad 1 o monoaria : \textit{Negación} ($\neg$)
+\item De aridad 2 o binarias: \textit{Conjunción} ($\wedge$),  \textit{Disyunción} ($\vee$), \textit{Condicional} ($\rightarrow$), \textit{Bicondicional} ($\leftrightarrow$).
+\end{itemize}
+
+En el lenguaje LIUS, corresponden a constructores, los veremos seguidamente cuando abordemos el concepto de fórmula.
+
+\item \textbf{Símbolos Auxiliares}: `\textit{(}' y `\textit{)}'. Permiten expresar relaciones de prioridad entre conectivas lógicas y evitar la ambigiüedad en la interpretación de las fórmulas.
+
+En el lenguaje LIUS (en la definición fundamental) no son necesarios, ya que la prioridad viene dada por el orden de uso de los constructores, pero sí serán necesarios en la definición del Parser, en el que se escribirán del mismo modo y cumplirán la función que se ha definido para los mismos. 
+\end{itemize}
+
+
+
+\subsubsection{Fórmula Proposicional}
+
+Una fórmula proposicional corresponde a una fórmula atómica (un símbolo proposicional) o a conjunto de símbolos proposicionales (con cardinalidad mayor o igual que 2), relacionados entre sí por alguna de las conectivas lógicas. Formalmente, El conjunto de las fórmulas proposicionales, \textbf{PROP}, es el menor conjunto de expresiones que verifica:
+
+\begin{itemize}
+\item $VP \subseteq PROP$
+\item Es cerrado bajo las conectivas lógicas, esto es:
+\begin{itemize}
+\item Si una fórmula $F \in PROP$, entonces  $\neg F \in PROP$
+\item Si las fórmulas $F, G \in PROP$, entonces  $(F \wedge G), (F \vee G), (F \rightarrow G), (F \leftrightarrow G) \in PROP$
+\end{itemize}
+\end{itemize}
+
+De manera que se tiene una definición recursiva del concepto de \textit{Fórmula}, tal que el caso base corresponde a una fórmula básica (\textit{átomo}) y el caso recursivo corresponde a la aplicación de una conectiva sobre una o dos fórmulas (según la aridad de la conectiva). 
+
+En el lenguaje LIUS, hemos definido el concepto de Fórmula Proposicional, como un nuevo tipo, dando una definición recursiva análoga a la presentada anteriormente, mediante los constructores \textit{Atom} (Átomo), \textit{Conj} (Conjunción), \textit{Disj} (Disyunción), \textit{Impl} (Implicación o Condicional), \textit{Equi} (Equivalencia o Bicondicional) y un tipo más que \textit{Insat} que corresponde a la fórmula insatisfactible (la veremos cuando abordemos la \textit{Semántica de LP}).\\
+
+\begin{lstlisting}[caption= Definición del tipo Prop (Fórmula Proposicional).]
 type Prop = Atom PSymb
           | Neg Prop
           | Conj Prop Prop
@@ -138,7 +296,22 @@ type Prop = Atom PSymb
           | Equi Prop Prop
 \end{lstlisting}
 
-Esto nos permite definir todas las fórmulas proposicionales que se pueden formar, algunos ejemplos: \\
+\noindent\underline{Prioridad de las conectivas y Reducción de Paréntesis}
+
+\begin{enumerate}
+\item Omitimos los paréntesis externos
+
+\item Tomaremos como orden de precedencia de las conectivas (de mayor a menor): $\neg$, $\wedge$, $\vee$ , $\rightarrow$, $\leftrightarrow$. Para la conectiva $\leftrightarrow$ se recomienda mantener los paréntesis en todos los casos.
+
+\item Cuando una conectiva se usa repetidamente, se asocia por la derecha.
+\end{enumerate}
+
+Si definimos las fórmulas a partir de los constructores, estas reglas no son necesarias, ya que no puede existir ambigüedad alguna en la definición fórmula, pero sí son relevantes en el caso de la declaración a partir del Parser.
+
+\noindent [Ver la implementación del módulo \textit{LP\_Parser} para ver la implementación de dicho criterio. (\hyperref[sec:A1.LPParser]{\textit{\underline{Ver A1. LP\_Parser}}})]
+
+
+Esto nos permite definir todas las fórmulas proposicionales, presentamos la construcción de las siguientes 3 fórmulas a modo de ejemplo:
 
 \begin{multicols}{3}
 \begin{itemize}
@@ -165,7 +338,149 @@ c = Conj
         (Atom "p")
 \end{lstlisting}
 
-Como se puede apreciar, escribir las fórmulas de esta forma puede resultar una tarea ardua y propensa a errores, por eso, como mostraremos más adelante, se ha desarrollado un parser que nos permite escribir de forma más cómoda, sintética y visual las fórmulas. Aunque aquí no influyen las reglas de asociación vistas en los fundamentos teóricos, ya que dicho orden viene dado por el propio orden de aplicación, sí hemos de tenerlas en cuenta a la hora de realizar el parser. 
+Como se puede apreciar, escribir las fórmulas de esta forma puede resultar una tarea ardua y propensa a errores, por eso, se ha desarrollado un parser que nos permite escribir de forma más cómoda, sintética y visual las fórmulas. 
+
+A partir de este momento todas las fórmulas de los ejemplos se definirán utilizando el Parser por lo que llegados a este punto se recomienda realizar un estudio del mismo, para tener claras las reglas sintácticas a seguir, aunque, son análogas a las planteadas por el lenguaje formal de la lógica proposicional. (\hyperref[sec:A1.LPParser]{\textit{\underline{Ver Anexo A1. LP\_Parser}}}). \\ 
+
+\noindent\underline{Árboles de formación}
+
+Los árboles de formación corresponden a grafos de tipo árbol que muestran el desarrollo de formación de las fórmulas (siguiendo la definición recursiva de las mismas) por lo que el árbol de formación asociado a una fórmula es esencialmente único.
+
+En el lenguaje LIUS podemos generar estos árboles de formación utilizando la función \textit{formTree} definida en el módulo que estamos tratando. En la siguiente página se muestra el código de implementación de la función. (La complejidad del código reside más en aspectos técnicos relacionados con el lenguaje más que en el algoritmo, por lo que no es necesario entender el código, es suficiente con entender el método y conocer la existencia de la función).
+
+Para poder visualizar el árbol de formación: 
+
+$\Longrightarrow$ \textit{COMPLETAR}
+
+\newpage
+
+\begin{lstlisting}[caption= Definición de la función formTree]
+formTree : Prop -> Graph String ()
+formTree x =
+    case x of
+        Atom psymb -> fromNodesAndEdges [Node 0 psymb] []
+        Neg p -> 
+            let (nodes, edges) = formTreeAux p 1 in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::nodes) (Edge 0 1 ()::edges)
+        Conj p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Disj p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Impl p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Equi p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges 
+                    (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) 
+                    ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Insat -> fromNodesAndEdges [Node 0 (toStringProp x)] []
+
+formTreeAux : Prop -> NodeId -> (List (Node String), List (Edge ()))
+formTreeAux x nodeid=
+    case x of
+        Atom psymb -> ([Node nodeid psymb], [])
+        Neg p -> 
+            let 
+                nextid = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1" 
+            in
+                let 
+                    (nodes, edges) = formTreeAux p nextid 
+                in
+                    (Node nodeid (toStringProp x)::nodes, 
+                                        Edge nodeid nextid ()::edges)
+                                        
+                                        
+                                        
+        Conj p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+        Disj p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+        Impl p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+        Equi p q -> 
+           let 
+                nextid1 =  Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 
+                                <| String.toInt 
+                                    <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  
+                       [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ 
+                                                           edges1 ++ edges2)
+        Insat -> ([Node nodeid (toStringProp x)], [])
+\end{lstlisting}
 
 \subsubsection{Conjuntos de fórmulas}
 
@@ -200,7 +515,6 @@ De esta forma podemos definir, de forma sencilla la evaluación de las fórmulas
 \item La equivalencia será verdadera respecto de una interpretación si y sólo si la evaluación del antecedente coincide con la evaluación del consecuente.\\
 \end{itemize} 
 
-\newpage
 \begin{lstlisting}[caption= Función de evaluación de las fórmulas proposicionales]
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =
@@ -217,6 +531,8 @@ valuation pr i =
 \subsubsection{Modelos (tablas de verdad, satisfactibilidad y validez lógica)}
 
 Desde el punto de vista teórico las tablas de verdad corresponden a estructuras que reflejan el valor de verdad de una fórmula proposicional respecto de cada una de las posibles interpretaciones posibles para la fórmula. Entonces, para poder construir la tabla de verdad, primero hemos de calcular todas las interpretaciones posibles, que, dada la definición que hemos proporcionado para las interpretaciones, correspondería a todos los conjuntos posibles (\textit{powerset}) que podríamos construir con los símbolos proposicionales que aparecen en la fórmula. Así:\\
+
+\newpage
 
 \begin{lstlisting}[caption= Función para extraer los símbolos proposicionales que intervienen en una fórmula]
 symbInProp : Prop -> Set PSymb
@@ -246,7 +562,6 @@ truthTable x = List.map (\xs ->  (xs,valuation x xs)) <| allInterpretations x
 
 Una vez estudiado lo anterior, los modelos corresponden a las interpretaciones que son evaluadas verdaderas, esto es, de las posibles interpretaciones aquellas hacen la fórmula verdadera. Aquellas interpretaciones que hacen la fórmula falasa se denominan contramodelos. Así:\\
 
-\newpage
 \begin{lstlisting}[caption= Función para el cálculo de los modelos de una fórmula proposicional]
 models : Prop -> List Interpretation
 models x = List.filter (\y -> valuation x y) (allInterpretations x)
@@ -265,6 +580,8 @@ Definidos los modelos, podemos así mismo definir (funcionalmente) los conceptos
 \end{itemize}
 
 De esta forma:
+
+\newpage
 
 \begin{lstlisting}[caption={Funciones de Satisfactibilidad, Validez e Insatisfactibilidad}]
 satisfactibility : Prop -> Bool
@@ -322,7 +639,14 @@ isConsecuence : List Prop -> Prop -> Bool
 isConsecuence xs x = isInconsistent (xs ++ [Neg x])
 \end{lstlisting}
 
-\subsection{Código del módulo y resumen de funciones}
+
+
+\newpage
+
+\section{Módulo SintaxSemanticLPO}
+
+\section{Código y funciones de los módulos}
+\subsection{SintaxSemanticsLP}
 \subsubsection{Código del módulo}
 \begin{lstlisting}[caption={Módulo SintaxSemanticsLP}]
 module Modules.SintaxSemanticsLP exposing (
@@ -500,11 +824,27 @@ Método & Descripción\\
 \caption{Módulo SintaxSemanticsLP II. Funciones}
 \end{table}
 
+
+
+\section{Ejercicios Propuestos}
+\section{Resolución de los Ejercicios Propuestos}
+\label{sec:2.7}
+
+
+\chapter{LP II. Tableros Semánticos}
+\renewcommand{\mtctitle}{}
+\mtcskip
+\minitoc
 \newpage
 
-\section{LP Parser I. Módulo LP\_Parser}
 
-En la sección anterior se ha mostrado el desarrollo necesario para la definición de las fórmulas proposicionales, pero como ya comentamos realizarlo a través de los constructores puede ser una tarea pesada por ello vamos a definir un lenguaje (a través de un Parser), que nos permita escribir las fórmulas de forma más natural, utilizando operadores infijos (\textit{LP\_Parser}) o utilizar operadores \textit{Big}, que nos permitan expresar la conjunción/disyunción de muchas fórmulas análogas sin necesidad de tener que escribirlas una a una (\textit{LPBig\_Parser})
+\appendix
+\clearpage
+\addappheadtotoc
+\appendixpage
+\chapter{Parsers}
+\section{Módulo LP\_Parser}
+\label{sec:A1.LPParser}
 
 En esta sección vamos a definir un Parser que nos permita trasladar la definición de las fórmulas desde un lenguaje mucho más cercano al lenguaje de escritura de la lógica a los constructores que se han definido en el módulo anterior, y con los que trabajaran los distintos algoritmos que se van a ir desarrollando. Para ello vamos a hacer uso de algunas herramientas que nos provee Elm para la construcción del Parser.
 
@@ -703,7 +1043,6 @@ Método & Descripción\\
 \caption{Módulo LP\_Parser. Funciones disponibles}
 \end{table}
 
-\section{LP Parser II. Módulo LPBig\_Parser}
 En la sección anterior desarrollamos un Parser para simplificar la escritura de las fórmulas. En esta vamos a realizar otro Parser que nos va a permitir utilizar los operadores \textit{bigAnd} ($\bigwedge$) y \textit{bigOr} ($\bigvee$), enfocado, principalmente, al modelado de restricciones para CSPs (\textit{Constraint Satisfaction Problems}).
 
 En este caso la complejidad del Parser es más alta, ya que hemos de recojer el conjunto de valores, que participarán en las formulas definida y estarán sujetos a una serie de filtros o condiciones (expresiones aritmetico-booleanas), por tanto hemos de realizar la adaptación de todos estos aspectos. Vamos a tratar de resumir los requisitos más relevantes y mostrar las reglas de sintáctico-semánticas asociadas a este lenguaje, y después veremos el desarrollo que se ha desarrollado de cada uno de los puntos.
@@ -738,69 +1077,5 @@ Ejemplo:
 
 
 \end{itemize}
-
-
-
-
-
-\subsection{Módulo A\_Expressions (Expr. Aritméticas)}
-\subsection{Módulo B\_Expressions (Expr. Booleanas)}
-\subsection{Módulo LPBig\_Parser}
-
-\section{Módulo LP\_toString}
-
-
-
-\chapter{LP II. Tableros Semánticos}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LP III. Formas Normales y DPLL}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LP IV. Sistemas Deductivos}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LP V. Algoritmo de Resolución}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LP VI. Modelado y Resolución de PSR a través de la LP}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-
-\chapter{LPO I. Sintaxis y Semántica}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LPO II. Tableros Semánticos}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LPO III. Forma Prenex, Skolem y Teorema de Herbrand}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LPO V. Algoritmos de Unificación y Resolución}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
-\chapter{LPO VI. Modelado y Resolución de PSR a través de la Lógica de Primer Orden}
-\renewcommand{\mtctitle}{}
-\mtcskip
-\minitoc
-\newpage
 
 \end{document}

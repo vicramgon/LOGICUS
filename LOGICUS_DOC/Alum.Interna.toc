@@ -2,39 +2,38 @@
 \babel@toc {spanish}{}
 \contentsline {chapter}{\numberline {1}Introducción. Objetivos y organización del proyecto}{3}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Introducción}{4}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Objetivos del proyecto}{4}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Estructura del proyecto}{4}{section.1.3}%
-\contentsline {subsection}{\numberline {1.3.1}Módulos funcionales}{4}{subsection.1.3.1}%
-\contentsline {subsection}{\numberline {1.3.2}Interfaz gráfica}{4}{subsection.1.3.2}%
-\contentsline {chapter}{\numberline {2}LP I. Sintaxis y Semántica}{5}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Introducción. Descripción general del capítulo}{6}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Módulo SintaxSemanticsLP}{7}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Aspectos Sintácticos}{7}{subsection.2.2.1}%
-\contentsline {subsubsection}{Átomo y Fórmula Proposicional}{7}{section*.2}%
-\contentsline {subsubsection}{Conjuntos de fórmulas}{8}{section*.3}%
-\contentsline {subsection}{\numberline {2.2.2}Aspectos Semánticos}{8}{subsection.2.2.2}%
-\contentsline {subsubsection}{Interpretaciones y Valor de verdad de fórmulas proposicionales. }{8}{section*.4}%
-\contentsline {subsubsection}{Modelos (tablas de verdad, satisfactibilidad y validez lógica)}{9}{section*.5}%
-\contentsline {subsubsection}{Conjuntos de Fórmulas. Modelos, Consistencia, Validez y Consecuencia Lógica}{10}{section*.6}%
-\contentsline {subsection}{\numberline {2.2.3}Código del módulo y resumen de funciones}{11}{subsection.2.2.3}%
-\contentsline {subsubsection}{Código del módulo}{11}{section*.7}%
-\contentsline {subsubsection}{Funciones disponibles}{14}{section*.8}%
-\contentsline {section}{\numberline {2.3}LP Parser I. Módulo LP\_Parser}{15}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Código del módulo y resumen de funciones}{15}{subsection.2.3.1}%
-\contentsline {subsubsection}{Código del módulo}{15}{section*.9}%
-\contentsline {subsubsection}{Funciones disponibles}{18}{section*.10}%
-\contentsline {section}{\numberline {2.4}LP Parser II. Módulo LPBig\_Parser}{18}{section.2.4}%
-\contentsline {subsection}{\numberline {2.4.1}Módulo A\_Expressions (Expr. Aritméticas)}{19}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Módulo B\_Expressions (Expr. Booleanas)}{19}{subsection.2.4.2}%
-\contentsline {subsection}{\numberline {2.4.3}Módulo LPBig\_Parser}{19}{subsection.2.4.3}%
-\contentsline {section}{\numberline {2.5}Módulo LP\_toString}{19}{section.2.5}%
-\contentsline {chapter}{\numberline {3}LP II. Tableros Semánticos}{20}{chapter.3}%
-\contentsline {chapter}{\numberline {4}LP III. Formas Normales y DPLL}{21}{chapter.4}%
-\contentsline {chapter}{\numberline {5}LP IV. Sistemas Deductivos}{22}{chapter.5}%
-\contentsline {chapter}{\numberline {6}LP V. Algoritmo de Resolución}{23}{chapter.6}%
-\contentsline {chapter}{\numberline {7}LP VI. Modelado y Resolución de PSR a través de la LP}{24}{chapter.7}%
-\contentsline {chapter}{\numberline {8}LPO I. Sintaxis y Semántica}{25}{chapter.8}%
-\contentsline {chapter}{\numberline {9}LPO II. Tableros Semánticos}{26}{chapter.9}%
-\contentsline {chapter}{\numberline {10}LPO III. Forma Prenex, Skolem y Teorema de Herbrand}{27}{chapter.10}%
-\contentsline {chapter}{\numberline {11}LPO V. Algoritmos de Unificación y Resolución}{28}{chapter.11}%
-\contentsline {chapter}{\numberline {12}LPO VI. Modelado y Resolución de PSR a través de la Lógica de Primer Orden}{29}{chapter.12}%
+\contentsline {section}{\numberline {1.2}Antecedentes del proyecto}{4}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Objetivos del proyecto}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Estructura del proyecto}{5}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Módulos funcionales}{5}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Interfaz gráfica (GUI)}{5}{subsection.1.4.2}%
+\contentsline {subsection}{\numberline {1.4.3}Propósito y Estructura de este documento}{5}{subsection.1.4.3}%
+\contentsline {chapter}{\numberline {2}Sintaxis y Semántica}{6}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Descripción general del capítulo}{7}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Estructura del capítulo}{7}{subsection.2.1.1}%
+\contentsline {section}{\numberline {2.2}Conceptos básicos de la Lógica Proposicional}{7}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Caracetización básica de la Lógica Proposicional}{7}{subsection.2.2.1}%
+\contentsline {subsubsection}{Características fundamentales de la LP.}{8}{section*.2}%
+\contentsline {section}{\numberline {2.3}Módulo SintaxSemanticsLP}{8}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Aspectos Sintácticos}{8}{subsection.2.3.1}%
+\contentsline {subsubsection}{El alfabeto proposicional}{8}{section*.3}%
+\contentsline {subsubsection}{Fórmula Proposicional}{9}{section*.4}%
+\contentsline {subsubsection}{Conjuntos de fórmulas}{13}{section*.5}%
+\contentsline {subsection}{\numberline {2.3.2}Aspectos Semánticos}{13}{subsection.2.3.2}%
+\contentsline {subsubsection}{Interpretaciones y Valor de verdad de fórmulas proposicionales. }{13}{section*.6}%
+\contentsline {subsubsection}{Modelos (tablas de verdad, satisfactibilidad y validez lógica)}{14}{section*.7}%
+\contentsline {subsubsection}{Conjuntos de Fórmulas. Modelos, Consistencia, Validez y Consecuencia Lógica}{16}{section*.8}%
+\contentsline {section}{\numberline {2.4}Módulo SintaxSemanticLPO}{18}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Código y funciones de los módulos}{18}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}SintaxSemanticsLP}{18}{subsection.2.5.1}%
+\contentsline {subsubsection}{Código del módulo}{18}{section*.9}%
+\contentsline {subsubsection}{Funciones disponibles}{20}{section*.10}%
+\contentsline {section}{\numberline {2.6}Ejercicios Propuestos}{20}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Resolución de los Ejercicios Propuestos}{20}{section.2.7}%
+\contentsline {chapter}{\numberline {3}LP II. Tableros Semánticos}{21}{chapter.3}%
+\contentsline {chapter}{Anexos}{22}{section*.11}%
+\contentsline {chapter}{\numberline {A}Parsers}{23}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Módulo LP\_Parser}{23}{section.Alph1.1}%
+\contentsline {subsection}{\numberline {A.1.1}Código del módulo y resumen de funciones}{23}{subsection.Alph1.1.1}%
+\contentsline {subsubsection}{Código del módulo}{23}{section*.12}%
+\contentsline {subsubsection}{Funciones disponibles}{26}{section*.13}%

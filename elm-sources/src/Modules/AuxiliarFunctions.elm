@@ -1,4 +1,4 @@
-module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs, unionLs, unique, uniqueBy)
+module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs, unionLs, unique, uniqueBy, uncurry)
 
 import List
 
@@ -46,4 +46,7 @@ uniqueBy p xs =
 unionLs : List a -> List a -> List a
 unionLs xs ys =
     unique <| xs ++ ys
+
+uncurry : (a -> b -> c) -> (a, b) -> c
+uncurry f (x, y) = f x y
 

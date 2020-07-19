@@ -2,11 +2,14 @@ module Modules.SintaxSemanticsLP exposing (
     PSymb, Prop(..), Interpretation,PropSet,
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
-    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, toStringProp, toStringSet, setSymbols)
+    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, toStringProp, toStringSet, setSymbols,
+    formTree)
+
 import List
 import Set
-import Modules.AuxiliarFunctions as Aux 
-
+import Modules.AuxiliarFunctions as Aux
+import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
+import Maybe exposing (Maybe(..))
 
 -----------
 -- TYPES --
@@ -27,6 +30,89 @@ type alias PropSet = List Prop
 -------------
 -- METHODS --
 -------------
+
+formTree : Prop -> Graph String ()
+formTree x =
+    case x of
+        Atom psymb -> fromNodesAndEdges [Node 0 psymb] []
+        Neg p -> 
+            let (nodes, edges) = formTreeAux p 1 in
+                fromNodesAndEdges (Node 0 (toStringProp x)::nodes) (Edge 0 1 ()::edges)
+        Conj p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Disj p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Impl p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Equi p q -> 
+            let 
+                (nodes1, edges1) = formTreeAux p 1
+                (nodes2, edges2) = formTreeAux q 2
+            in
+                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
+        Insat -> fromNodesAndEdges [Node 0 (toStringProp x)] []
+
+formTreeAux : Prop -> NodeId -> (List (Node String), List (Edge ()))
+formTreeAux x nodeid=
+    case x of
+        Atom psymb -> ([Node nodeid psymb], [])
+        Neg p -> 
+            let nextid = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1" in
+                let (nodes, edges) = formTreeAux p nextid in
+                (Node nodeid (toStringProp x)::nodes, Edge nodeid nextid ()::edges)
+        Conj p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
+        Disj p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
+        Impl p q -> 
+            let 
+                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2"
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
+        Equi p q -> 
+           let 
+                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
+                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2" 
+            in
+                let 
+                    (nodes1, edges1) = formTreeAux p nextid1
+                    (nodes2, edges2) = formTreeAux q nextid2
+                in
+                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
+        Insat -> ([Node nodeid (toStringProp x)], [])
 
 valuation : Prop -> Interpretation -> Bool
 valuation pr i =
@@ -117,5 +203,3 @@ toStringListPropAux xs = case xs of
     x::[] -> toStringProp x
 
     x::ys -> toStringProp x ++ "," ++ toStringListPropAux ys
-   
-        
