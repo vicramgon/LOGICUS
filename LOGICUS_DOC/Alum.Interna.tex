@@ -75,6 +75,7 @@ texcl=true
 
 \maketitle
 
+
 \begin{abstract}
 
 El proyecto aborda los conceptos y algoritmos básicos de la Lógica Proposicional y la Lógica de primer, desde un punto de vista implementativo a través de un lenguaje encuadrado en el paradigma funcional (Elm).
@@ -896,7 +897,29 @@ Es aquí precisamente donde comienza el ámbito de la Lógica de Primer Orden.
 
 \subsection{Caracterización de la Lógica de Primer Orden}
 
-\toDo
+La \textbf{Lógica de Primer Orden} o \textbf{Lógica de Predicados} es un sistema formal diseñado para estudiar los métodos inferenciales en los leguajes de primer orden. Un \textbf{lenguaje de primer orden} corresponde a un lenguaje formal que consta de:
+
+\begin{itemize}
+\item \underline{Símbolos lógicos} (comunes a todos los lenguajes): En los que se engloban:
+\begin{itemize}
+\item Un conjunto de \textit{Variables:} $V = \{x, x_0, x_1, \ldots, y, y_0, \ldots \}$
+\item \textit{Conectivas lógicas :} $\neg$ (negación), $\wedge$ (conjunción), $\vee$ (disyunción), $\rightarrow$ (implicación), $\leftrightarrow$ (equivalencia).
+\item \textit{Cuantificadores:} $\exists$ (existencial), $\forall$ (universal).
+\item \textit{Símbolos auxiliares:} $`('$ y $`)'$
+\end{itemize}
+\item \underline{Símbolos no lógicos} (propios de cada lenguaje): En los que se engloban:
+\begin{itemize}
+\item Un conjunto de \textit{Constantes:} $L_{C}= \{a, b, \ldots, a_{0}, a_{1}, \ldots \}$
+\item Un conjunto de \textit{símbolos de función:} $L_{F} = \{f_{0}, f_{1}, \ldots\}$, cada uno con su aridad correspondiente.
+\item Un conjunto de \textbf{símbolos de predicado:} $L_P=\{P_{0}, P_{1}, \ldots, Q, Q_0, \ldots\}$, cada uno con su aridad correspondiente. 
+
+Dos notas:
+\begin{itemize}
+\item Los símpolos de predicado de aridad 0 actúan como símbolos proposicionales.
+\item El símbolo de igualdad (`$=$') no es un predicado común a todos los lenguajes de primer orden, pero si es corriente su aparición. La familia de lenguajes que incluyen este predicado es denominada \underline{Lenguajes de Primer Orden con igualdad}.
+\end{itemize}
+\end{itemize}
+\end{itemize}
 
 \section{Sintáxis y Semántica en LPO Módulo SintaxSemanticLPO}
 \toDo

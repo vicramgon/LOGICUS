@@ -23,7 +23,7 @@ unique xs =
                 ac
 
             else
-                x :: ac
+                ac ++ [x]
         )
         []
         xs
