@@ -1,5 +1,7 @@
 module Modules.SintaxSemanticsLPO exposing (..)
 
+-- IN PROGRESS
+
 import List exposing (concat)
 import Modules.AuxiliarFunctions as Aux exposing (unique)
 import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
