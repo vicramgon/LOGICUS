@@ -8,9 +8,8 @@ import Maybe
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen, loop, Step(..), map)
 
 
-import Modules.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..), formTree, formTree2DOT)
-import Tuple exposing (first)
-import Html exposing (Html, text)
+import Modules.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..))
+
 
 parserFormula : String -> (Maybe (FormulaLPO), String)
 parserFormula x =
@@ -215,7 +214,3 @@ finalize revOps finalExpr =
     (expr, EquivOp) :: otherRevOps ->
       finalize otherRevOps (Equi expr finalExpr)
 
-ejemplo : String
-ejemplo = "exists{x}(_suma(y,y) = _producto(x,'0) | menor('1, y))"
-main : Html msg
-main = text <| formTree2DOT <| formTree <| Maybe.withDefault Insat <| Tuple.first <| parserFormula <| "exists{x}((_+(y;y;) = _·(x;'0;)) | Menor('1; y;))"
