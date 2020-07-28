@@ -1,10 +1,10 @@
-module Modules.LPO_Parser exposing(parserFormula, parserFormulaSet)
+module Modules.LPO_Parser exposing(parserFormula, parserFormulaSet, parseTerm)
 
 import Char
 import Set
 import String
 import Maybe
-
+import Char.Extra exposing (isSpace)
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen, loop, Step(..), map)
 
 
@@ -23,13 +23,13 @@ parserFormula x =
       Err y -> (Maybe.Nothing, Debug.toString y)
 
 parserFormulaSet : String -> List (Maybe(FormulaLPO), String)
-parserFormulaSet x =  List.map parserFormula <| String.split ";" x
+parserFormulaSet x =  List.map parserFormula <| String.split "//" x
 
 parseVar : Parser Term
 parseVar = succeed Var
             |= variable
                 { start = Char.isLower 
-                , inner = Char.isAlphaNum
+                , inner = \c -> Char.isAlphaNum c || c == '_'
                 , reserved = Set.fromList ["exists", "forall"]
                 }
 
@@ -37,32 +37,30 @@ parseVar = succeed Var
 parseTerm: Parser Term 
 parseTerm =
     oneOf [
-        parseVar
-        , succeed Const
-            |. symbol "\'"
-            |= variable
-                { start = Char.isAlphaNum
-                , inner = Char.isAlphaNum
-                , reserved = Set.fromList []
-                }
-        , succeed Func
+        succeed Func
             |. symbol "_"
             |= variable
-                { start =  \c -> c /= '(' && c /= ')'
-                , inner = \c -> c /= '(' && c /= ')'
+                { start =  \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' && c/= ')' && not (isSpace c)
+                , inner = \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' && c/= ')' && not (isSpace c)
                 , reserved = Set.fromList []
                 }
-            |. symbol "("
-            |= listTerms
-            |. symbol ")"
+            |= parseParams
+        , parseVar
     ]
 
-listTerms : Parser (List Term)
-listTerms =
-  loop [] listTermAux
+parseParams : Parser (List Term)
+parseParams =
+    oneOf [
+        succeed identity
+            |. symbol "["
+            |= loop [] listTerm
+            |. symbol "]"
+        , succeed []
+        ]
+  
 
-listTermAux : List Term -> Parser (Step (List Term) (List Term))
-listTermAux revTerms =
+listTerm : List Term -> Parser (Step (List Term) (List Term))
+listTerm revTerms =
   oneOf
     [ succeed (\term-> Loop (term :: revTerms))
         |= parseTerm
@@ -100,20 +98,6 @@ lpoParser =
     |= lazy(\_ -> lpoParser)
     |.spaces
 
-    ,succeed Pred
-        |= variable
-            { start = Char.isUpper
-            , inner = Char.isAlphaNum
-            , reserved = Set.fromList []
-            }
-        |.spaces
-        |. symbol "("
-        |.spaces
-        |= listTerms
-        |.spaces
-        |. symbol ")"
-        |.spaces
-
   , succeed Equal
     |= parseTerm
     |. spaces
@@ -128,7 +112,6 @@ lpoParser =
     |= lazy(\_ -> lpoParser)
 
   , succeed Insat
-    |.spaces
     |.symbol "!"
     |.spaces
 
@@ -138,7 +121,16 @@ lpoParser =
     |= lazy(\_ -> expression)
     |. spaces
     |. symbol ")"
-    |. spaces  
+    |. spaces
+
+    ,succeed Pred
+        |= variable
+            { start = \c -> not (Char.isLower c || c == '_' || c == '!' || c == '(' || c == ')' || c == '[' || c == ']' || isSpace c)
+            , inner = \c -> Char.isAlphaNum c || not ( c == '!' || c == '(' || c == ')' || c == '[' || c == ']'  || isSpace c)
+            , reserved = Set.fromList []
+            }
+        |= parseParams
+        |.spaces 
   ]
 
 expression : Parser FormulaLPO

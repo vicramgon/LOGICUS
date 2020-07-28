@@ -385,7 +385,7 @@ Utilizando la función \textit{formTree} definida en el módulo que estamos trat
 \begin{center}
 \underline{PROVISIONAL}
 \end{center}
-Para visualizarl el árbol de formación podemos utilizar una herramienta externa como \url{https://dreampuf.github.io/GraphvizOnline/}, insertando el código DOT obtenido de \textit{formTree2DOT}
+Para visualizar el árbol de formación podemos utilizar una herramienta externa como \url{https://dreampuf.github.io/GraphvizOnline/}, insertando el código DOT obtenido de \textit{formTree2DOT}
 \end{minipage}}
 
 A continuación se muestra el código de implementación de las funciones anteriores. La complejidad del código reside más en aspectos técnicos relacionados con el lenguaje \textit{Elm} que en el propio algoritmo, por lo que no es necesario entender el código, es suficiente con entender el método y conocer la existencia de las funciones.\\
@@ -1273,4 +1273,217 @@ Método & Descripción\\
 
 \toDo
 
+\newpage
+\section{Módulo LPO\_Parser}
+\label{sec:A2.LPOParser}
+
+Este módulo pretende facilitar la tarea de definición de las fórmulas, acercando a la forma natural de escritura de las fórmulas de primer orden. Para ello vamos a basarnos en las reglas de sintaxis expuestas en el Módulo SintaxSemanticsLPO. Vamos a presentarlas junto a algunos casos que ejemplifiquen su escritura:
+
+\noindent \underline{Reglas sintácticas}
+
+\noindent $\longrightarrow$ \textit{Términos}
+\begin{itemize}
+\item Las \textbf{variables} se escriben con una letra en minúscula seguidas de caracteres alphanuméricos o el símbolo `\_' (\textit{ejemplos:} `x', `x1', `x\_1', `x\_ab'). \textit{NOTA:} Son palabras reservadas las cadenas `forall', `exists'.\\
+
+\begin{lstlisting}[caption={ParserLPO. Definición de Variables.}, mathescape=true]
+parseVar : Parser Term
+parseVar = succeed Var
+            |= variable
+                { start = Char.isLower 
+                , inner = \c -> Char.isAlphaNum c || c == '_'
+                , reserved = Set.fromList ["exists", "forall"]
+                }
+\end{lstlisting}
+
+\item Las \textbf{funciones}  se definen siguiendo la notacion prefija, según el siguiente patrón:
+\begin{center}
+\textit{[símbolo de función] [parámetros]}
+\end{center}
+
+donde:
+\begin{itemize}
+\item El \textit{sómbolo de función} debe comenzar por el carácter `\_', seguido de una serie de caracteres, entre estos se admiten caracteres alfanuméricos y también símbolos (exceptuando `[', `]', `(', `)', `;'). 
+\item En los \textit{parámetros} se pueden dar 2 casos, o bien la función es una \textbf{constante} (no tiene parámetros), con lo cual bastaría escribir el nombre (\textit{ejemplos:} `\_a', `\_PEDRO', `\_1' ) o bien es una \textbf{función} (dependiente de, al menos, unos argumentos), en tal caso los argumentos se dan en una lista acotada por corchetes (`[', `]') y tras cada argumento ha de ir un `;' (\textit{ejemplos:} `\_f[x;]', `\_g[x;y;]', `\_+[x;\_1;\_·[y;\_2;]]').\\
+\end{itemize}
+\end{itemize}
+
+\begin{lstlisting}[caption={ParserLPO. Definición de Términos.}, mathescape=true]
+parseTerm: Parser Term 
+parseTerm =
+    oneOf [
+        succeed Func
+            |. symbol "_"
+            |= variable
+                { start =  \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' 
+                    && c/= ')' && not (isSpace c)
+                , inner = \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' 
+                    && c/= ')' && not (isSpace c)
+                , reserved = Set.fromList []
+                }
+            |= parseParams
+        , parseVar
+    ]
+
+
+
+
+
+
+
+parseParams : Parser (List Term)
+parseParams =
+    oneOf [
+        succeed identity
+            |. symbol "["
+            |= loop [] listTerm
+            |. symbol "]"
+        , succeed []
+        ]
+  
+
+listTerm : List Term -> Parser (Step (List Term) (List Term))
+listTerm revTerms =
+  oneOf
+    [ succeed (\term-> Loop (term :: revTerms))
+        |= parseTerm
+        |. spaces
+        |. symbol ";"
+        |. spaces
+    , succeed ()
+        |> map (\_ -> Done (List.reverse revTerms))
+    ]
+\end{lstlisting}
+
+\noindent $\longrightarrow$ \textit{Fórmulas}
+
+Aunque recordemos que las fórmulas podíamos dividirlas en \textbf{atómicas} y \textbf{compuestas}, vamos a hacer algunas dentro de estas.
+\begin{itemize}
+\item Las fórmulas atómicas están constituidas por los \textbf{predicados}. Para todos ellos se debe usar la notación prefija, según el patrón:
+
+\begin{center}
+\textit{[símbolo de predicado] [parámetros]}
+\end{center}
+
+donde:
+\begin{itemize}
+\item El \textit{símbolo de predicado} debe comenzar por un carácter en mayúscula o un símbolo (exceptuando `\_',  `!', `(', `)', `[', `]', `$\neg$'. También se admiten dígitos numéricos pero no se recomienda), seguido de una serie de caracteres, entre estos se admiten caracteres alfanuméricos y también símbolos (exceptuando `[', `]', `(', `)'). 
+\item En los \textit{parámetros} se pueden dar 2 casos, o bien la función es un \textbf{predicado proposicional} (no tiene parámetros), con lo cual bastaría escribir el símbolo de predicado (\textit{ejemplos:} `P', `Q\_1') o bien es un \textbf{predicado n-ario} (dependiente de, al menos, un argumento), en tal caso los argumentos se dan en una lista acotada por corchetes (`[', `]') y tras cada argumento ha de ir un `;' (\textit{ejemplos:} `P[x;]', `>=[x;y;]', `MAX[x;\_1;\_·[y;\_2;]]').\\
+\end{itemize}
+
+\begin{lstlisting}[caption={ParserLPO. Definición de Predicados.}, mathescape=true]
+succeed Pred
+        |= variable
+            { start = \c -> not (Char.isLower c || c == '_' || c == '!' 
+                || c == '(' || c == ')' || c == '[' || c == ']' 
+                || c=='$\neg$'|| i sSpace c)
+            , inner = \c -> Char.isAlphaNum c || not (c == '(' 
+                || c == ')' || c == '[' || c == ']' || isSpace c)
+            , reserved = Set.fromList []
+            }
+        |= parseParams
+        |.spaces 
+\end{lstlisting}
+Hay una excepción, el \textbf{predicado de igualdad (binaria)} se utilizará de forma infija con el símbolo `='.)(\textit{ejemplos:} `x=y' , `x\_4=\_3', `\_f[x;]=\_f[y;]'), siguiendo el patrón:
+
+\begin{center}
+\textit{[término] = [término]}\\
+\end{center}
+
+\begin{lstlisting}[caption={ParserLPO. Definición de Predicado de Igualdad.}, mathescape=true]
+, succeed Equal
+    |= parseTerm
+    |. spaces
+    |. symbol "="
+    |. spaces
+    |= parseTerm
+    |. spaces 
+\end{lstlisting}
+
+\item Las fórmulas compuestán formadas por fórmulas y \textbf{conectivas} (teniendo en cuenta las prioridades de las mismas `$\neg$', `$\wedge$', `$\vee$', `$\rightarrow$', `$\leftrightarrow$' (con esta última preferentemente los paréntesis), y \textbf{cuantificadores} (`$\exists$', `$\forall$'). Estos últimos tienen prioridad sobre las conectivas (se recomienda mantener los paréntesis para evitar posibles fallos en la interpretación de la notación). Con el uso de cuantificadores, la notación sigue el patrón:
+
+\begin{center}
+\textit{[símbolo de cuantificador] \{[variable]\} [fórmula]}\\
+\end{center}
+
+donde:
+\begin{itemize}
+\item El \textit{símbolo de cuantificador} corresponde o bien al existencial ($\exists$), representado por la cadena `exists' o al universal ($\forall$), representado por la cadena `forall'.
+
+\item La \textit{variable} corresponde a una variable, siguiendo las reglas expuestas anteriormente. (Nótese que ha de estar escrita entre llaves).
+
+\item La \textit{fórmula} corresponde a una fórmula escrita según las reglas expuestas.\\
+
+\begin{lstlisting}[caption={ParserLPO. Definición de Fórmulas con cuantificadores.}, mathescape=true]
+succeed Exists
+    |.symbol "exists"
+    |.spaces
+    |.symbol "{"
+    |.spaces
+    |= parseVar
+    |.spaces
+    |.symbol "}"
+    |.spaces
+    |= lazy(\_ -> lpoParser)
+    |.spaces
+  
+  , succeed Forall
+    |.symbol "forall"
+    |.spaces
+    |.symbol "{"
+    |.spaces
+    |= parseVar
+    |.spaces
+    |.symbol "}"
+    |.spaces
+    |= lazy(\_ -> lpoParser)
+    |.spaces
+\end{lstlisting}
+\end{itemize}
+\end{itemize}
+
+De forma que ya podemos escribir todas las fórmulas posibles en Lenguajes de Primer Orden (puedes consultar el código del módulo y un resumen de los requisitos sintácticos al final de esta sección).
+
+\subsubsection{Ejemplos de definición de fórmulas LPO con LPO\_Parser.}
+
+\begin{itemize}
+\item Prop. Antisimétrica: $\forall x \, \forall y (R(x,y) \wedge R(y,x) \rightarrow x = y$
+
+\begin{lstlisting}[caption={ParserLPO. Definición de la de la Prop. Antisimétrica.}, mathescape=true]
+antisimetricProp : FormulaLPO
+antisimetricProp = 
+    Maybe.withDefault Insat <| Tuple.first <| parserFormula 
+        <| "forall{x} forall{y} (R[x;y;] & R[y;x;] -> x = y)"
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[scale=0.5]{a2I1.png}}
+\caption{Árbol de formación de la Prop. Antisimétrica}
+\end{figure}
+
+\item Prop Biyectiva. Para expresarla consideremos el siguiente lenguaje: $L= \{O, I, f\}$, tal que:
+
+\begin{itemize}
+\item $O$ es un predicado de aridad 1 que expresa si el objeto pertenece al conjunto origen. 
+\item $I$ es un predicado de aridad 1 que expresa si el objeto pertenece al conjunto imagen. 
+\item $f$ es una función que dado un elemento del conjunto origen obtiene el correspondiente elemento del conjunto imagen y dado un elemento del conjunto imagen obtiene el correspondiente del conjunto origen. 
+\end{itemize}
+
+La propiedad biyectiva se formula como: \textit{`Una relación es biyectiva si para todo elemento del conjunto origen existe un único elemento del conjunto imagen con el que está relacionado y todo elemento del conjunto imagen está relacionado con algún elemento del origen}'. Esto es: $$ \forall x,y \in O \, (x \neq y \rightarrow f(x) \neq f(y)) \wedge \forall x \in I \, \exists y \in O \, (f(x)=y)$$
+
+\begin{lstlisting}[caption={ParserLPO. Definición de la de la Rel. Biyectiva.}, mathescape=true]
+antisimetricProp : FormulaLPO
+antisimetricProp = 
+    Maybe.withDefault Insat <| Tuple.first <| parserFormula 
+        <| "forall{x}forall{y}(O[x;] & O[y;] & $\neg$(x=y) -> $\neg$(_f[x;]=_f[y;])) 
+            & forall{x}(I[x;]->exists{y}(O[y;]&_f[y;]=x))"
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\fbox{\includegraphics[scale=0.5]{a2I2.png}}
+\caption{Árbol de formación de la Rel. Biyectiva.}
+\end{figure}
+
+\end{itemize}
 \end{document}

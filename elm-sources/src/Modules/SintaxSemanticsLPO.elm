@@ -11,7 +11,6 @@ import Maybe exposing (Maybe(..))
 import Html exposing (Html, text)
 
 type Term = Var String
-          | Const String
           | Func String (List Term)
 
 type alias Variable = Term
@@ -19,7 +18,6 @@ varsInTerm : Term -> List (Variable)
 varsInTerm t =
     case t of
         Var x -> [Var x]
-        Const _ -> []
         Func _ ts -> Aux.unique <| List.concat <| List.map varsInTerm <| ts
 
 type FormulaLPO = Pred String (List Term)
@@ -37,8 +35,10 @@ toStringTerm : Term -> String
 toStringTerm x =
     case x of
         Var s-> s
-        Const s -> s
-        Func n params -> n ++ " (" ++ (String.join ", " <| List.map toStringTerm params) ++ ")"
+        Func n params -> if List.isEmpty params then
+                            n
+                         else
+                            n ++ " (" ++ (String.join ", " <| List.map toStringTerm params) ++ ")"
 
 toStringFormula : FormulaLPO -> String
 toStringFormula x =
@@ -159,10 +159,3 @@ formTree2DOT ft =
             { defaultStyles | node = "shape=plaintext, color=black", edge = "dir=none"}
     in 
         outputWithStyles myStyles (\x -> Just x) (\_ -> Nothing) ft
-
-
-ejemplo : FormulaLPO
-ejemplo = Exists (Var "x") (Disj (Equal (Func "+" [ Var "y", Var "y"]) (Func "·" [ Var "x", Const "0"])) (Pred "<" [ Const "1",  Var "y"]))
-main : Html msg
-main = text <| formTree2DOT <| formTree ejemplo
-

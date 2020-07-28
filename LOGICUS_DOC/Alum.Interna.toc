@@ -40,3 +40,5 @@
 \contentsline {chapter}{Anexos}{28}{section*.13}%
 \contentsline {chapter}{\numberline {A}Parsers}{29}{appendix.Alph1}%
 \contentsline {section}{\numberline {A.1}Módulo LP\_Parser}{30}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Módulo LPO\_Parser}{31}{section.Alph1.2}%
+\contentsline {subsubsection}{Ejemplos de definición de fórmulas LPO con LPO\_Parser.}{34}{section*.14}%
