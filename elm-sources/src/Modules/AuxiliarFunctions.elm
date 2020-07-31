@@ -1,6 +1,7 @@
-module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs, unionLs, unique, uniqueBy, uncurry)
+module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs, unionLs, unique, uniqueBy, uncurry, cleanSpaces)
 
 import List
+import Char.Extra exposing (isSpace)
 
 powerset : List a -> List (List a)
 powerset = 
@@ -49,4 +50,8 @@ unionLs xs ys =
 
 uncurry : (a -> b -> c) -> (a, b) -> c
 uncurry f (x, y) = f x y
+
+cleanSpaces : String -> String
+cleanSpaces x = 
+    String.fromList <| List.filter (\c -> not(isSpace c))  <| String.toList x
 

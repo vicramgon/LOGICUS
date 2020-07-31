@@ -1,10 +1,11 @@
 module Modules.Pruebas exposing (..)
 
-
-import Tuple exposing (first)
 import Html exposing (Html, text)
-import Modules.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..), formTree, formTree2DOT)
-import Modules.LPO_Parser exposing (parserFormula)
+import Modules.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..))
+import Modules.IO_LPO exposing (extractReadFLPO, fromStringToFLPO, formTree)
 
 main : Html msg
-main = text <| formTree2DOT <| formTree <| Maybe.withDefault Insat <| Tuple.first <| parserFormula <| "forall{x}forall{y}(O[x;] & O[y;] & ¬(x=y) -> ¬(_f[x;]=_f[y;])) & forall{x}(I[x;]->exists{y}(O[y;]&_f[y;]=x))"
+main = text <| formTree <| extractReadFLPO <| fromStringToFLPO 
+        <| "FORALL{x} FORALL{y} (O[x;] AND O[y;] AND NOT(x=y) IMPLIES NOT(_f[x;]=_f[y;])) AND FORALL{x} (I[x;] IMPLIES EXISTS{y} (O[y;] AND _f[y;]=x))"
+
+

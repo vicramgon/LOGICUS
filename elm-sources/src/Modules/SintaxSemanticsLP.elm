@@ -1,15 +1,12 @@
 module Modules.SintaxSemanticsLP exposing (
-    PSymb, Prop(..), Interpretation,PropSet,
+    PSymb, FormulaLP(..), Interpretation, LPSet,
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
-    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, toStringProp, toStringSet, setSymbols,
-    formTree, formTree2DOT)
+    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, setSymbols)
 
 import List
 import Set
 import Modules.AuxiliarFunctions as Aux
-import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
-import Graph.DOT exposing (outputWithStyles, defaultStyles)
 import Maybe exposing (Maybe(..))
 
 -----------
@@ -17,113 +14,22 @@ import Maybe exposing (Maybe(..))
 -----------
 type alias PSymb = String 
 
-type Prop = Atom PSymb
-          | Neg Prop
-          | Conj Prop Prop
-          | Disj Prop Prop
-          | Impl Prop Prop
-          | Equi Prop Prop
+type FormulaLP = Atom PSymb
+          | Neg FormulaLP
+          | Conj FormulaLP FormulaLP
+          | Disj FormulaLP FormulaLP
+          | Impl FormulaLP FormulaLP
+          | Equi FormulaLP FormulaLP
           | Insat
 
 type alias Interpretation = List PSymb
-type alias PropSet = List Prop
+type alias LPSet = List FormulaLP
 
 -------------
 -- METHODS --
 -------------
 
-formTree : Prop -> Graph String ()
-formTree x =
-    case x of
-        Atom psymb -> fromNodesAndEdges [Node 0 psymb] []
-        Neg p -> 
-            let (nodes, edges) = formTreeAux p 1 in
-                fromNodesAndEdges (Node 0 (toStringProp x)::nodes) (Edge 0 1 ()::edges)
-        Conj p q -> 
-            let 
-                (nodes1, edges1) = formTreeAux p 1
-                (nodes2, edges2) = formTreeAux q 2
-            in
-                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
-        Disj p q -> 
-            let 
-                (nodes1, edges1) = formTreeAux p 1
-                (nodes2, edges2) = formTreeAux q 2
-            in
-                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
-        Impl p q -> 
-            let 
-                (nodes1, edges1) = formTreeAux p 1
-                (nodes2, edges2) = formTreeAux q 2
-            in
-                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
-        Equi p q -> 
-            let 
-                (nodes1, edges1) = formTreeAux p 1
-                (nodes2, edges2) = formTreeAux q 2
-            in
-                fromNodesAndEdges (Node 0 (toStringProp x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 2 ()] ++ edges1 ++ edges2)
-        Insat -> fromNodesAndEdges [Node 0 (toStringProp x)] []
-
-formTreeAux : Prop -> NodeId -> (List (Node String), List (Edge ()))
-formTreeAux x nodeid=
-    case x of
-        Atom psymb -> ([Node nodeid psymb], [])
-        Neg p -> 
-            let nextid = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1" in
-                let (nodes, edges) = formTreeAux p nextid in
-                (Node nodeid (toStringProp x)::nodes, Edge nodeid nextid ()::edges)
-        Conj p q -> 
-            let 
-                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
-                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2"
-            in
-                let 
-                    (nodes1, edges1) = formTreeAux p nextid1
-                    (nodes2, edges2) = formTreeAux q nextid2
-                in
-                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
-        Disj p q -> 
-            let 
-                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
-                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2"
-            in
-                let 
-                    (nodes1, edges1) = formTreeAux p nextid1
-                    (nodes2, edges2) = formTreeAux q nextid2
-                in
-                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
-        Impl p q -> 
-            let 
-                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
-                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2"
-            in
-                let 
-                    (nodes1, edges1) = formTreeAux p nextid1
-                    (nodes2, edges2) = formTreeAux q nextid2
-                in
-                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
-        Equi p q -> 
-           let 
-                nextid1 =  Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "1"
-                nextid2 = Maybe.withDefault 0 <| String.toInt <| String.fromInt nodeid ++ "2" 
-            in
-                let 
-                    (nodes1, edges1) = formTreeAux p nextid1
-                    (nodes2, edges2) = formTreeAux q nextid2
-                in
-                   ( Node nodeid (toStringProp x)::(nodes1 ++ nodes2),  [Edge nodeid nextid1 (), Edge nodeid nextid2 ()] ++ edges1 ++ edges2)
-        Insat -> ([Node nodeid (toStringProp x)], [])
-
-formTree2DOT : Graph String () -> String
-formTree2DOT ft =
-    let myStyles =
-            { defaultStyles | node = "shape=plaintext, color=black", edge = "dir=none"}
-    in 
-        outputWithStyles myStyles (\x -> Just x) (\_ -> Nothing) ft
-
-
-valuation : Prop -> Interpretation -> Bool
+valuation : FormulaLP -> Interpretation -> Bool
 valuation pr i =
     case pr of
         Atom p -> List.member p i
@@ -134,7 +40,7 @@ valuation pr i =
         Equi p q ->   valuation (Impl p q) i &&  valuation (Impl q p) i
         Insat -> Basics.False
 
-symbInProp : Prop -> Set.Set PSymb
+symbInProp : FormulaLP -> Set.Set PSymb
 
 symbInProp f=
     case f of
@@ -146,69 +52,48 @@ symbInProp f=
         Equi p q -> Set.union (symbInProp p ) (symbInProp q)
         Insat -> Set.empty
 
-allInterpretations : Prop -> List Interpretation
+allInterpretations : FormulaLP -> List Interpretation
 allInterpretations x =  Aux.powerset <| List.sort <| Set.toList <| symbInProp x
 
-truthTable : Prop -> List (Interpretation, Bool)
+truthTable : FormulaLP -> List (Interpretation, Bool)
 truthTable x = List.map (\xs ->  (xs,valuation x xs)) <| allInterpretations x
 
-models : Prop -> List Interpretation
+models : FormulaLP -> List Interpretation
 models x = List.filter (\y -> valuation x y) (allInterpretations x)
 
-countermodels : Prop -> List Interpretation
+countermodels : FormulaLP -> List Interpretation
 countermodels x = List.filter (\y -> not(valuation x y)) (allInterpretations x)
 
-satisfactibility : Prop -> Bool
+satisfactibility : FormulaLP -> Bool
 satisfactibility x = List.any (\xs-> valuation x xs) (allInterpretations x)
-validity : Prop -> Bool
+validity : FormulaLP -> Bool
 validity x = models x== allInterpretations x
-insatisfactibility : Prop -> Bool
+insatisfactibility : FormulaLP -> Bool
 insatisfactibility x = List.isEmpty (models x)
 
-setSymbols : List Prop -> Set.Set PSymb
+setSymbols : List FormulaLP -> Set.Set PSymb
 setSymbols xs = List.foldr (\x acc -> Set.union acc (symbInProp x)) Set.empty xs
 
-allSetInterpretations : List Prop -> List Interpretation
+allSetInterpretations : List FormulaLP -> List Interpretation
 allSetInterpretations xs = Aux.powerset <| Set.toList <| setSymbols xs
 
-isSetModel : List Prop -> Interpretation -> Bool
+isSetModel : List FormulaLP -> Interpretation -> Bool
 isSetModel xs i =  List.all (\x -> valuation x i) xs
 
-allSetModels : List Prop -> List Interpretation
+allSetModels : List FormulaLP -> List Interpretation
 allSetModels xs = List.filter (isSetModel xs) (allSetInterpretations xs)
 
-allSetCounterModels : List Prop -> List Interpretation
+allSetCounterModels : List FormulaLP -> List Interpretation
 allSetCounterModels xs = List.filter (\x -> not(isSetModel xs x)) <| allSetInterpretations xs
 
-isConsistent : List Prop -> Bool
+isConsistent : List FormulaLP -> Bool
 isConsistent xs = List.any (\x -> isSetModel xs x) <| allSetInterpretations xs
 
-isInconsistent: List Prop -> Bool
+isInconsistent: List FormulaLP -> Bool
 isInconsistent xs = not(isConsistent xs)
 
-isConsecuence : List Prop -> Prop -> Bool
+isConsecuence : List FormulaLP -> FormulaLP -> Bool
 --isConsecuence xs x = List.all (\y -> valuation x y) <| allSetModels xs
 isConsecuence xs x = isInconsistent (xs ++ [Neg x])
 
 
-toStringProp : Prop -> String
-toStringProp prop =
-    case prop of
-        Atom p -> p
-        Neg p -> "¬ " ++ toStringProp p
-        Conj p q -> "( " ++ toStringProp p ++ " ∧ "  ++ toStringProp q ++ " )"
-        Disj p q -> "( " ++ toStringProp p ++ " ∨ "  ++ toStringProp q ++ " )"
-        Impl p q -> "( " ++ toStringProp p ++ " ⟶ "  ++ toStringProp q ++ " )"
-        Equi p q -> "( " ++ toStringProp p ++ " ⟷ "  ++ toStringProp q ++ " )"
-        Insat -> "⊥"
-        
-toStringSet : List Prop -> String
-toStringSet xs = "{" ++ toStringListPropAux xs  ++ "}" 
-
-toStringListPropAux : List Prop -> String
-toStringListPropAux xs = case xs of
-    [] -> ""
-
-    x::[] -> toStringProp x
-
-    x::ys -> toStringProp x ++ "," ++ toStringListPropAux ys

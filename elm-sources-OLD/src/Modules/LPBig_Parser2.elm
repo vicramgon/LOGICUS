@@ -1,4 +1,4 @@
-module Modules.LPBig_Parser exposing (parseBigProp, parseSetBigProp, toProp, checkCorrectReadFormula, checkCorrectReadFormulaSet)
+module Modules.LPBig_Parser2 exposing (parseBigProp, parseSetBigProp, toProp, checkCorrectReadFormula, checkCorrectReadFormulaSet)
 
 import List exposing (filter, map)
 import List.Extra exposing (cartesianProduct, zip)
@@ -8,7 +8,6 @@ import Modules.B_Expressions exposing (B_Expr, evaluateBExpr, expressionB)
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen, int, Trailing(..), getChompedString, chompWhile)
 import Set exposing (fromList)
 import String exposing (replace, split)
-import File exposing (toString)
 import Dict exposing (Dict)
 
 --import Html exposing (Html)
