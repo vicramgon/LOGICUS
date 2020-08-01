@@ -21,9 +21,10 @@ type FormulaLP = Atom PSymb
           | Impl FormulaLP FormulaLP
           | Equi FormulaLP FormulaLP
           | Insat
+type alias LPSet = List FormulaLP
 
 type alias Interpretation = List PSymb
-type alias LPSet = List FormulaLP
+
 
 -------------
 -- METHODS --
@@ -41,7 +42,6 @@ valuation pr i =
         Insat -> Basics.False
 
 symbInProp : FormulaLP -> Set.Set PSymb
-
 symbInProp f=
     case f of
         Atom p -> Set.singleton p
@@ -67,9 +67,9 @@ countermodels x = List.filter (\y -> not(valuation x y)) (allInterpretations x)
 satisfactibility : FormulaLP -> Bool
 satisfactibility x = List.any (\xs-> valuation x xs) (allInterpretations x)
 validity : FormulaLP -> Bool
-validity x = models x== allInterpretations x
+validity x = List.all (\xs-> valuation x xs) (allInterpretations x)
 insatisfactibility : FormulaLP -> Bool
-insatisfactibility x = List.isEmpty (models x)
+insatisfactibility x = List.all (\xs-> not(valuation x xs)) (allInterpretations x)
 
 setSymbols : List FormulaLP -> Set.Set PSymb
 setSymbols xs = List.foldr (\x acc -> Set.union acc (symbInProp x)) Set.empty xs

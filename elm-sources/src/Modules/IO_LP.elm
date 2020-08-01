@@ -43,7 +43,7 @@ typeVar : Parser PSymb
 typeVar =
   variable
     { start = Char.isLower
-    , inner = \c -> Char.isAlphaNum c
+    , inner = \c -> Char.isLower c || Char.isDigit c || c == '_'
     , reserved = Set.fromList []
     }
 
@@ -66,7 +66,7 @@ parserFLP =
   
   , succeed Neg
     |.spaces
-    |.symbol "NEG"
+    |.symbol "NOT"
     |.spaces
     |= lazy(\_ -> parserFLP)
 
