@@ -142,8 +142,8 @@ parserFLPO =
 
     ,succeed Pred
         |= variable
-            { start = \c -> not (Char.isLower c || c == '_' || c == '!' || c == '(' || c == ')' || c == '[' || c == ']' || c=='¬'|| isSpace c)
-            , inner = \c -> Char.isAlphaNum c || not (c == '(' || c == ')' || c == '[' || c == ']' || isSpace c)
+            { start = \c -> not (Char.isLower c || c == '_' || c == '!' || c == '(' || c == ')' || c == '[' || c == ']' || c== '{' || c== '}' || isSpace c)
+            , inner = \c -> Char.isAlphaNum c || not (c == '!' || c == '(' || c == ')' || c == '[' || c == ']' || c== '{' || c== '}' || isSpace c)
             , reserved = Set.fromList ["NOT", "AND", "OR", "IMPLIES", "EQUIV", "EXISTS", "FORALL", "INSAT" ]
             }
         |= parseParams
