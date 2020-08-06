@@ -1,4 +1,4 @@
-module Modules.IO_LPO exposing(fromStringToFLPO, fromStringToSetLPO, checkFLPO, extractReadFLPO, fromStringToSubstitutionLPO, 
+module Modules.IO_LPO exposing(fromStringToFLPO, fromStringToSetLPO, checkFLPO, extractReadFLPO, fromStringToSubstitutionLPO,
                                checkSubstitutionLPO, extractReadSubstitutionLPO, toStringFLPO, toStringSLOP, toLatexFLPO, toLatexSLOP, formTree)
 
 import Char
@@ -23,7 +23,7 @@ fromStringToFLPO x =
         (Maybe.Nothing, "Argument is empty")
   else
     case run parserFLPO ("(" ++ cleanSpaces x ++ ")") of
-      
+
       Ok y-> (Maybe.Just y, "")
 
       Err y -> (Maybe.Nothing, Debug.toString y)
@@ -31,8 +31,8 @@ fromStringToFLPO x =
 checkFLPO : (Maybe (FormulaLPO), String) -> Bool
 checkFLPO (flpo, _) =
   case flpo of
-    Nothing ->  False 
-    _ -> True 
+    Nothing ->  False
+    _ -> True
 
 extractReadFLPO : (Maybe (FormulaLPO), String) -> FormulaLPO
 extractReadFLPO (flpo, _) = Maybe.withDefault Insat flpo
@@ -45,13 +45,13 @@ fromStringToSetLPO  x =  List.map fromStringToFLPO <| String.split "\\\\" x
 parseVar : Parser Variable
 parseVar = succeed Var
             |= variable
-                { start = Char.isLower 
+                { start = Char.isLower
                 , inner = \c -> Char.isAlphaNum c || c == '_'
                 , reserved = Set.fromList []
                 }
 
 
-parseTerm : Parser Term 
+parseTerm : Parser Term
 parseTerm =
     oneOf [
         succeed Func
@@ -74,7 +74,7 @@ parseParams =
             |. symbol "]"
         , succeed []
         ]
-  
+
 
 listTerm : List Term -> Parser (Step (List Term) (List Term))
 listTerm revTerms =
@@ -90,7 +90,7 @@ listTerm revTerms =
 
 parserFLPO : Parser FormulaLPO
 parserFLPO =
-  oneOf 
+  oneOf
   [ succeed Exists
     |.symbol "EXISTS"
     |.spaces
@@ -102,7 +102,7 @@ parserFLPO =
     |.spaces
     |= lazy(\_ -> parserFLPO)
     |.spaces
-  
+
   , succeed Forall
     |.symbol "FORALL"
     |.spaces
@@ -121,8 +121,8 @@ parserFLPO =
     |. symbol "="
     |. spaces
     |= parseTerm
-    |. spaces  
-  
+    |. spaces
+
   , succeed Neg
     |.symbol "NOT"
     |.spaces
@@ -132,7 +132,7 @@ parserFLPO =
     |.symbol "INSAT"
     |.spaces
 
-  , succeed identity 
+  , succeed identity
     |. symbol "("
     |. spaces
     |= lazy(\_ -> expression)
@@ -143,11 +143,11 @@ parserFLPO =
     ,succeed Pred
         |= variable
             { start = \c -> not (Char.isLower c || c == '_' || c == '!' || c == '(' || c == ')' || c == '[' || c == ']' || c== '{' || c== '}' || isSpace c)
-            , inner = \c -> Char.isAlphaNum c || not (c == '!' || c == '(' || c == ')' || c == '[' || c == ']' || c== '{' || c== '}' || isSpace c)
+            , inner = \c -> Char.isAlphaNum c || not (c == '(' || c == ')' || c == '[' || c == ']' || c== '{' || c== '}' || isSpace c)
             , reserved = Set.fromList ["NOT", "AND", "OR", "IMPLIES", "EQUIV", "EXISTS", "FORALL", "INSAT" ]
             }
         |= parseParams
-        |.spaces 
+        |.spaces
   ]
 
 expression : Parser FormulaLPO
@@ -157,7 +157,7 @@ expression =
 type Operator = AndOp | OrOp | ImplOp | EquivOp
 
 operator : Parser Operator
-operator = 
+operator =
     oneOf
 
     [ Parser.map (\_ -> AndOp) (symbol "AND")
@@ -231,7 +231,7 @@ fromStringToSubstitutionLPO x =
         (Maybe.Nothing, "Argument is empty")
   else
     case run parserSubstitution x of
-      
+
       Ok y-> (Maybe.Just y, "")
 
       Err y -> (Maybe.Nothing, Debug.toString y)
@@ -239,8 +239,8 @@ fromStringToSubstitutionLPO x =
 checkSubstitutionLPO : (Maybe Substitution, String) -> Bool
 checkSubstitutionLPO  (subs, _) =
   case subs of
-    Nothing ->  False 
-    _ -> True 
+    Nothing ->  False
+    _ -> True
 
 extractReadSubstitutionLPO : (Maybe Substitution, String) -> Substitution
 
@@ -263,7 +263,7 @@ parserSubsChange : Parser (String, Term)
 parserSubsChange =
   succeed Tuple.pair
     |= variable
-        { start = Char.isLower 
+        { start = Char.isLower
         , inner = \c -> Char.isAlphaNum c || c == '_'
         , reserved = Set.fromList []
         }
@@ -294,64 +294,64 @@ toStringFLPO x =
         Disj p q -> "( " ++ toStringFLPO p ++ " ∨ "  ++ toStringFLPO q ++ " )"
         Impl p q -> "( " ++ toStringFLPO p ++ " ⟶ "  ++ toStringFLPO q ++ " )"
         Equi p q -> "( " ++ toStringFLPO p ++ " ⟷ "  ++ toStringFLPO q ++ " )"
-        Exists v p -> "∃" ++ toStringTerm v ++ " " ++ toStringFLPO p  
-        Forall v p -> "∀" ++ toStringTerm v ++ " " ++ toStringFLPO p  
+        Exists v p -> "∃ " ++ toStringTerm v ++ " " ++ toStringFLPO p
+        Forall v p -> "∀ " ++ toStringTerm v ++ " " ++ toStringFLPO p
         Insat -> "⊥"
 
 toStringSLOP : List FormulaLPO -> String
 toStringSLOP xs = "{" ++ (String.join ", " <| List.map toStringFLPO xs) ++ "}"
 
 toLatexFLPO : FormulaLPO -> String
-toLatexFLPO x = "$" ++ toLatexFLPOAux x ++ "$" 
+toLatexFLPO x = "$" ++ toLatexFLPOAux x ++ "$"
 
 toLatexFLPOAux : FormulaLPO -> String
 toLatexFLPOAux x =
     case x of
         Pred n params ->  n ++ "\\left(" ++ (String.join ", " <| List.map toStringTerm params) ++ "\\right)"
-        Equal t1 t2 ->  toStringTerm t1 ++ " = " ++ toStringTerm t2 
+        Equal t1 t2 ->  toStringTerm t1 ++ " = " ++ toStringTerm t2
         Neg p -> "\\neg " ++ toLatexFLPOAux p
         Conj p q -> "\\left( " ++ toLatexFLPOAux p ++ " \\wedge "  ++ toLatexFLPOAux q ++ " \\right)"
         Disj p q -> "\\left( " ++ toLatexFLPOAux p ++ " \\vee "  ++ toLatexFLPOAux q ++ " \\right)"
-        Impl p q -> "\\left( " ++ toLatexFLPOAux p ++ "\\rightarrow"  ++ toLatexFLPOAux q ++ " \\right)"
-        Equi p q -> "\\left( " ++ toLatexFLPOAux p ++ "\\leftrightarrow"  ++ toLatexFLPOAux q ++ " \\right)"
-        Exists v p -> "\\exists" ++ toStringTerm v ++ "\\," ++ toStringFLPO p  
-        Forall v p -> "\\forall" ++ toStringTerm v ++ "\\," ++ toStringFLPO p  
-        Insat -> "\\perp"
+        Impl p q -> "\\left( " ++ toLatexFLPOAux p ++ "\\rightarrow "  ++ toLatexFLPOAux q ++ " \\right)"
+        Equi p q -> "\\left( " ++ toLatexFLPOAux p ++ "\\leftrightarrow "  ++ toLatexFLPOAux q ++ " \\right)"
+        Exists v p -> "\\exists " ++ toStringTerm v ++ "\\," ++ toStringFLPO p
+        Forall v p -> "\\forall " ++ toStringTerm v ++ "\\," ++ toStringFLPO p
+        Insat -> "\\perp "
 
 toLatexSLOP : List FormulaLPO -> String
 toLatexSLOP xs = "$ \\left\\lbrace" ++ (String.join ", " <| List.map toLatexFLPOAux xs) ++ "\\right\\rbrace $"
 
 formTree : FormulaLPO -> String
-formTree x =  formTree2DOT <| formTree1 x
+formTree x =  String.replace "\n\n" "\n" <| formTree2DOT <| formTree1 x
 
 formTree1 : FormulaLPO -> Graph String ()
 formTree1 x =
     case x of
         Pred _ _ -> fromNodesAndEdges [Node 0 (toStringFLPO x)] []
         Equal _ _ -> fromNodesAndEdges [Node 0 (toStringFLPO x)] []
-        Neg p-> 
+        Neg p->
             let (nodes, edges) = formTreeAux p 1 in
                 fromNodesAndEdges (Node 0 (toStringFLPO x)::nodes) (Edge 0 1 ()::edges)
-        Conj p q -> 
-            let 
+        Conj p q ->
+            let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         fromNodesAndEdges (Node 0 (toStringFLPO x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 nextid ()] ++ edges1 ++ edges2)
-        Disj p q -> 
-            let 
+        Disj p q ->
+            let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         fromNodesAndEdges (Node 0 (toStringFLPO x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 nextid ()] ++ edges1 ++ edges2)
-        Impl p q -> 
-            let 
+        Impl p q ->
+            let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         fromNodesAndEdges (Node 0 (toStringFLPO x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 nextid ()] ++ edges1 ++ edges2)
-        Equi p q -> 
-            let 
+        Equi p q ->
+            let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
@@ -369,33 +369,33 @@ formTreeAux x nodeid=
     case x of
         Pred _ _ ->  ([Node nodeid (toStringFLPO x)], [])
         Equal _ _ -> ([Node nodeid (toStringFLPO x)], [])
-        Neg p -> 
+        Neg p ->
             let (nodes, edges) = formTreeAux p (nodeid + 1) in
                 (Node nodeid (toStringFLPO x)::nodes, Edge nodeid (nodeid + 1) ()::edges)
-        Conj p q -> 
-            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Conj p q ->
+            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLPO x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
-        Disj p q -> 
-            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Disj p q ->
+            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLPO x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
-        Impl p q -> 
-            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Impl p q ->
+            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLPO x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
-        Equi p q -> 
-            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Equi p q ->
+            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLPO x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
-        Exists _ p -> 
+        Exists _ p ->
             let (nodes, edges) = formTreeAux p (nodeid + 1) in
                 (Node nodeid (toStringFLPO x)::nodes, Edge nodeid (nodeid + 1) ()::edges)
-        Forall _ p -> 
+        Forall _ p ->
             let (nodes, edges) = formTreeAux p (nodeid + 1) in
                 (Node nodeid (toStringFLPO x)::nodes, Edge nodeid (nodeid + 1) ()::edges)
         Insat -> ([Node nodeid (toStringFLPO x)], [])
@@ -404,8 +404,5 @@ formTree2DOT : Graph String () -> String
 formTree2DOT ft =
     let myStyles =
             { defaultStyles | node = "shape=plaintext, color=black", edge = "dir=none"}
-    in 
+    in
         outputWithStyles myStyles (\x -> Just x) (\_ -> Nothing) ft
-
-
-

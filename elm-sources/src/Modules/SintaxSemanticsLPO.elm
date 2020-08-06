@@ -6,9 +6,12 @@ import List exposing (concat)
 import Modules.AuxiliarFunctions as Aux exposing (unique)
 import Maybe exposing (Maybe(..))
 import Dict exposing (Dict)
+import Set exposing (Set)
 
 
 
+
+-----------
 -- TYPES --
 -----------
 
@@ -29,6 +32,13 @@ type FormulaLPO = Pred String (List Term)
                 | Insat
 
 type alias Substitution = Dict String Term
+
+type alias Universe comparable = List comparable
+
+type alias Interpretation comparable =
+    { interpretsFunction : Dict String (Dict (List comparable) comparable)
+    , interpretsPredicate: Dict String (Set (List comparable))
+    }
 
 -------------
 -- METHODS --
@@ -69,7 +79,7 @@ applySubsToVar s x aV =
         Maybe.withDefault x <| Dict.get (getVarSymb x) s
 
 applySubsToTerm : Substitution -> Term -> List Variable -> Term
-applySubsToTerm s t aV= 
+applySubsToTerm s t aV=
     case t of
         Var _ -> applySubsToVar s t aV
         Func sf ts -> Func sf (List.map (\term -> applySubsToTerm s term aV) ts)
@@ -79,23 +89,36 @@ applySubsToFormula : Substitution -> FormulaLPO -> FormulaLPO
 applySubsToFormula s f = applySubsToFormulaAux s f []
 
 applySubsToFormulaAux : Substitution -> FormulaLPO -> List Variable -> FormulaLPO
-applySubsToFormulaAux s f aV = 
+applySubsToFormulaAux s f aV =
     case f of
         Pred n ts ->  Pred n <| List.map (\t -> applySubsToTerm s t aV) ts
-
         Equal t1 t2 -> Equal (applySubsToTerm s t1 aV)  (applySubsToTerm s t2 aV)
-        Neg p ->  Neg <| applySubsToFormulaAux s p aV 
+        Neg p ->  Neg <| applySubsToFormulaAux s p aV
+        Conj p q -> Conj (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
+        Disj p q -> Disj (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
+        Impl p q -> Impl (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
+        Equi p q -> Equi (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
+        Exists v p -> Exists v (applySubsToFormulaAux s p (aV ++ [v]))
+        Forall v p ->  Forall v (applySubsToFormulaAux s p (aV ++ [v]))
+        Insat -> Insat
+
+{-renameVars : FormulaLPO -> FormulaLPO
+renameVars f = renameVarsAux f  Dict.empty
+
+renameVarsAux : FormulaLPO -> Substitution -> FormulaLPO
+renameVarsAux f vars =
+    case f of
+        Pred _ _ ->  applySubsToFormula vars f
+        Equal _ _ -> applySubsToFormula vars f
+        Neg p ->  Neg <| applySubsToFormulaAux s p aV
         Conj p q -> Conj (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
         Disj p q -> Disj (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
 
         Impl p q -> Impl (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
         Equi p q -> Equi (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
-        Exists v p -> Exists v (applySubsToFormulaAux s p (aV ++ [v])) 
-        Forall v p ->  Forall v (applySubsToFormulaAux s p (aV ++ [v])) 
+        Exists v p -> Exists v (applySubsToFormulaAux s p (aV ++ [v]))
+        Forall v p ->  Forall v (applySubsToFormulaAux s p (aV ++ [v]))
         Insat -> Insat
 
-
-
-{- compose : Substitution -> Substitution -> Substitution 
+ compose : Substitution -> Substitution -> Substitution
 compose s1 s2 =  reduce <|  List.map (\(v,t) -> (v, applySubsToTerm s2 t)) s1 ++  List.filter (\(v, _) -> not(List.member v (subsDomain s1))) s2 -}
-

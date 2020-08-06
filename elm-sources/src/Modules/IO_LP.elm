@@ -1,14 +1,17 @@
-module Modules.IO_LP exposing(fromStringToFLP, checkFLP, extractReadFLP, fromStringToSetLP, toStringFLP, toStringFLPSet, formTree)
+module Modules.IO_LP exposing(fromStringToFLP, checkReadFLP, extractReadFLP, fromStringToSetLP, toStringFLP, toLatexFLP, toStringFLPSet, formTree, 
+                              toLatexLPSet, truthTableToMDFormat, interpretations2MDFormat)
 
 import Char
 import Set
 import String
 import Maybe
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen)
-import Modules.SintaxSemanticsLP exposing (PSymb, FormulaLP(..))
+import Modules.SintaxSemanticsLP exposing (PSymb, FormulaLP(..), LPSet, Interpretation)
 import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
 import Graph.DOT exposing (outputWithStyles, defaultStyles)
 import Modules.AuxiliarFunctions exposing (cleanSpaces)
+import Bool.Extra
+
 
 ------------------------------------------------------------------------------------------------------------
 --                                                 PARSER                                                 --
@@ -20,16 +23,16 @@ fromStringToFLP x =
         (Maybe.Nothing, "Argument is empty")
   else
     case run parserFLP ("(" ++ cleanSpaces x ++ ")") of
-      
+
       Ok y-> (Maybe.Just y, "")
 
       Err y -> (Maybe.Nothing, Debug.toString y)
 
-checkFLP : (Maybe (FormulaLP), String) -> Bool
-checkFLP (flp, _) =
+checkReadFLP : (Maybe (FormulaLP), String) -> Bool
+checkReadFLP (flp, _) =
   case flp of
-    Nothing ->  False 
-    _ -> True 
+    Nothing ->  False
+    _ -> True
 
 extractReadFLP : (Maybe (FormulaLP), String) -> FormulaLP
 extractReadFLP (flp, _) = Maybe.withDefault Insat flp
@@ -49,21 +52,21 @@ typeVar =
 
 parserFLP : Parser FormulaLP
 parserFLP =
-  oneOf 
-  [ 
+  oneOf
+  [
     succeed Atom
       |. spaces
       |= typeVar
       |. spaces
 
-  , succeed identity 
+  , succeed identity
     |. symbol "("
     |. spaces
     |= lazy(\_ -> expression)
     |. spaces
     |. symbol ")"
-    |. spaces  
-  
+    |. spaces
+
   , succeed Neg
     |.spaces
     |.symbol "NOT"
@@ -83,7 +86,7 @@ expression =
 type Operator = AndOp | OrOp | ImplOp | EquivOp
 
 operator : Parser Operator
-operator = 
+operator =
     oneOf
     [ Parser.map (\_ -> AndOp) (symbol "AND")
     , Parser.map (\_ -> OrOp) (symbol "OR")
@@ -163,40 +166,57 @@ toStringFLP prop =
         Impl p q -> "( " ++ toStringFLP p ++ " ⟶ "  ++ toStringFLP q ++ " )"
         Equi p q -> "( " ++ toStringFLP p ++ " ⟷ "  ++ toStringFLP q ++ " )"
         Insat -> "⊥"
-        
-toStringFLPSet : List FormulaLP -> String
-toStringFLPSet xs = "{" ++ (String.join ", " <| List.map toStringFLP xs) ++ "}" 
 
+toStringFLPSet : List FormulaLP -> String
+toStringFLPSet xs = "{" ++ (String.join ", " <| List.map toStringFLP xs) ++ "}"
+
+toLatexFLP : String -> FormulaLP -> String
+toLatexFLP name x = "$ " ++ name ++ " : "  ++ toLatexFLPAux x ++ "$"
+
+toLatexFLPAux : FormulaLP -> String
+toLatexFLPAux x =
+    case x of
+        Atom symb ->  symb
+        Neg p -> "\\neg " ++ toLatexFLPAux p
+        Conj p q -> "\\left( " ++ toLatexFLPAux p ++ " \\wedge "  ++ toLatexFLPAux q ++ " \\right)"
+        Disj p q -> "\\left( " ++ toLatexFLPAux p ++ " \\vee "  ++ toLatexFLPAux q ++ " \\right)"
+        Impl p q -> "\\left( " ++ toLatexFLPAux p ++ "\\rightarrow "  ++ toLatexFLPAux q ++ " \\right)"
+        Equi p q -> "\\left( " ++ toLatexFLPAux p ++ "\\leftrightarrow "  ++ toLatexFLPAux q ++ " \\right)"
+        Insat -> "\\perp "
+
+toLatexLPSet : String -> LPSet -> String
+toLatexLPSet name xs =
+  "$ " ++ name ++ " : \\left\\lbrace " ++ (String.join ", \\," <| List.map toLatexFLPAux  xs) ++ "\\right\\rbrace$"
 formTree : FormulaLP -> String
-formTree x =  formTree2DOT <| formTree1 x
+formTree x =  String.replace "\n\n" "\n" <| formTree2DOT <| formTree1 x
 
 formTree1 : FormulaLP -> Graph String ()
 formTree1 x =
     case x of
         Atom psymb -> fromNodesAndEdges [Node 0 psymb] []
-        Neg p -> 
+        Neg p ->
             let (nodes, edges) = formTreeAux p 1 in
                 fromNodesAndEdges (Node 0 (toStringFLP x)::nodes) (Edge 0 1 ()::edges)
-        Conj p q -> 
-            let 
+        Conj p q ->
+            let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         fromNodesAndEdges (Node 0 (toStringFLP x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 nextid ()] ++ edges1 ++ edges2)
-        Disj p q -> 
-            let 
+        Disj p q ->
+            let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         fromNodesAndEdges (Node 0 (toStringFLP x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 nextid ()] ++ edges1 ++ edges2)
-        Impl p q -> 
-            let 
+        Impl p q ->
+            let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         fromNodesAndEdges (Node 0 (toStringFLP x)::(nodes1 ++ nodes2)) ([Edge 0 1 (), Edge 0 nextid ()] ++ edges1 ++ edges2)
-        Equi p q -> 
-           let 
+        Equi p q ->
+           let
                 (nodes1, edges1) = formTreeAux p 1 in
                 let nextid = List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
@@ -207,26 +227,26 @@ formTreeAux : FormulaLP -> NodeId -> (List (Node String), List (Edge ()))
 formTreeAux x nodeid=
     case x of
         Atom psymb -> ([Node nodeid psymb], [])
-        Neg p -> 
+        Neg p ->
             let (nodes, edges) = formTreeAux p (nodeid + 1) in
                 (Node nodeid (toStringFLP x)::nodes, Edge nodeid (nodeid + 1) ()::edges)
-        Conj p q -> 
-            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Conj p q ->
+            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLP x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
-        Disj p q -> 
-            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Disj p q ->
+            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLP x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
-        Impl p q -> 
-            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Impl p q ->
+            let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLP x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
-        Equi p q -> 
-          let (nodes1, edges1) = formTreeAux p (nodeid + 1) in 
+        Equi p q ->
+          let (nodes1, edges1) = formTreeAux p (nodeid + 1) in
                 let nextid = nodeid + List.length nodes1 + 1 in
                     let (nodes2, edges2) = formTreeAux q nextid in
                         ( Node nodeid (toStringFLP x)::(nodes1 ++ nodes2),  [Edge nodeid (nodeid + 1) (), Edge nodeid nextid ()] ++ edges1 ++ edges2)
@@ -236,7 +256,18 @@ formTree2DOT : Graph String () -> String
 formTree2DOT ft =
     let myStyles =
             { defaultStyles | node = "shape=plaintext, color=black", edge = "dir=none"}
-    in 
+    in
         outputWithStyles myStyles (\x -> Just x) (\_ -> Nothing) ft
 
+truthTableToMDFormat : List PSymb -> List (Interpretation, Bool) -> (List String, List (List String))
+truthTableToMDFormat headerSymbs truthtable =
+  let
+      header =  List.map (\s ->  "$ " ++ s ++ " $") headerSymbs ++ ["$ Valoración $"]
+      body = 
+        List.map (\(i,v) ->  List.map (\simb -> if List.member simb i then "1" else "0") headerSymbs++ ["$ " ++ Bool.Extra.toString v ++ " $"]) truthtable
+  in
+    (header , body)
 
+interpretations2MDFormat : List Interpretation -> String
+interpretations2MDFormat xs = String.join " , " <| List.map (\m -> "$\\lbrace " ++ String.join " , " m ++ " \\rbrace$") <| xs
+  

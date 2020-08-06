@@ -2,7 +2,7 @@ module Modules.SintaxSemanticsLP exposing (
     PSymb, FormulaLP(..), Interpretation, LPSet,
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
-    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, setSymbols)
+    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, setSymbols, symbInProp)
 
 import List
 import Set
@@ -41,19 +41,23 @@ valuation pr i =
         Equi p q ->   valuation (Impl p q) i &&  valuation (Impl q p) i
         Insat -> Basics.False
 
-symbInProp : FormulaLP -> Set.Set PSymb
-symbInProp f=
+symbInProp : FormulaLP -> List PSymb
+symbInProp x = List.sort <| Set.toList <| symbInPropAux x
+
+symbInPropAux : FormulaLP -> Set.Set PSymb
+symbInPropAux f=
     case f of
         Atom p -> Set.singleton p
-        Neg p -> symbInProp p
-        Conj p q -> Set.union (symbInProp p ) (symbInProp q)
-        Disj p q -> Set.union (symbInProp p ) (symbInProp q)
-        Impl p q -> Set.union (symbInProp p ) (symbInProp q)
-        Equi p q -> Set.union (symbInProp p ) (symbInProp q)
+        Neg p -> symbInPropAux p
+        Conj p q -> Set.union (symbInPropAux p ) (symbInPropAux q)
+        Disj p q -> Set.union (symbInPropAux p ) (symbInPropAux q)
+        Impl p q -> Set.union (symbInPropAux p ) (symbInPropAux q)
+        Equi p q -> Set.union (symbInPropAux p ) (symbInPropAux q)
         Insat -> Set.empty
 
+
 allInterpretations : FormulaLP -> List Interpretation
-allInterpretations x =  Aux.powerset <| List.sort <| Set.toList <| symbInProp x
+allInterpretations x =  Aux.powerset (symbInProp x)
 
 truthTable : FormulaLP -> List (Interpretation, Bool)
 truthTable x = List.map (\xs ->  (xs,valuation x xs)) <| allInterpretations x
@@ -72,7 +76,7 @@ insatisfactibility : FormulaLP -> Bool
 insatisfactibility x = List.all (\xs-> not(valuation x xs)) (allInterpretations x)
 
 setSymbols : List FormulaLP -> Set.Set PSymb
-setSymbols xs = List.foldr (\x acc -> Set.union acc (symbInProp x)) Set.empty xs
+setSymbols xs = List.foldr (\x acc -> Set.union acc (symbInPropAux x)) Set.empty xs
 
 allSetInterpretations : List FormulaLP -> List Interpretation
 allSetInterpretations xs = Aux.powerset <| Set.toList <| setSymbols xs
