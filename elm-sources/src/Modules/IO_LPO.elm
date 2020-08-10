@@ -292,8 +292,8 @@ toStringFLPO x =
         Neg p -> "¬ " ++ toStringFLPO p
         Conj p q -> "( " ++ toStringFLPO p ++ " ∧ "  ++ toStringFLPO q ++ " )"
         Disj p q -> "( " ++ toStringFLPO p ++ " ∨ "  ++ toStringFLPO q ++ " )"
-        Impl p q -> "( " ++ toStringFLPO p ++ " ⟶ "  ++ toStringFLPO q ++ " )"
-        Equi p q -> "( " ++ toStringFLPO p ++ " ⟷ "  ++ toStringFLPO q ++ " )"
+        Impl p q -> "( " ++ toStringFLPO p ++ " → "  ++ toStringFLPO q ++ " )"
+        Equi p q -> "( " ++ toStringFLPO p ++ " ↔ "  ++ toStringFLPO q ++ " )"
         Exists v p -> "∃ " ++ toStringTerm v ++ " " ++ toStringFLPO p
         Forall v p -> "∀ " ++ toStringTerm v ++ " " ++ toStringFLPO p
         Insat -> "⊥"
@@ -314,8 +314,8 @@ toLatexFLPOAux x =
         Disj p q -> "\\left( " ++ toLatexFLPOAux p ++ " \\vee "  ++ toLatexFLPOAux q ++ " \\right)"
         Impl p q -> "\\left( " ++ toLatexFLPOAux p ++ "\\rightarrow "  ++ toLatexFLPOAux q ++ " \\right)"
         Equi p q -> "\\left( " ++ toLatexFLPOAux p ++ "\\leftrightarrow "  ++ toLatexFLPOAux q ++ " \\right)"
-        Exists v p -> "\\exists " ++ toStringTerm v ++ "\\," ++ toStringFLPO p
-        Forall v p -> "\\forall " ++ toStringTerm v ++ "\\," ++ toStringFLPO p
+        Exists v p -> "\\exists " ++ toStringTerm v ++ "\\," ++ toLatexFLPOAux p
+        Forall v p -> "\\forall " ++ toStringTerm v ++ "\\," ++ toLatexFLPOAux p
         Insat -> "\\perp "
 
 toLatexSLOP : List FormulaLPO -> String
