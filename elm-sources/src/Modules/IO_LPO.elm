@@ -57,8 +57,8 @@ parseTerm =
         succeed Func
             |. symbol "_"
             |= variable
-                { start =  \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' && c/= ')' && c/= '{' && c/= '}' && not (isSpace c)
-                , inner = \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' && c/= ')' && c/= '{' && c/= '}' && not (isSpace c)
+                { start =  \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' && c/= ')' && c/= '{' && c/= '}' && c/= ',' && not (isSpace c)
+                , inner = \c -> c /= '[' && c /= ']' && c /= ';' && c/= '(' && c/= ')' && c/= '{' && c/= '}' && c/= ',' && not (isSpace c)
                 , reserved = Set.fromList []
                 }
             |= parseParams
@@ -256,7 +256,7 @@ parserSubstitution =
       , end = "}"
       , spaces = spaces
       , item = parserSubsChange
-      , trailing = Optional -- demand a trailing semi-colon
+      , trailing = Forbidden -- demand a trailing semi-colon
       }
 
 parserSubsChange : Parser (String, Term)

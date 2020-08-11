@@ -79,42 +79,38 @@ varsInFormula f =
         Forall _ p -> varsInFormula p
         Insat -> []
 
-
-eye : Substitution
-eye = Dict.empty
-
 subsDomain : Substitution -> List Variable
 subsDomain x = List.map Var <| Dict.keys x
 
-applySubsToVar : Substitution -> Variable -> List Variable -> Term
-applySubsToVar s x aV =
-    if List.member x aV then
-        x
-    else
-        Maybe.withDefault x <| Dict.get (getVarSymb x) s
+applySubsToVar : Substitution -> Variable -> Term
+applySubsToVar s x = Maybe.withDefault x <| Dict.get (getVarSymb x) s
 
-applySubsToTerm : Substitution -> Term -> List Variable -> Term
-applySubsToTerm s t aV=
+applySubsToTerm : Substitution -> Term -> Term
+applySubsToTerm s t=
     case t of
-        Var _ -> applySubsToVar s t aV
-        Func sf ts -> Func sf (List.map (\term -> applySubsToTerm s term aV) ts)
-
+        Var _ -> applySubsToVar s t
+        Func sf ts -> Func sf (List.map (\term -> applySubsToTerm s term) ts)
 
 applySubsToFormula : Substitution -> FormulaLPO -> FormulaLPO
-applySubsToFormula s f = applySubsToFormulaAux s f []
-
-applySubsToFormulaAux : Substitution -> FormulaLPO -> List Variable -> FormulaLPO
-applySubsToFormulaAux s f aV =
+applySubsToFormula s f =
     case f of
-        Pred n ts ->  Pred n <| List.map (\t -> applySubsToTerm s t aV) ts
-        Equal t1 t2 -> Equal (applySubsToTerm s t1 aV)  (applySubsToTerm s t2 aV)
-        Neg p ->  Neg <| applySubsToFormulaAux s p aV
-        Conj p q -> Conj (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
-        Disj p q -> Disj (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
-        Impl p q -> Impl (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
-        Equi p q -> Equi (applySubsToFormulaAux s p aV) (applySubsToFormulaAux s q aV)
-        Exists v p -> Exists v (applySubsToFormulaAux s p (aV ++ [v]))
-        Forall v p ->  Forall v (applySubsToFormulaAux s p (aV ++ [v]))
+        Pred n ts ->  Pred n <| List.map (\t -> applySubsToTerm s t) ts
+        Equal t1 t2 -> Equal (applySubsToTerm s t1)  (applySubsToTerm s t2)
+        Neg p ->  Neg <| applySubsToFormula s p
+        Conj p q -> Conj (applySubsToFormula s p) (applySubsToFormula s q)
+        Disj p q -> Disj (applySubsToFormula s p) (applySubsToFormula s q)
+        Impl p q -> Impl (applySubsToFormula s p) (applySubsToFormula s q)
+        Equi p q -> Equi (applySubsToFormula s p) (applySubsToFormula s q)
+        Exists v p -> 
+            let 
+                s2 = Dict.filter (\ k _ -> k /= (getVarSymb v)) s
+            in
+                Exists v (applySubsToFormula s2 p)
+        Forall v p ->  
+            let 
+                s2 = Dict.filter (\ k _ -> k /= (getVarSymb v)) s
+            in
+                Forall v (applySubsToFormula s2 p)
         Insat -> Insat
 
 checkWFF : FormulaLPO -> Bool
@@ -204,8 +200,8 @@ renameVarsAux : FormulaLPO -> Dict String Int -> (FormulaLPO, Dict String Int)
 renameVarsAux f vars =
     let varsSub = Dict.map (\ k v ->  Var (k ++ "_" ++ String.fromInt v)) vars in
         case f of
-            Pred n terms ->  (Pred n <| List.map (\ t -> applySubsToTerm varsSub t []) terms, vars)
-            Equal t1 t2 -> (Equal (applySubsToTerm varsSub t1 []) (applySubsToTerm varsSub t2 []), vars)
+            Pred n terms ->  (Pred n <| List.map (\ t -> applySubsToTerm varsSub t) terms, vars)
+            Equal t1 t2 -> (Equal (applySubsToTerm varsSub t1) (applySubsToTerm varsSub t2), vars)
             Neg p ->  
                 let
                     (f1, d1) = renameVarsAux p vars
