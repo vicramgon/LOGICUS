@@ -4,9 +4,10 @@ module Modules.SintaxSemanticsLPO exposing (..)
 
 import List exposing (concat)
 import Modules.AuxiliarFunctions as Aux exposing (unique)
-import Maybe exposing (Maybe(..))
+import Maybe exposing (Maybe(..), andThen)
 import Dict exposing (Dict)
-import Set exposing (Set)
+import Maybe.Extra exposing (isNothing, values, combine)
+
 
 
 
@@ -33,12 +34,15 @@ type FormulaLPO = Pred String (List Term)
 
 type alias Substitution = Dict String Term
 
-type alias Universe comparable = List comparable
+type alias Universe a = List a
 
-type alias Interpretation comparable =
-    { interpretsFunction : Dict String (Dict (List comparable) comparable)
-    , interpretsPredicate: Dict String (Set (List comparable))
+type alias Interpretation a =
+    { i_const : Dict String a
+     , i_funct : Dict String ((List a) -> a)
+     , i_pred : Dict String ((List a) -> Bool)
     }
+
+type alias L_estructure a = (Universe a , Interpretation a)
 
 -------------
 -- METHODS --
@@ -103,12 +107,12 @@ applySubsToFormula s f =
         Equi p q -> Equi (applySubsToFormula s p) (applySubsToFormula s q)
         Exists v p -> 
             let 
-                s2 = Dict.filter (\ k _ -> k /= (getVarSymb v)) s
+                s2 = Dict.filter (\ k _ -> k /=  getVarSymb v) s
             in
                 Exists v (applySubsToFormula s2 p)
         Forall v p ->  
             let 
-                s2 = Dict.filter (\ k _ -> k /= (getVarSymb v)) s
+                s2 = Dict.filter (\ k _ -> k /=  getVarSymb v) s
             in
                 Forall v (applySubsToFormula s2 p)
         Insat -> Insat
@@ -269,5 +273,98 @@ renameVarsAux f vars =
                                 (Forall (Var (vSymb ++ "_" ++ String.fromInt vNewIndex)) f1, d1)
             Insat -> (Insat, vars)
 
-{-compose : Substitution -> Substitution -> Substitution
-compose s1 s2 =  reduce <|  List.map (\(v,t) -> (v, applySubsToTerm s2 t)) s1 ++  List.filter (\(v, _) -> not(List.member v (subsDomain s1))) s2 -}
+interpretsTerm : Term -> Interpretation a ->  Maybe a
+interpretsTerm t i =
+    case t of
+        Var _ -> Nothing
+        Func s [] -> Dict.get s i.i_const
+        Func s args ->         
+            let f = Dict.get s i.i_funct in
+                case f of
+                    Nothing -> Nothing
+                    Just x -> 
+                        let ls = List.map (\t2 -> interpretsTerm t2 i) args in
+                            if List.any isNothing ls then
+                                Nothing
+                            else
+                                Just <| x (values ls)
+
+interpretsFLPO : FormulaLPO -> L_estructure a -> Maybe Bool
+interpretsFLPO f estr = interpretsFLPOAux (universalClausureFLPO f) estr
+
+interpretsFLPOAux : FormulaLPO -> L_estructure a -> Maybe Bool
+interpretsFLPOAux f (m,i) =
+    case f of
+        Pred sp terms -> 
+            let ip = Dict.get sp i.i_pred in
+                case ip of
+                    Nothing -> Nothing
+                    Just x -> 
+                        let ls = List.map (\t -> interpretsTerm t i) terms in
+                            if List.any isNothing ls then
+                                Nothing
+                            else
+                                Just <| x (values ls)
+        Equal t1 t2-> 
+            let it1 = interpretsTerm t1 i
+                it2 = interpretsTerm t2 i
+            in 
+                if isNothing it1 || isNothing it2 then
+                    Nothing
+                else Just  (it1 == it2)
+
+        Neg f1 -> andThen (\if1 -> Just (not if1)) (interpretsFLPOAux f1 (m,i))
+        Conj f1 f2 -> 
+            let if1 = interpretsFLPOAux f1 (m,i)
+                if2 = interpretsFLPOAux f2 (m,i)
+            in 
+                case if1 of
+                    Nothing -> Nothing
+                    Just x ->   
+                        case if2 of
+                            Nothing -> Nothing 
+                            Just y -> Just (x && y)
+        Disj f1 f2 -> 
+            let if1 = interpretsFLPOAux f1 (m,i)
+                if2 = interpretsFLPOAux f2 (m,i)
+            in 
+                case if1 of
+                    Nothing -> Nothing
+                    Just x ->   
+                        case if2 of
+                            Nothing -> Nothing 
+                            Just y -> Just (x || y)
+        Impl f1 f2 -> 
+            let if1 = interpretsFLPOAux f1 (m,i)
+                if2 = interpretsFLPOAux f2 (m,i)
+            in 
+                case if1 of
+                    Nothing -> Nothing
+                    Just x ->   
+                        case if2 of
+                            Nothing -> Nothing 
+                            Just y -> Just (not x || y)
+        Equi f1 f2 -> 
+            let if1 = interpretsFLPOAux f1 (m,i)
+                if2 = interpretsFLPOAux f2 (m,i)
+            in 
+                case if1 of
+                    Nothing -> Nothing
+                    Just x ->   
+                        case if2 of
+                            Nothing -> Nothing 
+                            Just y -> Just (x == y)
+        Exists v f1 ->
+            let ls = combine <| List.map (\o -> interpretsFLPOAux (applySubsToFormula (Dict.singleton (getVarSymb v) (Func o [])) f1) (m,i)) (Dict.keys i.i_const)in
+                case ls of
+                    Nothing -> Nothing
+                    Just li -> Just <| List.any (\x -> x) li
+        Forall v f1 -> 
+            let ls = combine <| List.map (\o -> interpretsFLPOAux (applySubsToFormula (Dict.singleton (getVarSymb v) (Func o [])) f1) (m,i)) (Dict.keys i.i_const)in
+                case ls of
+                    Nothing -> Nothing
+                    Just li -> Just <| List.all (\x -> x) li
+        Insat -> Just False
+       
+
+
