@@ -1,9 +1,22 @@
 module Modules.SemanticBoardsLP exposing (..)
 
 import Modules.SintaxSemanticsLP exposing (FormulaLP(..))
-import Modules.AuxiliarFunctions exposing (uniqueConcatList, isSubSetList, deleteFirstLs)
+import Modules.AuxiliarFunctions exposing (uniqueConcatList, isSubSetList, deleteFirstLs, uncurry)
 import List.Extra exposing (remove)
 import List exposing (member)
+import Graph exposing (NodeId, Node, Edge, fromNodesAndEdges)
+import Modules.IO_LP exposing (toStringFLPSet, toStringFLP)
+import Graph.DOT exposing (outputWithStyles, defaultStyles)
+
+
+
+
+isInsat : FormulaLP -> Bool 
+isInsat x =
+    case x of
+        Insat -> True
+        Neg (Insat) -> True
+        _ -> False
 
 -- Definition of isDobleNeg that represents if a formula is a doble negation
 
@@ -73,7 +86,7 @@ isLiteralSet fs = List.all (\x -> isLiteral x) fs
 -- Definition of hasContradiction that represents if the argument has a formula and the negation of it.
 
 hasContradiction : List FormulaLP -> Bool
-hasContradiction fs = List.any (\x -> member (Neg x) fs) fs
+hasContradiction fs = List.any (\x -> member (Neg x) fs || isInsat x) fs
 
 -- Definition of dnexpansion that represents de epansion of the argument with the doble negation of a formula that is in the set
 
@@ -95,7 +108,7 @@ betaExpansion fs f =
 -- definition of sucessors that representes the List of sucessor of a formula set
 
 sucessors : List FormulaLP -> List (List FormulaLP)
-sucessors fs = case List.head (List.filter  isDobleNeg fs) of
+sucessors fs = case List.head (List.filter isDobleNeg fs) of
     Just f -> dnExpansion fs f 
 
     Nothing -> case List.head (List.filter  isAlpha fs) of
@@ -105,6 +118,65 @@ sucessors fs = case List.head (List.filter  isDobleNeg fs) of
             Just f -> betaExpansion fs f
         
             Nothing -> [fs]
+
+
+makeSBoard : List FormulaLP -> String 
+makeSBoard fs = 
+    let myStyles =
+            { defaultStyles | node = "shape=plaintext, color=black", edge = "dir=none, color=blue, fontcolor=blue"}
+    in
+        String.replace "\n\n" "\n" <| outputWithStyles myStyles (\x -> Just x) (\x-> Just x) <|  uncurry fromNodesAndEdges <| makeSBoardAux fs 0
+        
+        
+makeSBoardAux : List FormulaLP -> NodeId -> (List (Node String), List (Edge String))
+makeSBoardAux fs nid =
+    let 
+        actualNode = Node nid (toStringFLPSet fs)
+    in
+        if  hasContradiction fs then
+                ([actualNode, Node (nid + 1) "╳"], [Edge  nid  (nid + 1) ""])
+
+        else if isLiteralSet fs then
+                    ([actualNode, Node (nid + 1) "◯"], [Edge  nid  (nid + 1) ""])
+        else
+            case List.head (List.filter isDobleNeg fs) of
+                Just f ->
+                    let
+                        edgeLabel = "dN : " ++  toStringFLP f ++ " ⟼ " ++ (toStringFLPSet <| formulaComponents f)
+                        (nodes, edges) = makeSBoardAux (List.concat <| dnExpansion fs f) (nid + 1) 
+                    in
+                        (actualNode::nodes,  Edge nid (nid + 1) edgeLabel::edges)
+                Nothing ->
+                    case List.head (List.filter isAlpha fs) of
+                        Just f ->
+                            let
+                                edgeLabel = "α : " ++  toStringFLP f ++ " ⟼ " ++ (toStringFLPSet <| formulaComponents f)
+                                (nodes, edges) = makeSBoardAux (List.concat <| alphaExpansion fs f) (nid + 1) 
+                            in
+                                (actualNode::nodes,  Edge nid (nid + 1) edgeLabel::edges)
+                        Nothing ->
+                            case List.head (List.filter  isBeta fs) of
+                                Just f ->
+                                    case formulaComponents f of
+                                        [f1, f2] -> 
+                                            let
+                                                edgeLabel1 = " β: " ++  toStringFLP f ++ " ⟼ " ++  toStringFLP f1
+                                                edgeLabel2 = " β: " ++  toStringFLP f ++ " ⟼ " ++  toStringFLP f2
+                                                nfs =  remove f fs
+                                            in
+                                                let (nodes1, edges1) = makeSBoardAux (uniqueConcatList nfs [f1]) (nid + 1) in
+                                                    let nextid = nid + List.length nodes1 + 1 in
+                                                        let (nodes2, edges2) = makeSBoardAux (uniqueConcatList nfs [f2]) nextid in
+                                                            (actualNode::(nodes1 ++ nodes2), [Edge nid (nid + 1) edgeLabel1, Edge nid nextid edgeLabel2] ++ edges1 ++ edges2)
+                                        _ -> ([],[])
+                                _ -> ([],[])
+
+
+
+                
+
+
+            
 
 -- definition of modelsTab that representes the models of a set of formulas using semantic boards
 modelsTab : List FormulaLP -> List (List FormulaLP)     
