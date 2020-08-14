@@ -142,7 +142,7 @@ makeSBoardAux fs nid =
             case List.head (List.filter isDobleNeg fs) of
                 Just f ->
                     let
-                        edgeLabel = "dN : " ++  toStringFLP f ++ " ⟼ " ++ (toStringFLPSet <| formulaComponents f)
+                        edgeLabel = "dN : " ++  toStringFLP f ++ "\n ⟹ " ++ (toStringFLPSet <| formulaComponents f)
                         (nodes, edges) = makeSBoardAux (List.concat <| dnExpansion fs f) (nid + 1) 
                     in
                         (actualNode::nodes,  Edge nid (nid + 1) edgeLabel::edges)
@@ -150,7 +150,7 @@ makeSBoardAux fs nid =
                     case List.head (List.filter isAlpha fs) of
                         Just f ->
                             let
-                                edgeLabel = "α : " ++  toStringFLP f ++ " ⟼ " ++ (toStringFLPSet <| formulaComponents f)
+                                edgeLabel = "α : " ++  toStringFLP f ++ "\n ⟹ " ++ (toStringFLPSet <| formulaComponents f)
                                 (nodes, edges) = makeSBoardAux (List.concat <| alphaExpansion fs f) (nid + 1) 
                             in
                                 (actualNode::nodes,  Edge nid (nid + 1) edgeLabel::edges)
@@ -160,8 +160,8 @@ makeSBoardAux fs nid =
                                     case formulaComponents f of
                                         [f1, f2] -> 
                                             let
-                                                edgeLabel1 = " β: " ++  toStringFLP f ++ " ⟼ " ++  toStringFLP f1
-                                                edgeLabel2 = " β: " ++  toStringFLP f ++ " ⟼ " ++  toStringFLP f2
+                                                edgeLabel1 = " β: " ++  toStringFLP f ++ "\n ⟹ {" ++  toStringFLP f1 ++ "}"
+                                                edgeLabel2 = " β: " ++  toStringFLP f ++ "\n ⟹ {" ++  toStringFLP f2 ++ "}"
                                                 nfs =  remove f fs
                                             in
                                                 let (nodes1, edges1) = makeSBoardAux (uniqueConcatList nfs [f1]) (nid + 1) in

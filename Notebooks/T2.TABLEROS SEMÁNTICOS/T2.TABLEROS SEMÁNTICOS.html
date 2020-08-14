@@ -2,17 +2,18 @@
       <title>T2.TABLEROS SEM&#xC1;NTICOS</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////home/victor/.atom/packages/markdown-preview-enhanced-with-litvis/node_modules/mume-with-litvis/dependencies/katex/katex.min.css">
+      
+      
 
-      <link rel="stylesheet" href="../css/katex/katex.min.css">
-
-
-
-
-
-
-
-
-
+      
+      
+      
+      
+      
+      
+      
 
       <style>
       /**
@@ -232,7 +233,7 @@ pre[data-line] .line-highlight {
   white-space: pre;
 }
 
-pre[data-line] .line-highlight:before,
+pre[data-line] .line-highlight:before, 
 pre[data-line] .line-highlight[data-end]:after {
   content: attr(data-start);
   position: absolute;
@@ -439,9 +440,9 @@ isBeta x =
 formulaComponents : FormulaLP -&gt; List FormulaLP
 formulaComponents x =
     case x of
-        Atom p -&gt; [Atom p]
-        Neg (Atom p) -&gt; [Neg (Atom p)]
-        Neg (Neg f) -&gt; [f]
+        Atom p -&gt; [Atom p]                  
+        Neg (Atom p) -&gt; [Neg (Atom p)]      
+        Neg (Neg f) -&gt; [f]                  
         Conj f g -&gt; [f, g]
         Neg (Impl f g) -&gt; [f, Neg g]
         Neg (Disj f g) -&gt; [Neg f, Neg g]
@@ -546,7 +547,7 @@ hasContradiction : List FormulaLP -&gt; Bool
 hasContradiction fs = List.any (\x -&gt; member (Neg x) fs || isInsat x) fs
 </pre>
 <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&#x2212;</mo></mrow><annotation encoding="application/x-tex">-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">&#x2212;</span></span></span></span> B&#xFA;squeda de modelos</p>
-<pre class="language-text">modelsTab : List FormulaLP -&gt; List (List FormulaLP)
+<pre class="language-text">modelsTab : List FormulaLP -&gt; List (List FormulaLP)     
 modelsTab fs = if hasContradiction fs then
                     []
                 else if isLiteralSet fs then
@@ -615,24 +616,24 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot;&#x3B1; : ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) ) &#x27FC; {( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) ), ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )}&quot;]
-  1 -&gt; 2 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) ) &#x27FC; &#xAC; ( p &#x2227; q )&quot;]
-  1 -&gt; 12 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) ) &#x27FC; ( &#xAC; q &#x2228; r )&quot;]
-  2 -&gt; 3 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) ) &#x27FC; &#xAC; ( &#xAC; q &#x2228; r )&quot;]
-  2 -&gt; 10 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) ) &#x27FC; ( p &#x2227; q )&quot;]
-  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; q &#x2228; r ) &#x27FC; {&#xAC; &#xAC; q, &#xAC; r}&quot;]
-  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; q &#x27FC; {q}&quot;]
-  5 -&gt; 6 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q ) &#x27FC; &#xAC; p&quot;]
-  5 -&gt; 8 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q ) &#x27FC; &#xAC; q&quot;]
+  0 -&gt; 1 [label=&quot;&#x3B1; : ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) ), ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )}&quot;]
+  1 -&gt; 2 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {&#xAC; ( p &#x2227; q )}&quot;]
+  1 -&gt; 12 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {( &#xAC; q &#x2228; r )}&quot;]
+  2 -&gt; 3 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {&#xAC; ( &#xAC; q &#x2228; r )}&quot;]
+  2 -&gt; 10 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {( p &#x2227; q )}&quot;]
+  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; &#xAC; q, &#xAC; r}&quot;]
+  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; q\n &#x27F9; {q}&quot;]
+  5 -&gt; 6 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
+  5 -&gt; 8 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
   6 -&gt; 7 [label=&quot;&quot;]
   8 -&gt; 9 [label=&quot;&quot;]
   10 -&gt; 11 [label=&quot;&quot;]
-  12 -&gt; 13 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) ) &#x27FC; &#xAC; ( &#xAC; q &#x2228; r )&quot;]
-  12 -&gt; 15 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) ) &#x27FC; ( p &#x2227; q )&quot;]
+  12 -&gt; 13 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {&#xAC; ( &#xAC; q &#x2228; r )}&quot;]
+  12 -&gt; 15 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {( p &#x2227; q )}&quot;]
   13 -&gt; 14 [label=&quot;&quot;]
-  15 -&gt; 16 [label=&quot;&#x3B1; : ( p &#x2227; q ) &#x27FC; {p, q}&quot;]
-  16 -&gt; 17 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r ) &#x27FC; &#xAC; q&quot;]
-  16 -&gt; 19 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r ) &#x27FC; r&quot;]
+  15 -&gt; 16 [label=&quot;&#x3B1; : ( p &#x2227; q )\n &#x27F9; {p, q}&quot;]
+  16 -&gt; 17 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; q}&quot;]
+  16 -&gt; 19 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {r}&quot;]
   17 -&gt; 18 [label=&quot;&quot;]
   19 -&gt; 20 [label=&quot;&quot;]
   0 [label=&quot;{( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )}&quot;]
@@ -671,7 +672,7 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 <pre data-role="codeBlock" data-info="elm {l context=&quot;1&quot;}" class="language-elm"><span class="token hvariable">tablero_na</span> <span class="token operator">:</span> <span class="token constant">String</span>
 <span class="token hvariable">tablero_na</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token punctuation">[</span><span class="token constant">Neg</span> <span class="token hvariable">a</span><span class="token punctuation">]</span>
 
-<span class="token comment">-- Ejecutamos: showGraphViz &quot;G2&quot; tablero_na</span>
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;G2&quot;  tablero_na</span>
 </pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G2">
 <div id="inputGraphG2" style="width:100%; display: inline-block;">
 <textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG2"> digraph G {
@@ -679,22 +680,22 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot; &#x3B2;: &#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) ) &#x27FC; &#xAC; ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )&quot;]
-  0 -&gt; 7 [label=&quot; &#x3B2;: &#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) ) &#x27FC; &#xAC; ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )&quot;]
-  1 -&gt; 2 [label=&quot;&#x3B1; : &#xAC; ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) ) &#x27FC; {( p &#x2227; q ), &#xAC; ( &#xAC; q &#x2228; r )}&quot;]
-  2 -&gt; 3 [label=&quot;&#x3B1; : ( p &#x2227; q ) &#x27FC; {p, q}&quot;]
-  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; q &#x2228; r ) &#x27FC; {&#xAC; &#xAC; q, &#xAC; r}&quot;]
-  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; q &#x27FC; {q}&quot;]
+  0 -&gt; 1 [label=&quot; &#x3B2;: &#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {&#xAC; ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )}&quot;]
+  0 -&gt; 7 [label=&quot; &#x3B2;: &#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {&#xAC; ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )}&quot;]
+  1 -&gt; 2 [label=&quot;&#x3B1; : &#xAC; ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {( p &#x2227; q ), &#xAC; ( &#xAC; q &#x2228; r )}&quot;]
+  2 -&gt; 3 [label=&quot;&#x3B1; : ( p &#x2227; q )\n &#x27F9; {p, q}&quot;]
+  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; &#xAC; q, &#xAC; r}&quot;]
+  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; q\n &#x27F9; {q}&quot;]
   5 -&gt; 6 [label=&quot;&quot;]
-  7 -&gt; 8 [label=&quot;&#x3B1; : &#xAC; ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) ) &#x27FC; {( &#xAC; q &#x2228; r ), &#xAC; ( p &#x2227; q )}&quot;]
-  8 -&gt; 9 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r ) &#x27FC; &#xAC; q&quot;]
-  8 -&gt; 14 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r ) &#x27FC; r&quot;]
-  9 -&gt; 10 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q ) &#x27FC; &#xAC; p&quot;]
-  9 -&gt; 12 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q ) &#x27FC; &#xAC; q&quot;]
+  7 -&gt; 8 [label=&quot;&#x3B1; : &#xAC; ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {( &#xAC; q &#x2228; r ), &#xAC; ( p &#x2227; q )}&quot;]
+  8 -&gt; 9 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; q}&quot;]
+  8 -&gt; 14 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {r}&quot;]
+  9 -&gt; 10 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
+  9 -&gt; 12 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
   10 -&gt; 11 [label=&quot;&quot;]
   12 -&gt; 13 [label=&quot;&quot;]
-  14 -&gt; 15 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q ) &#x27FC; &#xAC; p&quot;]
-  14 -&gt; 17 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q ) &#x27FC; &#xAC; q&quot;]
+  14 -&gt; 15 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
+  14 -&gt; 17 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
   15 -&gt; 16 [label=&quot;&quot;]
   17 -&gt; 18 [label=&quot;&quot;]
   0 [label=&quot;{&#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )}&quot;]
@@ -758,20 +759,285 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 <p>N&#xF3;tese que en los conjuntos de literales, descriptores de modelos, el n&#xFA;mero de modelos que contienen es <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">2^{i}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.824664em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">i</span></span></span></span></span></span></span></span></span></span></span></span> tal que <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.65952em;vertical-align:0em;"></span><span class="mord mathdefault">i</span></span></span></span> es el n&#xFA;mero de s&#xED;mbolos proposicionales que no aparecen en el conjunto.</p>
 <p>De forma que hemos obtenido 2 modelos para <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi></mrow><annotation encoding="application/x-tex">F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span> y &#xBF;<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msup><mn>2</mn><mn>1</mn></msup><mo>+</mo><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mn>1</mn><mo>=</mo><mn>7</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(2^{1} + 2^{2} + 1 = 7)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.897438em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">7</span><span class="mclose">)</span></span></span></span> contramodelos? No, existen <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>3</mn></msup><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">2^{3} = 8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span></span></span></span> valoraciones distintas, luego si hay 2 modelos necesariamente ha de haber 6 contramodelos.</p>
 <p>N&#xF3;tese que al hacer la suma hemos contado alg&#xFA;n modelo m&#xE1;s de una vez, ya que est&#xE1; incluido en varios de esos conjuntos. En concreto el modelo : <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="normal">&#xAC;</mi><mi>p</mi><mo separator="true">,</mo><mi mathvariant="normal">&#xAC;</mi><mi>q</mi><mo separator="true">,</mo><mi>r</mi><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{\neg p, \neg q, r\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord">&#xAC;</span><span class="mord mathdefault">p</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">}</span></span></span></span> pertenece al primer y segundo conjunto de modelos, por tanto al hacer la suma, &#xE9;ste lo hemos contado 2 veces.</p>
-<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><menclose notation="box"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="true"><mrow><mi>C</mi><mi>o</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>t</mi><mi>a</mi><mi>r</mi></mrow></mstyle></mstyle></mstyle></menclose></mrow><annotation encoding="application/x-tex">\boxed{Completar}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.5688799999999998em;vertical-align:-0.53444em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0344399999999998em;"><span style="top:-3.56888em;"><span class="pstrut" style="height:3.56888em;"></span><span class="boxpad"><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault">o</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span><span class="mord mathdefault">t</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span></span><span style="top:-3.03444em;"><span class="pstrut" style="height:3.56888em;"></span><span class="stretchy fbox" style="height:1.5688799999999998em;border-style:solid;border-width:0.04em;"></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.53444em;"><span></span></span></span></span></span></span></span></span></p>
+<h5 class="mume-header" id="ejemplo-2">Ejemplo 2</h5>
+
+<blockquote>
+<p>Responde, de forma razonada, a las siguientes cuestiones usando tableros sem&#xE1;nticos:</p>
+<ol>
+<li>Es <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>p</mi><mo>&#x2228;</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo stretchy="false">)</mo><mo>&#x2227;</mo><mo stretchy="false">(</mo><mi>t</mi><mo>&#x2192;</mo><mi mathvariant="normal">&#xAC;</mi><mi>r</mi><mo stretchy="false">)</mo><mo>&#x2227;</mo><mi mathvariant="normal">&#xAC;</mi><mo stretchy="false">(</mo><mi mathvariant="normal">&#xAC;</mi><mi>t</mi><mo>&#x2192;</mo><mi>q</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(p \vee q \rightarrow r) \wedge (t \rightarrow \neg r) \wedge \neg(\neg t \rightarrow q)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2228;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2227;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2227;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&#xAC;</span><span class="mopen">(</span><span class="mord">&#xAC;</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mclose">)</span></span></span></span> satisfactible?</li>
+<li>&#xBF;Es <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>p</mi><mo>&#x2228;</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo stretchy="false">)</mo><mo>&#x2192;</mo><mo stretchy="false">(</mo><mi mathvariant="normal">&#xAC;</mi><mi>r</mi><mo>&#x2192;</mo><mi mathvariant="normal">&#xAC;</mi><mi>p</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(p \vee q \rightarrow r) \rightarrow (\neg r \rightarrow \neg p)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2228;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault">p</span><span class="mclose">)</span></span></span></span> una tautolog&#xED;a?</li>
+<li>&#xBF;<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi>p</mi><mo>&#x2192;</mo><mi>q</mi><mo separator="true">,</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo stretchy="false">}</mo><mo>&#x22A8;</mo><mi>p</mi><mo>&#x2192;</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">\{p \rightarrow q, q \rightarrow r\} \models p \rightarrow r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">}</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x22A8;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span>?</li>
+<li>&#xBF;<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>&#x2227;</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo>&#x2261;</mo><mi>q</mi><mo>&#x2192;</mo><mi mathvariant="normal">&#xAC;</mi><mi>p</mi><mo>&#x2228;</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">p \wedge q \rightarrow r \equiv q \rightarrow \neg p \vee r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.75em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2227;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.46375em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2261;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.75em;vertical-align:-0.19444em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2228;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span>?</li>
+</ol>
+</blockquote>
+<p><em><strong>Soluci&#xF3;n (usando Logicus)</strong></em></p>
+<p><u>Apartado 1</u></p>
+<p>Seg&#xFA;n el Teorema de Compacidad y Completitud, un conjunto de f&#xF3;rmulas es consistente si y s&#xF3;lo si posee un tablero abierto. De manera que si tomamos <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mn>1</mn></msub><mo>=</mo><mo stretchy="false">{</mo><mo stretchy="false">(</mo><mi>p</mi><mo>&#x2228;</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mo stretchy="false">(</mo><mi>t</mi><mo>&#x2192;</mo><mi mathvariant="normal">&#xAC;</mi><mi>r</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mi mathvariant="normal">&#xAC;</mi><mo stretchy="false">(</mo><mi mathvariant="normal">&#xAC;</mi><mi>t</mi><mo>&#x2192;</mo><mi>q</mi><mo stretchy="false">)</mo><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">U_1 = \{(p \vee q \rightarrow r) , (t \rightarrow \neg r) , \neg(\neg t \rightarrow q) \}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2228;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mopen">(</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mopen">(</span><span class="mord">&#xAC;</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mclose">)</span><span class="mclose">}</span></span></span></span>, (n&#xF3;tese que si <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">U_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> es consistente entonces las tr&#xE9;s f&#xF3;rmulas lo son simult&#xE1;neamenete, luego <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi></mrow><annotation encoding="application/x-tex">F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span> lo es tambi&#xE9;n). Un tablero corresponder&#xED;a a:</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token import_statement"><span class="token keyword">import</span> Logicus.IO_LP <span class="token keyword">exposing</span> </span><span class="token punctuation">(</span><span class="token operator">..</span><span class="token punctuation">)</span>
+<span class="token import_statement"><span class="token keyword">import</span> Logicus.SintaxSemanticsLP <span class="token keyword">exposing</span> </span><span class="token punctuation">(</span><span class="token operator">..</span><span class="token punctuation">)</span>
+<span class="token import_statement"><span class="token keyword">import</span> Logicus.SemanticBoardsLP <span class="token keyword">exposing</span> </span><span class="token punctuation">(</span><span class="token operator">..</span><span class="token punctuation">)</span>
+<span class="token import_statement"><span class="token keyword">import</span> Logicus.AuxForLitvis <span class="token keyword">exposing</span> </span><span class="token punctuation">(</span><span class="token operator">..</span><span class="token punctuation">)</span>
+<span class="token import_statement"><span class="token keyword">import</span> Bool.Extra <span class="token keyword">exposing</span> </span><span class="token punctuation">(</span><span class="token builtin">toString</span><span class="token punctuation">)</span>
+
+<span class="token hvariable">u1</span> <span class="token operator">:</span> <span class="token constant">LPSet</span>
+<span class="token hvariable">u1</span> <span class="token operator">=</span>  <span class="token hvariable">List.map</span> <span class="token punctuation">(</span>\<span class="token hvariable">x</span> <span class="token operator">-&gt;</span> <span class="token hvariable">fromStringToFLP</span> <span class="token hvariable">x</span> <span class="token operator">|&gt;</span> <span class="token hvariable">extractReadFLP</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">&quot;(p OR q IMPLIES r)&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;(t IMPLIES NOT r)&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;NOT (NOT t IMPLIES q)&quot;</span><span class="token punctuation">]</span>
+
+<span class="token hvariable">tablero_u1</span> <span class="token operator">:</span> <span class="token constant">String</span>
+<span class="token hvariable">tablero_u1</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u1</span>
+
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;G3&quot; tablero_u1</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G3">
+<div id="inputGraphG3" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG3"> digraph G {
+  rankdir=TB
+  graph []
+  node [shape=box, color=black]
+  edge [dir=none, color=blue, fontcolor=blue]
+  0 -&gt; 1 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; t &#x27F6; q )\n &#x27F9; {&#xAC; t, &#xAC; q}&quot;]
+  1 -&gt; 2 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {&#xAC; ( p &#x2228; q )}&quot;]
+  1 -&gt; 8 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {r}&quot;]
+  2 -&gt; 3 [label=&quot;&#x3B1; : &#xAC; ( p &#x2228; q )\n &#x27F9; {&#xAC; p, &#xAC; q}&quot;]
+  3 -&gt; 4 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; t}&quot;]
+  3 -&gt; 6 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; r}&quot;]
+  4 -&gt; 5 [label=&quot;&quot;]
+  6 -&gt; 7 [label=&quot;&quot;]
+  8 -&gt; 9 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; t}&quot;]
+  8 -&gt; 11 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; r}&quot;]
+  9 -&gt; 10 [label=&quot;&quot;]
+  11 -&gt; 12 [label=&quot;&quot;]
+  0 [label=&quot;{( ( p &#x2228; q ) &#x27F6; r ), ( t &#x27F6; &#xAC; r ), &#xAC; ( &#xAC; t &#x27F6; q )}&quot;]
+  1 [label=&quot;{( ( p &#x2228; q ) &#x27F6; r ), ( t &#x27F6; &#xAC; r ), &#xAC; t, &#xAC; q}&quot;]
+  2 [label=&quot;{( t &#x27F6; &#xAC; r ), &#xAC; t, &#xAC; q, &#xAC; ( p &#x2228; q )}&quot;]
+  3 [label=&quot;{( t &#x27F6; &#xAC; r ), &#xAC; t, &#xAC; q, &#xAC; p}&quot;]
+  4 [label=&quot;{&#xAC; t, &#xAC; q, &#xAC; p}&quot;]
+  5 [label=&quot;&#x25EF;&quot;]
+  6 [label=&quot;{&#xAC; t, &#xAC; q, &#xAC; p, &#xAC; r}&quot;]
+  7 [label=&quot;&#x25EF;&quot;]
+  8 [label=&quot;{( t &#x27F6; &#xAC; r ), &#xAC; t, &#xAC; q, r}&quot;]
+  9 [label=&quot;{&#xAC; t, &#xAC; q, r}&quot;]
+  10 [label=&quot;&#x25EF;&quot;]
+  11 [label=&quot;{&#xAC; t, &#xAC; q, r, &#xAC; r}&quot;]
+  12 [label=&quot;&#x2573;&quot;]
+} </textarea>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;G3&quot;);"> RENDER GRAPH </button>
+</div>
+<div id="outputGraphG3" style="width:100%; display: none">
+<div id="svgContainerG3" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G3&quot;);"> DOWNLOAD AS PNG </button>
+</div>
+<p><canvas id="canvasG3" style="display: none;"></canvas></p>
+<div id="pngContainerG3" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+</div>
+</div><p></p>
+<p>O equivalentemente, calculamos los modelos mediante tableros</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token hvariable">modelosTab_u1</span> <span class="token operator">:</span> <span class="token constant">List</span> <span class="token punctuation">(</span><span class="token constant">List</span> <span class="token constant">FormulaLP</span><span class="token punctuation">)</span>
+<span class="token hvariable">modelosTab_u1</span> <span class="token operator">=</span> <span class="token hvariable">modelsTab</span> <span class="token hvariable">u1</span>
+
+<span class="token comment">-- Ejecutamos: String.join &quot;, &quot; &lt;| List.map (toLatexLPSet) modelosTab_u1</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo fence="true">{</mo><mi mathvariant="normal">&#xAC;</mi><mi>t</mi><mo separator="true">,</mo><mtext>&#x2009;</mtext><mi mathvariant="normal">&#xAC;</mi><mi>q</mi><mo separator="true">,</mo><mtext>&#x2009;</mtext><mi mathvariant="normal">&#xAC;</mi><mi>p</mi><mo fence="true">}</mo></mrow><annotation encoding="application/x-tex">\left\lbrace \neg t, \,\neg q, \,\neg p\right\rbrace</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">{</span><span class="mord">&#xAC;</span><span class="mord mathdefault">t</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault">p</span><span class="mclose delimcenter" style="top:0em;">}</span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo fence="true">{</mo><mi mathvariant="normal">&#xAC;</mi><mi>t</mi><mo separator="true">,</mo><mtext>&#x2009;</mtext><mi mathvariant="normal">&#xAC;</mi><mi>q</mi><mo separator="true">,</mo><mtext>&#x2009;</mtext><mi mathvariant="normal">&#xAC;</mi><mi>p</mi><mo separator="true">,</mo><mtext>&#x2009;</mtext><mi mathvariant="normal">&#xAC;</mi><mi>r</mi><mo fence="true">}</mo></mrow><annotation encoding="application/x-tex">\left\lbrace \neg t, \,\neg q, \,\neg p, \,\neg r\right\rbrace</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">{</span><span class="mord">&#xAC;</span><span class="mord mathdefault">t</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault">p</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose delimcenter" style="top:0em;">}</span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo fence="true">{</mo><mi mathvariant="normal">&#xAC;</mi><mi>t</mi><mo separator="true">,</mo><mtext>&#x2009;</mtext><mi mathvariant="normal">&#xAC;</mi><mi>q</mi><mo separator="true">,</mo><mtext>&#x2009;</mtext><mi>r</mi><mo fence="true">}</mo></mrow><annotation encoding="application/x-tex">\left\lbrace \neg t, \,\neg q, \,r\right\rbrace</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">{</span><span class="mord">&#xAC;</span><span class="mord mathdefault">t</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose delimcenter" style="top:0em;">}</span></span></span></span></span></p>
+</div><p></p>
+<p>De forma que existe al menos un modelo para <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">U_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> y por tanto para <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>:</mo><mo stretchy="false">(</mo><mi>p</mi><mo>&#x2228;</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo stretchy="false">)</mo><mo>&#x2227;</mo><mo stretchy="false">(</mo><mi>t</mi><mo>&#x2192;</mo><mi mathvariant="normal">&#xAC;</mi><mi>r</mi><mo stretchy="false">)</mo><mo>&#x2227;</mo><mi mathvariant="normal">&#xAC;</mi><mo stretchy="false">(</mo><mi mathvariant="normal">&#xAC;</mi><mi>t</mi><mo>&#x2192;</mo><mi>q</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">F : (p \vee q \rightarrow r) \wedge (t \rightarrow \neg r) \wedge \neg(\neg t \rightarrow q)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2228;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2227;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2227;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&#xAC;</span><span class="mopen">(</span><span class="mord">&#xAC;</span><span class="mord mathdefault">t</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mclose">)</span></span></span></span>, luego es satisfactible.</p>
+<p><u>Apartado 2</u></p>
+<p>Teniendo en cuenta que se tiene que una f&#xF3;rmula es tautolog&#xED;a si y s&#xF3;lo si la negaci&#xF3;n de la misma es insatisfactible, entonces para probar que <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>=</mo><mo stretchy="false">(</mo><mi>p</mi><mo>&#x2228;</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo stretchy="false">)</mo><mo>&#x2192;</mo><mo stretchy="false">(</mo><mi mathvariant="normal">&#xAC;</mi><mi>r</mi><mo>&#x2192;</mo><mi mathvariant="normal">&#xAC;</mi><mi>p</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">F = (p \vee q \rightarrow r) \rightarrow (\neg r \rightarrow \neg p)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2228;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault">p</span><span class="mclose">)</span></span></span></span> es tautolog&#xED;a, basta comprobar que el tablero para <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">&#xAC;</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">\neg F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span> es cerrado:</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token hvariable">u2</span> <span class="token operator">:</span> <span class="token constant">LPSet</span>
+<span class="token hvariable">u2</span> <span class="token operator">=</span>  <span class="token hvariable">List.map</span> <span class="token punctuation">(</span>\<span class="token hvariable">x</span> <span class="token operator">-&gt;</span> <span class="token hvariable">fromStringToFLP</span> <span class="token hvariable">x</span> <span class="token operator">|&gt;</span> <span class="token hvariable">extractReadFLP</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">&quot;NOT ((p OR q IMPLIES r) IMPLIES (NOT r IMPLIES NOT p))&quot;</span><span class="token punctuation">]</span>
+
+<span class="token hvariable">tablero_u2</span> <span class="token operator">:</span> <span class="token constant">String</span>
+<span class="token hvariable">tablero_u2</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u2</span>
+
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;G4&quot; tablero_u2</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G4">
+<div id="inputGraphG4" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG4"> digraph G {
+  rankdir=TB
+  graph []
+  node [shape=box, color=black]
+  edge [dir=none, color=blue, fontcolor=blue]
+  0 -&gt; 1 [label=&quot;&#x3B1; : &#xAC; ( ( ( p &#x2228; q ) &#x27F6; r ) &#x27F6; ( &#xAC; r &#x27F6; &#xAC; p ) )\n &#x27F9; {( ( p &#x2228; q ) &#x27F6; r ), &#xAC; ( &#xAC; r &#x27F6; &#xAC; p )}&quot;]
+  1 -&gt; 2 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; r &#x27F6; &#xAC; p )\n &#x27F9; {&#xAC; r, &#xAC; &#xAC; p}&quot;]
+  2 -&gt; 3 [label=&quot;dN : &#xAC; &#xAC; p\n &#x27F9; {p}&quot;]
+  3 -&gt; 4 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {&#xAC; ( p &#x2228; q )}&quot;]
+  3 -&gt; 7 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {r}&quot;]
+  4 -&gt; 5 [label=&quot;&#x3B1; : &#xAC; ( p &#x2228; q )\n &#x27F9; {&#xAC; p, &#xAC; q}&quot;]
+  5 -&gt; 6 [label=&quot;&quot;]
+  7 -&gt; 8 [label=&quot;&quot;]
+  0 [label=&quot;{&#xAC; ( ( ( p &#x2228; q ) &#x27F6; r ) &#x27F6; ( &#xAC; r &#x27F6; &#xAC; p ) )}&quot;]
+  1 [label=&quot;{( ( p &#x2228; q ) &#x27F6; r ), &#xAC; ( &#xAC; r &#x27F6; &#xAC; p )}&quot;]
+  2 [label=&quot;{( ( p &#x2228; q ) &#x27F6; r ), &#xAC; r, &#xAC; &#xAC; p}&quot;]
+  3 [label=&quot;{( ( p &#x2228; q ) &#x27F6; r ), &#xAC; r, p}&quot;]
+  4 [label=&quot;{&#xAC; r, p, &#xAC; ( p &#x2228; q )}&quot;]
+  5 [label=&quot;{&#xAC; r, p, &#xAC; p, &#xAC; q}&quot;]
+  6 [label=&quot;&#x2573;&quot;]
+  7 [label=&quot;{&#xAC; r, p, r}&quot;]
+  8 [label=&quot;&#x2573;&quot;]
+} </textarea>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;G4&quot;);"> RENDER GRAPH </button>
+</div>
+<div id="outputGraphG4" style="width:100%; display: none">
+<div id="svgContainerG4" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G4&quot;);"> DOWNLOAD AS PNG </button>
+</div>
+<p><canvas id="canvasG4" style="display: none;"></canvas></p>
+<div id="pngContainerG4" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+</div>
+</div><p></p>
+<p>O equivalentemente, calculamos los modelos mediante tableros, y comprobamos que no existe ninguno:</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token hvariable">modelosTab_u2</span> <span class="token operator">:</span> <span class="token constant">List</span> <span class="token punctuation">(</span><span class="token constant">List</span> <span class="token constant">FormulaLP</span><span class="token punctuation">)</span>
+<span class="token hvariable">modelosTab_u2</span> <span class="token operator">=</span> <span class="token hvariable">modelsTab</span> <span class="token hvariable">u2</span>
+
+<span class="token comment">-- Ejecutamos: toString &lt;| List.isEmpty &lt;| modelosTab_u2</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><p>True</p>
+</div><p></p>
+<p>De forma que, en efecto, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">&#xAC;</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">\neg F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span> es insatisfactible, luego <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi></mrow><annotation encoding="application/x-tex">F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span> es tautolog&#xED;a</p>
+<p><u>Apartado 3</u></p>
+<p>Dado que se tiene que: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>&#x22A8;</mo><mi>F</mi><mo>&#x21D4;</mo><mi>M</mi><mo>&#x222A;</mo><mrow><mi mathvariant="normal">&#xAC;</mi><mi>F</mi></mrow><mtext>&#xA0;insatisfactible</mtext></mrow><annotation encoding="application/x-tex">M \models F \Leftrightarrow M \cup {\neg F} \textrm{ insatisfactible}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.999em;vertical-align:-0.249em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x22A8;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x21D4;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">M</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x222A;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord"><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span><span class="mord text"><span class="mord textrm">&#xA0;insatisfactible</span></span></span></span></span> , entonces para comprobar si se da consecuencia l&#xF3;gica basta comporbar que el tablero correspondiente a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi>p</mi><mo>&#x2192;</mo><mi>q</mi><mo separator="true">,</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo separator="true">,</mo><mi mathvariant="normal">&#xAC;</mi><mo stretchy="false">(</mo><mi>p</mi><mo>&#x2192;</mo><mi>r</mi><mo stretchy="false">)</mo><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{p \rightarrow q, q \rightarrow r, \neg (p \rightarrow r)\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord">&#xAC;</span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mclose">}</span></span></span></span> es cerrado. De forma que:</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token hvariable">u3</span> <span class="token operator">:</span> <span class="token constant">LPSet</span>
+<span class="token hvariable">u3</span> <span class="token operator">=</span>  <span class="token hvariable">List.map</span> <span class="token punctuation">(</span>\<span class="token hvariable">x</span> <span class="token operator">-&gt;</span> <span class="token hvariable">fromStringToFLP</span> <span class="token hvariable">x</span> <span class="token operator">|&gt;</span> <span class="token hvariable">extractReadFLP</span><span class="token punctuation">)</span>
+  <span class="token punctuation">[</span><span class="token string">&quot;p IMPLIES q&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;q IMPLIES r&quot;</span><span class="token punctuation">,</span> <span class="token string">&quot;NOT (p IMPLIES r)&quot;</span><span class="token punctuation">]</span>
+
+<span class="token hvariable">tablero_u3</span> <span class="token operator">:</span> <span class="token constant">String</span>
+<span class="token hvariable">tablero_u3</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u3</span>
+
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;G5&quot; tablero_u3</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G5">
+<div id="inputGraphG5" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG5"> digraph G {
+  rankdir=TB
+  graph []
+  node [shape=box, color=black]
+  edge [dir=none, color=blue, fontcolor=blue]
+  0 -&gt; 1 [label=&quot;&#x3B1; : &#xAC; ( p &#x27F6; r )\n &#x27F9; {p, &#xAC; r}&quot;]
+  1 -&gt; 2 [label=&quot; &#x3B2;: ( p &#x27F6; q )\n &#x27F9; {&#xAC; p}&quot;]
+  1 -&gt; 4 [label=&quot; &#x3B2;: ( p &#x27F6; q )\n &#x27F9; {q}&quot;]
+  2 -&gt; 3 [label=&quot;&quot;]
+  4 -&gt; 5 [label=&quot; &#x3B2;: ( q &#x27F6; r )\n &#x27F9; {&#xAC; q}&quot;]
+  4 -&gt; 7 [label=&quot; &#x3B2;: ( q &#x27F6; r )\n &#x27F9; {r}&quot;]
+  5 -&gt; 6 [label=&quot;&quot;]
+  7 -&gt; 8 [label=&quot;&quot;]
+  0 [label=&quot;{( p &#x27F6; q ), ( q &#x27F6; r ), &#xAC; ( p &#x27F6; r )}&quot;]
+  1 [label=&quot;{( p &#x27F6; q ), ( q &#x27F6; r ), p, &#xAC; r}&quot;]
+  2 [label=&quot;{( q &#x27F6; r ), p, &#xAC; r, &#xAC; p}&quot;]
+  3 [label=&quot;&#x2573;&quot;]
+  4 [label=&quot;{( q &#x27F6; r ), p, &#xAC; r, q}&quot;]
+  5 [label=&quot;{p, &#xAC; r, q, &#xAC; q}&quot;]
+  6 [label=&quot;&#x2573;&quot;]
+  7 [label=&quot;{p, &#xAC; r, q, r}&quot;]
+  8 [label=&quot;&#x2573;&quot;]
+} </textarea>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;G5&quot;);"> RENDER GRAPH </button>
+</div>
+<div id="outputGraphG5" style="width:100%; display: none">
+<div id="svgContainerG5" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G5&quot;);"> DOWNLOAD AS PNG </button>
+</div>
+<p><canvas id="canvasG5" style="display: none;"></canvas></p>
+<div id="pngContainerG5" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+</div>
+</div><p></p>
+<p>O equivalentemente, no posee modelos</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token hvariable">modelosTab_u3</span> <span class="token operator">:</span> <span class="token constant">List</span> <span class="token punctuation">(</span><span class="token constant">List</span> <span class="token constant">FormulaLP</span><span class="token punctuation">)</span>
+<span class="token hvariable">modelosTab_u3</span> <span class="token operator">=</span> <span class="token hvariable">modelsTab</span> <span class="token hvariable">u3</span>
+
+<span class="token comment">-- Ejecutamos: toString &lt;| List.isEmpty &lt;| modelosTab_u3</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><p>True</p>
+</div><p></p>
+<p>Luego el conjunto es insatisfactible y por tanto s&#xED; se da la consecuencia l&#xF3;gica.</p>
+<p><u>Apartado 4</u></p>
+<p>Dado que se tiene que <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub><mo>&#x2261;</mo><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_1 \equiv F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2261;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> si y solo si los modelos de <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> son exactamente los de <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>, o equivalentemente si <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>F</mi><mn>1</mn></msub><mo>&#x2194;</mo><msub><mi>F</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">F_1 \leftrightarrow F_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2194;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> es tautolog&#xED;a, basta comprobar si el conjunto <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">{</mo><mi mathvariant="normal">&#xAC;</mi><mo stretchy="false">(</mo><mi>p</mi><mo>&#x2227;</mo><mi>q</mi><mo>&#x2192;</mo><mi>r</mi><mo>&#x2194;</mo><mi>q</mi><mo>&#x2192;</mo><mi mathvariant="normal">&#xAC;</mi><mi>p</mi><mo>&#x2228;</mo><mi>r</mi><mo stretchy="false">)</mo><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">\{\neg (p \wedge q \rightarrow r \leftrightarrow q \rightarrow \neg p \vee r)\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord">&#xAC;</span><span class="mopen">(</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2227;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2194;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord mathdefault" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&#x2192;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.75em;vertical-align:-0.19444em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault">p</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">&#x2228;</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mclose">}</span></span></span></span> es inconsistente, esto es su tablero es cerrado:</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token hvariable">u4</span> <span class="token operator">:</span> <span class="token constant">LPSet</span>
+<span class="token hvariable">u4</span> <span class="token operator">=</span>  <span class="token hvariable">List.map</span> <span class="token punctuation">(</span>\<span class="token hvariable">x</span> <span class="token operator">-&gt;</span> <span class="token hvariable">fromStringToFLP</span> <span class="token hvariable">x</span> <span class="token operator">|&gt;</span> <span class="token hvariable">extractReadFLP</span><span class="token punctuation">)</span>
+  <span class="token punctuation">[</span><span class="token string">&quot;NOT (p AND q IMPLIES r EQUIV q IMPLIES NOT p OR r)&quot;</span><span class="token punctuation">]</span>
+
+<span class="token hvariable">tablero_u4</span> <span class="token operator">:</span> <span class="token constant">String</span>
+<span class="token hvariable">tablero_u4</span> <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u4</span>
+
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;G6&quot; tablero_u4</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G6">
+<div id="inputGraphG6" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG6"> digraph G {
+  rankdir=TB
+  graph []
+  node [shape=box, color=black]
+  edge [dir=none, color=blue, fontcolor=blue]
+  0 -&gt; 1 [label=&quot; &#x3B2;: &#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )\n &#x27F9; {&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F6; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )}&quot;]
+  0 -&gt; 13 [label=&quot; &#x3B2;: &#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )\n &#x27F9; {&#xAC; ( ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) &#x27F6; ( ( p &#x2227; q ) &#x27F6; r ) )}&quot;]
+  1 -&gt; 2 [label=&quot;&#x3B1; : &#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F6; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )\n &#x27F9; {( ( p &#x2227; q ) &#x27F6; r ), &#xAC; ( q &#x27F6; ( &#xAC; p &#x2228; r ) )}&quot;]
+  2 -&gt; 3 [label=&quot;&#x3B1; : &#xAC; ( q &#x27F6; ( &#xAC; p &#x2228; r ) )\n &#x27F9; {q, &#xAC; ( &#xAC; p &#x2228; r )}&quot;]
+  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; p &#x2228; r )\n &#x27F9; {&#xAC; &#xAC; p, &#xAC; r}&quot;]
+  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; p\n &#x27F9; {p}&quot;]
+  5 -&gt; 6 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; r )\n &#x27F9; {&#xAC; ( p &#x2227; q )}&quot;]
+  5 -&gt; 11 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; r )\n &#x27F9; {r}&quot;]
+  6 -&gt; 7 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
+  6 -&gt; 9 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
+  7 -&gt; 8 [label=&quot;&quot;]
+  9 -&gt; 10 [label=&quot;&quot;]
+  11 -&gt; 12 [label=&quot;&quot;]
+  13 -&gt; 14 [label=&quot;&#x3B1; : &#xAC; ( ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) &#x27F6; ( ( p &#x2227; q ) &#x27F6; r ) )\n &#x27F9; {( q &#x27F6; ( &#xAC; p &#x2228; r ) ), &#xAC; ( ( p &#x2227; q ) &#x27F6; r )}&quot;]
+  14 -&gt; 15 [label=&quot;&#x3B1; : &#xAC; ( ( p &#x2227; q ) &#x27F6; r )\n &#x27F9; {( p &#x2227; q ), &#xAC; r}&quot;]
+  15 -&gt; 16 [label=&quot;&#x3B1; : ( p &#x2227; q )\n &#x27F9; {p, q}&quot;]
+  16 -&gt; 17 [label=&quot; &#x3B2;: ( q &#x27F6; ( &#xAC; p &#x2228; r ) )\n &#x27F9; {&#xAC; q}&quot;]
+  16 -&gt; 19 [label=&quot; &#x3B2;: ( q &#x27F6; ( &#xAC; p &#x2228; r ) )\n &#x27F9; {( &#xAC; p &#x2228; r )}&quot;]
+  17 -&gt; 18 [label=&quot;&quot;]
+  19 -&gt; 20 [label=&quot; &#x3B2;: ( &#xAC; p &#x2228; r )\n &#x27F9; {&#xAC; p}&quot;]
+  19 -&gt; 22 [label=&quot; &#x3B2;: ( &#xAC; p &#x2228; r )\n &#x27F9; {r}&quot;]
+  20 -&gt; 21 [label=&quot;&quot;]
+  22 -&gt; 23 [label=&quot;&quot;]
+  0 [label=&quot;{&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )}&quot;]
+  1 [label=&quot;{&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F6; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )}&quot;]
+  2 [label=&quot;{( ( p &#x2227; q ) &#x27F6; r ), &#xAC; ( q &#x27F6; ( &#xAC; p &#x2228; r ) )}&quot;]
+  3 [label=&quot;{( ( p &#x2227; q ) &#x27F6; r ), q, &#xAC; ( &#xAC; p &#x2228; r )}&quot;]
+  4 [label=&quot;{( ( p &#x2227; q ) &#x27F6; r ), q, &#xAC; &#xAC; p, &#xAC; r}&quot;]
+  5 [label=&quot;{( ( p &#x2227; q ) &#x27F6; r ), q, &#xAC; r, p}&quot;]
+  6 [label=&quot;{q, &#xAC; r, p, &#xAC; ( p &#x2227; q )}&quot;]
+  7 [label=&quot;{q, &#xAC; r, p, &#xAC; p}&quot;]
+  8 [label=&quot;&#x2573;&quot;]
+  9 [label=&quot;{q, &#xAC; r, p, &#xAC; q}&quot;]
+  10 [label=&quot;&#x2573;&quot;]
+  11 [label=&quot;{q, &#xAC; r, p, r}&quot;]
+  12 [label=&quot;&#x2573;&quot;]
+  13 [label=&quot;{&#xAC; ( ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) &#x27F6; ( ( p &#x2227; q ) &#x27F6; r ) )}&quot;]
+  14 [label=&quot;{( q &#x27F6; ( &#xAC; p &#x2228; r ) ), &#xAC; ( ( p &#x2227; q ) &#x27F6; r )}&quot;]
+  15 [label=&quot;{( q &#x27F6; ( &#xAC; p &#x2228; r ) ), ( p &#x2227; q ), &#xAC; r}&quot;]
+  16 [label=&quot;{( q &#x27F6; ( &#xAC; p &#x2228; r ) ), &#xAC; r, p, q}&quot;]
+  17 [label=&quot;{&#xAC; r, p, q, &#xAC; q}&quot;]
+  18 [label=&quot;&#x2573;&quot;]
+  19 [label=&quot;{&#xAC; r, p, q, ( &#xAC; p &#x2228; r )}&quot;]
+  20 [label=&quot;{&#xAC; r, p, q, &#xAC; p}&quot;]
+  21 [label=&quot;&#x2573;&quot;]
+  22 [label=&quot;{&#xAC; r, p, q, r}&quot;]
+  23 [label=&quot;&#x2573;&quot;]
+} </textarea>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;G6&quot;);"> RENDER GRAPH </button>
+</div>
+<div id="outputGraphG6" style="width:100%; display: none">
+<div id="svgContainerG6" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G6&quot;);"> DOWNLOAD AS PNG </button>
+</div>
+<p><canvas id="canvasG6" style="display: none;"></canvas></p>
+<div id="pngContainerG6" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+</div>
+</div><p></p>
+<p>O equivalentemente, no posee modelos</p>
+<pre data-role="codeBlock" data-info="elm {l context=&quot;2&quot;}" class="language-elm"><span class="token hvariable">modelosTab_u4</span> <span class="token operator">:</span> <span class="token constant">List</span> <span class="token punctuation">(</span><span class="token constant">List</span> <span class="token constant">FormulaLP</span><span class="token punctuation">)</span>
+<span class="token hvariable">modelosTab_u4</span> <span class="token operator">=</span> <span class="token hvariable">modelsTab</span> <span class="token hvariable">u4</span>
+
+<span class="token comment">-- Ejecutamos: toString &lt;| List.isEmpty &lt;| modelosTab_u4</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><p>True</p>
+</div><p></p>
+<p>Por tanto, el conjunto es, en efecto, inconsistente y por tanto s&#xED; se da la condici&#xF3;n planteada en el problema.</p>
 <h2>1.3. Tableros Sem&#xE1;nticos en L&#xF3;gica de Primer Orden</h2>
 <p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><menclose notation="box"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="true"><mrow><mi>C</mi><mi>o</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>t</mi><mi>a</mi><mi>r</mi></mrow></mstyle></mstyle></mstyle></menclose></mrow><annotation encoding="application/x-tex">\boxed{Completar}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.5688799999999998em;vertical-align:-0.53444em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0344399999999998em;"><span style="top:-3.56888em;"><span class="pstrut" style="height:3.56888em;"></span><span class="boxpad"><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault">o</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span><span class="mord mathdefault">t</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span></span><span style="top:-3.03444em;"><span class="pstrut" style="height:3.56888em;"></span><span class="stretchy fbox" style="height:1.5688799999999998em;border-style:solid;border-width:0.04em;"></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.53444em;"><span></span></span></span></span></span></span></span></span></p>
 
       </div>
-
-
-
-
-
-
-
-
-
-
-
+      
+      
+    
+    
+    
+    
+    
+    
+    
+    
+  
     </body></html>
