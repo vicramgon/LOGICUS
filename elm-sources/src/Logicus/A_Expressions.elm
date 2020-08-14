@@ -1,4 +1,4 @@
-module Modules.A_Expressions exposing (A_Expr, evaluateAExpr, expressionA, parseAExpr, toStringAExpr)
+module Logicus.A_Expressions exposing (A_Expr, evaluateAExpr, expressionA, parseAExpr, toStringAExpr)
 
 import List exposing (filter, head)
 import Maybe exposing (withDefault)

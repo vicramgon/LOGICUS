@@ -1,4 +1,4 @@
-module Modules.IO_LPO exposing(fromStringToFLPO, fromStringToSetLPO, checkFLPO, extractReadFLPO, fromStringToSubstitutionLPO,
+module Logicus.IO_LPO exposing(fromStringToFLPO, fromStringToSetLPO, checkFLPO, extractReadFLPO, fromStringToSubstitutionLPO,
                                checkSubstitutionLPO, extractReadSubstitutionLPO, toStringFLPO, toStringSLOP, toLatexFLPO, toLatexSLOP, formTree)
 
 import Char
@@ -7,11 +7,11 @@ import String
 import Maybe
 import Char.Extra exposing (isSpace)
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen, loop, Step(..), map, Trailing(..), sequence)
-import Modules.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..), Variable, Substitution)
+import Logicus.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..), Variable, Substitution)
 import Dict
 import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
 import Graph.DOT exposing (outputWithStyles, defaultStyles)
-import Modules.AuxiliarFunctions exposing (cleanSpaces)
+import Logicus.AuxiliarFunctions exposing (cleanSpaces)
 
 ------------------------------------------------------------------------------------------------------------
 --                                                 PARSERS                                                --

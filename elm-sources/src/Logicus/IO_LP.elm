@@ -1,4 +1,4 @@
-module Modules.IO_LP exposing(fromStringToFLP, checkReadFLP, extractReadFLP, fromStringToSetLP, toStringFLP, toLatexFLP, toStringFLPSet, formTree, 
+module Logicus.IO_LP exposing(fromStringToFLP, checkReadFLP, extractReadFLP, fromStringToSetLP, toStringFLP, toLatexFLP, toStringFLPSet, formTree, 
                               toLatexLPSet, truthTableToMDFormat, interpretations2MDFormat)
 
 import Char
@@ -6,10 +6,10 @@ import Set
 import String
 import Maybe
 import Parser exposing (Parser, run, variable, oneOf, succeed, spaces, (|.), (|=), symbol, lazy, andThen)
-import Modules.SintaxSemanticsLP exposing (PSymb, FormulaLP(..), LPSet, Interpretation)
+import Logicus.SintaxSemanticsLP exposing (PSymb, FormulaLP(..), LPSet, Interpretation)
 import Graph exposing (Graph(..), Node, Edge, NodeId, fromNodesAndEdges)
 import Graph.DOT exposing (outputWithStyles, defaultStyles)
-import Modules.AuxiliarFunctions exposing (cleanSpaces)
+import Logicus.AuxiliarFunctions exposing (cleanSpaces)
 import Bool.Extra
 
 

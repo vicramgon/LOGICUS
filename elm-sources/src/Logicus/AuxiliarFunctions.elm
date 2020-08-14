@@ -1,4 +1,4 @@
-module Modules.AuxiliarFunctions exposing (powerset, deleteFirstLs, unionLs, unique, uniqueBy, uncurry, cleanSpaces, uniqueConcatList, isSubSetList)
+module Logicus.AuxiliarFunctions exposing (powerset, deleteFirstLs, unionLs, unique, uniqueBy, uncurry, cleanSpaces, uniqueConcatList, isSubSetList)
 
 
 import Char.Extra exposing (isSpace)

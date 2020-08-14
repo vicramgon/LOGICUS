@@ -1,11 +1,11 @@
-module Modules.SemanticBoardsLP exposing (..)
+module Logicus.SemanticBoardsLP exposing (..)
 
-import Modules.SintaxSemanticsLP exposing (FormulaLP(..))
-import Modules.AuxiliarFunctions exposing (uniqueConcatList, isSubSetList, deleteFirstLs, uncurry)
+import Logicus.SintaxSemanticsLP exposing (FormulaLP(..))
+import Logicus.AuxiliarFunctions exposing (uniqueConcatList, isSubSetList, deleteFirstLs, uncurry)
 import List.Extra exposing (remove)
 import List exposing (member)
 import Graph exposing (NodeId, Node, Edge, fromNodesAndEdges)
-import Modules.IO_LP exposing (toStringFLPSet, toStringFLP)
+import Logicus.IO_LP exposing (toStringFLPSet, toStringFLP)
 import Graph.DOT exposing (outputWithStyles, defaultStyles)
 
 

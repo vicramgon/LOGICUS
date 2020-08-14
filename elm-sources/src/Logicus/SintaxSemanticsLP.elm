@@ -1,4 +1,4 @@
-module Modules.SintaxSemanticsLP exposing (
+module Logicus.SintaxSemanticsLP exposing (
     PSymb, FormulaLP(..), Interpretation, LPSet,
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
@@ -6,7 +6,7 @@ module Modules.SintaxSemanticsLP exposing (
 
 import List
 import Set
-import Modules.AuxiliarFunctions as Aux
+import Logicus.AuxiliarFunctions as Aux
 import Maybe exposing (Maybe(..))
 
 -----------

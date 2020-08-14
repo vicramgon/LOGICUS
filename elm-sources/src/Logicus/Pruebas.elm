@@ -1,8 +1,8 @@
-module Modules.Pruebas exposing (..)
+module Logicus.Pruebas exposing (..)
 
 import Html exposing (Html, text)
-import Modules.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..))
-import Modules.IO_LPO exposing (extractReadFLPO, fromStringToFLPO, formTree)
+import Logicus.SintaxSemanticsLPO exposing (Term(..), FormulaLPO(..))
+import Logicus.IO_LPO exposing (extractReadFLPO, fromStringToFLPO, formTree)
 
 main : Html msg
 main = text <| formTree <| extractReadFLPO <| fromStringToFLPO 

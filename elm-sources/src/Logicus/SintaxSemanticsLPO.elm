@@ -1,9 +1,9 @@
-module Modules.SintaxSemanticsLPO exposing (..)
+module Logicus.SintaxSemanticsLPO exposing (..)
 
 -- IN PROGRESS
 
 import List exposing (concat)
-import Modules.AuxiliarFunctions as Aux exposing (unique)
+import Logicus.AuxiliarFunctions as Aux exposing (unique)
 import Maybe exposing (Maybe(..), andThen)
 import Dict exposing (Dict)
 import Maybe.Extra exposing (isNothing, values, combine)
