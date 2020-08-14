@@ -184,9 +184,9 @@ toLatexFLPAux x =
         Equi p q -> "\\left( " ++ toLatexFLPAux p ++ "\\leftrightarrow "  ++ toLatexFLPAux q ++ " \\right)"
         Insat -> "\\perp "
 
-toLatexLPSet : String -> LPSet -> String
-toLatexLPSet name xs =
-  "$ " ++ name ++ " : \\left\\lbrace " ++ (String.join ", \\," <| List.map toLatexFLPAux  xs) ++ "\\right\\rbrace$"
+toLatexLPSet : LPSet -> String
+toLatexLPSet  xs =
+  "$ \\left\\lbrace " ++ (String.join ", \\," <| List.map toLatexFLPAux  xs) ++ "\\right\\rbrace$"
 formTree : FormulaLP -> String
 formTree x =  String.replace "\n\n" "\n" <| formTree2DOT <| formTree1 x
 

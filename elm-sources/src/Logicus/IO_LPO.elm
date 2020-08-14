@@ -1,5 +1,5 @@
 module Logicus.IO_LPO exposing(fromStringToFLPO, fromStringToSetLPO, checkFLPO, extractReadFLPO, fromStringToSubstitutionLPO,
-                               checkSubstitutionLPO, extractReadSubstitutionLPO, toStringFLPO, toStringSLOP, toLatexFLPO, toLatexSLOP, formTree)
+                               checkSubstitutionLPO, extractReadSubstitutionLPO, toStringFLPO, toStringSLOP, toLatexFLPO, toLatexLPOSet, formTree)
 
 import Char
 import Set
@@ -318,8 +318,8 @@ toLatexFLPOAux x =
         Forall v p -> "\\forall " ++ toStringTerm v ++ "\\," ++ toLatexFLPOAux p
         Insat -> "\\perp "
 
-toLatexSLOP : List FormulaLPO -> String
-toLatexSLOP xs = "$ \\left\\lbrace" ++ (String.join ", " <| List.map toLatexFLPOAux xs) ++ "\\right\\rbrace $"
+toLatexLPOSet : List FormulaLPO -> String
+toLatexLPOSet xs = "$ \\left\\lbrace" ++ (String.join ", " <| List.map toLatexFLPOAux xs) ++ "\\right\\rbrace $"
 
 formTree : FormulaLPO -> String
 formTree x =  String.replace "\n\n" "\n" <| formTree2DOT <| formTree1 x

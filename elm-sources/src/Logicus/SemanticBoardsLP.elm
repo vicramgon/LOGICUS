@@ -64,8 +64,8 @@ formulaComponents x =
         Disj f g -> [f, g]
         Impl f g -> [Neg f , g]
         Neg (Conj f g) -> [Neg f, Neg g]
-        Equi f g -> [Conj f g, Conj (Neg f) (Neg g)]
-        Neg (Equi f g) -> [Conj f (Neg g), Conj (Neg f) g]
+        Equi f g -> [Impl f g, Impl g f]
+        Neg (Equi f g) -> [Neg(Impl f g), Neg(Impl g f)]
         _ -> [Insat]
 
 -- Definition of isLiteral that represents if a formula is a isLiteral 
@@ -123,7 +123,7 @@ sucessors fs = case List.head (List.filter isDobleNeg fs) of
 makeSBoard : List FormulaLP -> String 
 makeSBoard fs = 
     let myStyles =
-            { defaultStyles | node = "shape=plaintext, color=black", edge = "dir=none, color=blue, fontcolor=blue"}
+            { defaultStyles | node = "shape=box, color=black", edge = "dir=none, color=blue, fontcolor=blue"}
     in
         String.replace "\n\n" "\n" <| outputWithStyles myStyles (\x -> Just x) (\x-> Just x) <|  uncurry fromNodesAndEdges <| makeSBoardAux fs 0
         
@@ -198,12 +198,6 @@ generalModels ps =  let generalModelsAux ms ls = case List.head ms of
                     in
                         generalModelsAux ps []
             
-         
-
-
--- definition of isTautBoard  that represents if a formula is a tautology using semantic boards
-isTautBoard : FormulaLP -> Bool
-isTautBoard f = List.isEmpty <| modelsTab [Neg f]
 
 -- definition of isConsecuenceBoard that solve logic consecuence using semantic boards.
 
