@@ -1,9 +1,9 @@
 <!DOCTYPE html><html><head>
-      <title>T2.TABLEROS SEM&#xC1;NTICOS</title>
+      <title>T2P1-Tableros Sem&#xE1;nticos LP</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
-      <link rel="stylesheet" href="../css/katex/katex.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css">
       
       
 
@@ -300,9 +300,9 @@ pre[data-line] .line-highlight[data-end]:after {
         img.src = url;
     };
 </script>
-<h2 class="mume-header" id="tema-2"><strong>TEMA 2</strong></h2>
+<h2 class="mume-header" id="tema-2-parte-1"><strong>TEMA 2 - PARTE 1</strong></h2>
 
-<h1>Tableros Sem&#xE1;nticos en LP y LPO</h1>
+<h1>Tableros Sem&#xE1;nticos I</h1>
 <h2>Descripci&#xF3;n general del cap&#xED;tulo</h2>
 <p>En el tema anterior fijamos las bases, sint&#xE1;cticas y sem&#xE1;nticas, para poder trabajar con la L&#xF3;gica Proposicional y la L&#xF3;gica de Primer Orden. En este cap&#xED;tulo, comenzaremos a ahondar en los algoritmos de decisi&#xF3;n m&#xE1;s relevantes, presentando el primero de los que vamos a tratar a lo largo del temario, los Tableros Sem&#xE1;nticos, del que vamos a tratar los conceptos te&#xF3;ricos y el desarrollo del algoritmo, as&#xED; como el trabajo con el mismo a trav&#xE9;s de la librer&#xED;a Logicus.</p>
 <h3 class="mume-header" id="u-estructura-del-cap%C3%ADtulo-u"><u> Estructura del cap&#xED;tulo </u></h3>
@@ -323,12 +323,12 @@ pre[data-line] .line-highlight[data-end]:after {
 <p><strong>M&#xF3;dulo IO_LPO</strong>. Recoge las implementaciones de los m&#xE9;todos relacionados con la lectura y representaci&#xF3;n de las f&#xF3;rmulas LPO.</p>
 </li>
 </ul>
-<h2>1.1. Introducci&#xF3;n. Visi&#xF3;n general de Tableros Sem&#xE1;nticos</h2>
+<h2>2.1. Introducci&#xF3;n. Visi&#xF3;n general de Tableros Sem&#xE1;nticos</h2>
 <p>El m&#xE9;todo de los Tableros Sem&#xE1;nticos establece un algoritmo para la decisi&#xF3;n de la satisfactibilidad de un conjunto de f&#xF3;rmulas, trabajando con las f&#xF3;rmulas del conjunto desde un marco sint&#xE1;ctico y sin necesidad de preprocesamiento de las f&#xF3;rmulas.</p>
 <p>Para reducir la satisfactibilidad del conjunto, se basa en la obtenci&#xF3;n de conjuntos de literales, en las que la decisi&#xF3;n se da de manera trivial , de manera que o bien todos los conjuntos de literales son inconsistentes (entonces el original tambi&#xE9;n lo es) o bien proporcionan modelos (en el caso de la l&#xF3;gica proposicional m&#xE1;s claramente) para el conjunto (que resulta, por tanto, consistente).</p>
 <p>Adem&#xE1;s este m&#xE9;todo es gr&#xE1;ficamente representable de manera sencilla a trav&#xE9;s de &#xE1;rboles binarios, que recogen todo el proceso del algoritmo.</p>
 <p>Aunque nosotros vamos a estudiar su desarrollo para las l&#xF3;gicas LP y LPO, la versatilidad y sencillez del m&#xE9;todo, lo hace f&#xE1;cilmente adaptable a otras l&#xF3;gicas (descriptivas, modales, ...).</p>
-<h2>1.2. Tableros Sem&#xE1;nticos en L&#xF3;gica Proposicional</h2>
+<h2>2.2. Tableros Sem&#xE1;nticos en L&#xF3;gica Proposicional</h2>
 <p>El m&#xE9;todo de los tableros sem&#xE1;nticos (en adelante tableros) en la l&#xF3;gica proposicional basa su desarrollo en dos pasos fundamentales:</p>
 <ol>
 <li>
@@ -394,7 +394,7 @@ pre[data-line] .line-highlight[data-end]:after {
 <p>Dado un conjunto de f&#xF3;rmulas <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span> y un tablero <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span> (completo) para <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span>:</p>
 <ol>
 <li><strong>Correcci&#xF3;n</strong>. Si <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span> es cerrado, entonces <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span> es insatisfactible.</li>
-<li><strong>Completitud</strong>. Si <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span> es insatisfactible, entonces <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span> es abierto.</li>
+<li><strong>Completitud</strong>. Si <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi></mrow><annotation encoding="application/x-tex">S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span> es insatisfactible, entonces <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span></span></span></span> es cerrado.</li>
 </ol>
 </blockquote>
 <h4 class="mume-header" id="b%C3%BAsqueda-de-modelos">B&#xFA;squeda de modelos.</h4>
@@ -608,32 +608,32 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 <pre data-role="codeBlock" data-info="elm {l context=&quot;1&quot;}" class="language-elm"><span class="token hvariable">tablero_a</span> <span class="token operator">:</span> <span class="token constant">String</span>
 <span class="token hvariable">tablero_a</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token punctuation">[</span><span class="token hvariable">a</span><span class="token punctuation">]</span>
 
-<span class="token comment">-- Ejecutamos: showGraphViz &quot;G1&quot; tablero_a</span>
-</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G1">
-<div id="inputGraphG1" style="width:100%; display: inline-block;">
-<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG1"> digraph G {
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;T1&quot; tablero_a</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="T1">
+<div id="inputGraphT1" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTT1"> digraph G {
   rankdir=TB
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot;&#x3B1; : ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) ), ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )}&quot;]
-  1 -&gt; 2 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {&#xAC; ( p &#x2227; q )}&quot;]
-  1 -&gt; 12 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {( &#xAC; q &#x2228; r )}&quot;]
-  2 -&gt; 3 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {&#xAC; ( &#xAC; q &#x2228; r )}&quot;]
-  2 -&gt; 10 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {( p &#x2227; q )}&quot;]
-  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; &#xAC; q, &#xAC; r}&quot;]
-  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; q\n &#x27F9; {q}&quot;]
-  5 -&gt; 6 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
-  5 -&gt; 8 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
+  0 -&gt; 1 [label=&quot;&#x3B1; : &#x300E;( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )&#x300F;&quot;]
+  1 -&gt; 2 [label=&quot; &#x3B2;&#x2081;: &#x300E;( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )&#x300F;&quot;]
+  1 -&gt; 12 [label=&quot; &#x3B2;&#x2082;: &#x300E;( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )&#x300F;&quot;]
+  2 -&gt; 3 [label=&quot; &#x3B2;&#x2081;: &#x300E;( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )&#x300F;&quot;]
+  2 -&gt; 10 [label=&quot; &#x3B2;&#x2082;: &#x300E;( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )&#x300F;&quot;]
+  3 -&gt; 4 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( &#xAC; q &#x2228; r )&#x300F;&quot;]
+  4 -&gt; 5 [label=&quot;dN : &#x300E;&#xAC; &#xAC; q&#x300F;&quot;]
+  5 -&gt; 6 [label=&quot; &#x3B2;&#x2081;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
+  5 -&gt; 8 [label=&quot; &#x3B2;&#x2082;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
   6 -&gt; 7 [label=&quot;&quot;]
   8 -&gt; 9 [label=&quot;&quot;]
   10 -&gt; 11 [label=&quot;&quot;]
-  12 -&gt; 13 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {&#xAC; ( &#xAC; q &#x2228; r )}&quot;]
-  12 -&gt; 15 [label=&quot; &#x3B2;: ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {( p &#x2227; q )}&quot;]
+  12 -&gt; 13 [label=&quot; &#x3B2;&#x2081;: &#x300E;( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )&#x300F;&quot;]
+  12 -&gt; 15 [label=&quot; &#x3B2;&#x2082;: &#x300E;( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )&#x300F;&quot;]
   13 -&gt; 14 [label=&quot;&quot;]
-  15 -&gt; 16 [label=&quot;&#x3B1; : ( p &#x2227; q )\n &#x27F9; {p, q}&quot;]
-  16 -&gt; 17 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; q}&quot;]
-  16 -&gt; 19 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {r}&quot;]
+  15 -&gt; 16 [label=&quot;&#x3B1; : &#x300E;( p &#x2227; q )&#x300F;&quot;]
+  16 -&gt; 17 [label=&quot; &#x3B2;&#x2081;: &#x300E;( &#xAC; q &#x2228; r )&#x300F;&quot;]
+  16 -&gt; 19 [label=&quot; &#x3B2;&#x2082;: &#x300E;( &#xAC; q &#x2228; r )&#x300F;&quot;]
   17 -&gt; 18 [label=&quot;&quot;]
   19 -&gt; 20 [label=&quot;&quot;]
   0 [label=&quot;{( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )}&quot;]
@@ -658,44 +658,44 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   19 [label=&quot;{p, q, r}&quot;]
   20 [label=&quot;&#x25EF;&quot;]
 } </textarea>
-<button style="width:100%; height: 5%" onclick="plotDot(&quot;G1&quot;);"> RENDER GRAPH </button>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;T1&quot;);"> RENDER GRAPH </button>
 </div>
-<div id="outputGraphG1" style="width:100%; display: none">
-<div id="svgContainerG1" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
-<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G1&quot;);"> DOWNLOAD AS PNG </button>
+<div id="outputGraphT1" style="width:100%; display: none">
+<div id="svgContainerT1" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;T1&quot;);"> DOWNLOAD AS PNG </button>
 </div>
-<p><canvas id="canvasG1" style="display: none;"></canvas></p>
-<div id="pngContainerG1" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+<p><canvas id="canvasT1" style="display: none;"></canvas></p>
+<div id="pngContainerT1" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
 </div>
 </div><p></p>
 <p>Para <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">&#xAC;</mi><mi>F</mi></mrow><annotation encoding="application/x-tex">\neg F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord">&#xAC;</span><span class="mord mathdefault" style="margin-right:0.13889em;">F</span></span></span></span>:</p>
 <pre data-role="codeBlock" data-info="elm {l context=&quot;1&quot;}" class="language-elm"><span class="token hvariable">tablero_na</span> <span class="token operator">:</span> <span class="token constant">String</span>
 <span class="token hvariable">tablero_na</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token punctuation">[</span><span class="token constant">Neg</span> <span class="token hvariable">a</span><span class="token punctuation">]</span>
 
-<span class="token comment">-- Ejecutamos: showGraphViz &quot;G2&quot;  tablero_na</span>
-</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G2">
-<div id="inputGraphG2" style="width:100%; display: inline-block;">
-<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG2"> digraph G {
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;T2&quot;  tablero_na</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="T2">
+<div id="inputGraphT2" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTT2"> digraph G {
   rankdir=TB
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot; &#x3B2;: &#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {&#xAC; ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )}&quot;]
-  0 -&gt; 7 [label=&quot; &#x3B2;: &#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {&#xAC; ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )}&quot;]
-  1 -&gt; 2 [label=&quot;&#x3B1; : &#xAC; ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )\n &#x27F9; {( p &#x2227; q ), &#xAC; ( &#xAC; q &#x2228; r )}&quot;]
-  2 -&gt; 3 [label=&quot;&#x3B1; : ( p &#x2227; q )\n &#x27F9; {p, q}&quot;]
-  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; &#xAC; q, &#xAC; r}&quot;]
-  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; q\n &#x27F9; {q}&quot;]
+  0 -&gt; 1 [label=&quot; &#x3B2;&#x2081;: &#x300E;&#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )&#x300F;&quot;]
+  0 -&gt; 7 [label=&quot; &#x3B2;&#x2082;: &#x300E;&#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )&#x300F;&quot;]
+  1 -&gt; 2 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( ( p &#x2227; q ) &#x27F6; ( &#xAC; q &#x2228; r ) )&#x300F;&quot;]
+  2 -&gt; 3 [label=&quot;&#x3B1; : &#x300E;( p &#x2227; q )&#x300F;&quot;]
+  3 -&gt; 4 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( &#xAC; q &#x2228; r )&#x300F;&quot;]
+  4 -&gt; 5 [label=&quot;dN : &#x300E;&#xAC; &#xAC; q&#x300F;&quot;]
   5 -&gt; 6 [label=&quot;&quot;]
-  7 -&gt; 8 [label=&quot;&#x3B1; : &#xAC; ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )\n &#x27F9; {( &#xAC; q &#x2228; r ), &#xAC; ( p &#x2227; q )}&quot;]
-  8 -&gt; 9 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {&#xAC; q}&quot;]
-  8 -&gt; 14 [label=&quot; &#x3B2;: ( &#xAC; q &#x2228; r )\n &#x27F9; {r}&quot;]
-  9 -&gt; 10 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
-  9 -&gt; 12 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
+  7 -&gt; 8 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( ( &#xAC; q &#x2228; r ) &#x27F6; ( p &#x2227; q ) )&#x300F;&quot;]
+  8 -&gt; 9 [label=&quot; &#x3B2;&#x2081;: &#x300E;( &#xAC; q &#x2228; r )&#x300F;&quot;]
+  8 -&gt; 14 [label=&quot; &#x3B2;&#x2082;: &#x300E;( &#xAC; q &#x2228; r )&#x300F;&quot;]
+  9 -&gt; 10 [label=&quot; &#x3B2;&#x2081;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
+  9 -&gt; 12 [label=&quot; &#x3B2;&#x2082;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
   10 -&gt; 11 [label=&quot;&quot;]
   12 -&gt; 13 [label=&quot;&quot;]
-  14 -&gt; 15 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
-  14 -&gt; 17 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
+  14 -&gt; 15 [label=&quot; &#x3B2;&#x2081;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
+  14 -&gt; 17 [label=&quot; &#x3B2;&#x2082;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
   15 -&gt; 16 [label=&quot;&quot;]
   17 -&gt; 18 [label=&quot;&quot;]
   0 [label=&quot;{&#xAC; ( ( p &#x2227; q ) &#x27F7; ( &#xAC; q &#x2228; r ) )}&quot;]
@@ -718,14 +718,14 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   17 [label=&quot;{r, &#xAC; q}&quot;]
   18 [label=&quot;&#x25EF;&quot;]
 } </textarea>
-<button style="width:100%; height: 5%" onclick="plotDot(&quot;G2&quot;);"> RENDER GRAPH </button>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;T2&quot;);"> RENDER GRAPH </button>
 </div>
-<div id="outputGraphG2" style="width:100%; display: none">
-<div id="svgContainerG2" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
-<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G2&quot;);"> DOWNLOAD AS PNG </button>
+<div id="outputGraphT2" style="width:100%; display: none">
+<div id="svgContainerT2" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;T2&quot;);"> DOWNLOAD AS PNG </button>
 </div>
-<p><canvas id="canvasG2" style="display: none;"></canvas></p>
-<div id="pngContainerG2" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+<p><canvas id="canvasT2" style="display: none;"></canvas></p>
+<div id="pngContainerT2" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
 </div>
 </div><p></p>
 <p><u>Apartado 2</u></p>
@@ -785,24 +785,24 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 <span class="token hvariable">tablero_u1</span> <span class="token operator">:</span> <span class="token constant">String</span>
 <span class="token hvariable">tablero_u1</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u1</span>
 
-<span class="token comment">-- Ejecutamos: showGraphViz &quot;G3&quot; tablero_u1</span>
-</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G3">
-<div id="inputGraphG3" style="width:100%; display: inline-block;">
-<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG3"> digraph G {
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;T3&quot; tablero_u1</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="T3">
+<div id="inputGraphT3" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTT3"> digraph G {
   rankdir=TB
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; t &#x27F6; q )\n &#x27F9; {&#xAC; t, &#xAC; q}&quot;]
-  1 -&gt; 2 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {&#xAC; ( p &#x2228; q )}&quot;]
-  1 -&gt; 8 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {r}&quot;]
-  2 -&gt; 3 [label=&quot;&#x3B1; : &#xAC; ( p &#x2228; q )\n &#x27F9; {&#xAC; p, &#xAC; q}&quot;]
-  3 -&gt; 4 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; t}&quot;]
-  3 -&gt; 6 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; r}&quot;]
+  0 -&gt; 1 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( &#xAC; t &#x27F6; q )&#x300F;&quot;]
+  1 -&gt; 2 [label=&quot; &#x3B2;&#x2081;: &#x300E;( ( p &#x2228; q ) &#x27F6; r )&#x300F;&quot;]
+  1 -&gt; 8 [label=&quot; &#x3B2;&#x2082;: &#x300E;( ( p &#x2228; q ) &#x27F6; r )&#x300F;&quot;]
+  2 -&gt; 3 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( p &#x2228; q )&#x300F;&quot;]
+  3 -&gt; 4 [label=&quot; &#x3B2;&#x2081;: &#x300E;( t &#x27F6; &#xAC; r )&#x300F;&quot;]
+  3 -&gt; 6 [label=&quot; &#x3B2;&#x2082;: &#x300E;( t &#x27F6; &#xAC; r )&#x300F;&quot;]
   4 -&gt; 5 [label=&quot;&quot;]
   6 -&gt; 7 [label=&quot;&quot;]
-  8 -&gt; 9 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; t}&quot;]
-  8 -&gt; 11 [label=&quot; &#x3B2;: ( t &#x27F6; &#xAC; r )\n &#x27F9; {&#xAC; r}&quot;]
+  8 -&gt; 9 [label=&quot; &#x3B2;&#x2081;: &#x300E;( t &#x27F6; &#xAC; r )&#x300F;&quot;]
+  8 -&gt; 11 [label=&quot; &#x3B2;&#x2082;: &#x300E;( t &#x27F6; &#xAC; r )&#x300F;&quot;]
   9 -&gt; 10 [label=&quot;&quot;]
   11 -&gt; 12 [label=&quot;&quot;]
   0 [label=&quot;{( ( p &#x2228; q ) &#x27F6; r ), ( t &#x27F6; &#xAC; r ), &#xAC; ( &#xAC; t &#x27F6; q )}&quot;]
@@ -819,14 +819,14 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   11 [label=&quot;{&#xAC; t, &#xAC; q, r, &#xAC; r}&quot;]
   12 [label=&quot;&#x2573;&quot;]
 } </textarea>
-<button style="width:100%; height: 5%" onclick="plotDot(&quot;G3&quot;);"> RENDER GRAPH </button>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;T3&quot;);"> RENDER GRAPH </button>
 </div>
-<div id="outputGraphG3" style="width:100%; display: none">
-<div id="svgContainerG3" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
-<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G3&quot;);"> DOWNLOAD AS PNG </button>
+<div id="outputGraphT3" style="width:100%; display: none">
+<div id="svgContainerT3" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;T3&quot;);"> DOWNLOAD AS PNG </button>
 </div>
-<p><canvas id="canvasG3" style="display: none;"></canvas></p>
-<div id="pngContainerG3" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+<p><canvas id="canvasT3" style="display: none;"></canvas></p>
+<div id="pngContainerT3" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
 </div>
 </div><p></p>
 <p>O equivalentemente, calculamos los modelos mediante tableros</p>
@@ -845,20 +845,20 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 <span class="token hvariable">tablero_u2</span> <span class="token operator">:</span> <span class="token constant">String</span>
 <span class="token hvariable">tablero_u2</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u2</span>
 
-<span class="token comment">-- Ejecutamos: showGraphViz &quot;G4&quot; tablero_u2</span>
-</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G4">
-<div id="inputGraphG4" style="width:100%; display: inline-block;">
-<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG4"> digraph G {
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;T4&quot; tablero_u2</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="T4">
+<div id="inputGraphT4" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTT4"> digraph G {
   rankdir=TB
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot;&#x3B1; : &#xAC; ( ( ( p &#x2228; q ) &#x27F6; r ) &#x27F6; ( &#xAC; r &#x27F6; &#xAC; p ) )\n &#x27F9; {( ( p &#x2228; q ) &#x27F6; r ), &#xAC; ( &#xAC; r &#x27F6; &#xAC; p )}&quot;]
-  1 -&gt; 2 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; r &#x27F6; &#xAC; p )\n &#x27F9; {&#xAC; r, &#xAC; &#xAC; p}&quot;]
-  2 -&gt; 3 [label=&quot;dN : &#xAC; &#xAC; p\n &#x27F9; {p}&quot;]
-  3 -&gt; 4 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {&#xAC; ( p &#x2228; q )}&quot;]
-  3 -&gt; 7 [label=&quot; &#x3B2;: ( ( p &#x2228; q ) &#x27F6; r )\n &#x27F9; {r}&quot;]
-  4 -&gt; 5 [label=&quot;&#x3B1; : &#xAC; ( p &#x2228; q )\n &#x27F9; {&#xAC; p, &#xAC; q}&quot;]
+  0 -&gt; 1 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( ( ( p &#x2228; q ) &#x27F6; r ) &#x27F6; ( &#xAC; r &#x27F6; &#xAC; p ) )&#x300F;&quot;]
+  1 -&gt; 2 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( &#xAC; r &#x27F6; &#xAC; p )&#x300F;&quot;]
+  2 -&gt; 3 [label=&quot;dN : &#x300E;&#xAC; &#xAC; p&#x300F;&quot;]
+  3 -&gt; 4 [label=&quot; &#x3B2;&#x2081;: &#x300E;( ( p &#x2228; q ) &#x27F6; r )&#x300F;&quot;]
+  3 -&gt; 7 [label=&quot; &#x3B2;&#x2082;: &#x300E;( ( p &#x2228; q ) &#x27F6; r )&#x300F;&quot;]
+  4 -&gt; 5 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( p &#x2228; q )&#x300F;&quot;]
   5 -&gt; 6 [label=&quot;&quot;]
   7 -&gt; 8 [label=&quot;&quot;]
   0 [label=&quot;{&#xAC; ( ( ( p &#x2228; q ) &#x27F6; r ) &#x27F6; ( &#xAC; r &#x27F6; &#xAC; p ) )}&quot;]
@@ -871,14 +871,14 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   7 [label=&quot;{&#xAC; r, p, r}&quot;]
   8 [label=&quot;&#x2573;&quot;]
 } </textarea>
-<button style="width:100%; height: 5%" onclick="plotDot(&quot;G4&quot;);"> RENDER GRAPH </button>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;T4&quot;);"> RENDER GRAPH </button>
 </div>
-<div id="outputGraphG4" style="width:100%; display: none">
-<div id="svgContainerG4" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
-<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G4&quot;);"> DOWNLOAD AS PNG </button>
+<div id="outputGraphT4" style="width:100%; display: none">
+<div id="svgContainerT4" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;T4&quot;);"> DOWNLOAD AS PNG </button>
 </div>
-<p><canvas id="canvasG4" style="display: none;"></canvas></p>
-<div id="pngContainerG4" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+<p><canvas id="canvasT4" style="display: none;"></canvas></p>
+<div id="pngContainerT4" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
 </div>
 </div><p></p>
 <p>O equivalentemente, calculamos los modelos mediante tableros, y comprobamos que no existe ninguno:</p>
@@ -898,20 +898,20 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 <span class="token hvariable">tablero_u3</span> <span class="token operator">:</span> <span class="token constant">String</span>
 <span class="token hvariable">tablero_u3</span>  <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u3</span>
 
-<span class="token comment">-- Ejecutamos: showGraphViz &quot;G5&quot; tablero_u3</span>
-</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G5">
-<div id="inputGraphG5" style="width:100%; display: inline-block;">
-<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG5"> digraph G {
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;T5&quot; tablero_u3</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="T5">
+<div id="inputGraphT5" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTT5"> digraph G {
   rankdir=TB
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot;&#x3B1; : &#xAC; ( p &#x27F6; r )\n &#x27F9; {p, &#xAC; r}&quot;]
-  1 -&gt; 2 [label=&quot; &#x3B2;: ( p &#x27F6; q )\n &#x27F9; {&#xAC; p}&quot;]
-  1 -&gt; 4 [label=&quot; &#x3B2;: ( p &#x27F6; q )\n &#x27F9; {q}&quot;]
+  0 -&gt; 1 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( p &#x27F6; r )&#x300F;&quot;]
+  1 -&gt; 2 [label=&quot; &#x3B2;&#x2081;: &#x300E;( p &#x27F6; q )&#x300F;&quot;]
+  1 -&gt; 4 [label=&quot; &#x3B2;&#x2082;: &#x300E;( p &#x27F6; q )&#x300F;&quot;]
   2 -&gt; 3 [label=&quot;&quot;]
-  4 -&gt; 5 [label=&quot; &#x3B2;: ( q &#x27F6; r )\n &#x27F9; {&#xAC; q}&quot;]
-  4 -&gt; 7 [label=&quot; &#x3B2;: ( q &#x27F6; r )\n &#x27F9; {r}&quot;]
+  4 -&gt; 5 [label=&quot; &#x3B2;&#x2081;: &#x300E;( q &#x27F6; r )&#x300F;&quot;]
+  4 -&gt; 7 [label=&quot; &#x3B2;&#x2082;: &#x300E;( q &#x27F6; r )&#x300F;&quot;]
   5 -&gt; 6 [label=&quot;&quot;]
   7 -&gt; 8 [label=&quot;&quot;]
   0 [label=&quot;{( p &#x27F6; q ), ( q &#x27F6; r ), &#xAC; ( p &#x27F6; r )}&quot;]
@@ -924,14 +924,14 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   7 [label=&quot;{p, &#xAC; r, q, r}&quot;]
   8 [label=&quot;&#x2573;&quot;]
 } </textarea>
-<button style="width:100%; height: 5%" onclick="plotDot(&quot;G5&quot;);"> RENDER GRAPH </button>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;T5&quot;);"> RENDER GRAPH </button>
 </div>
-<div id="outputGraphG5" style="width:100%; display: none">
-<div id="svgContainerG5" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
-<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G5&quot;);"> DOWNLOAD AS PNG </button>
+<div id="outputGraphT5" style="width:100%; display: none">
+<div id="svgContainerT5" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;T5&quot;);"> DOWNLOAD AS PNG </button>
 </div>
-<p><canvas id="canvasG5" style="display: none;"></canvas></p>
-<div id="pngContainerG5" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+<p><canvas id="canvasT5" style="display: none;"></canvas></p>
+<div id="pngContainerT5" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
 </div>
 </div><p></p>
 <p>O equivalentemente, no posee modelos</p>
@@ -951,35 +951,35 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 <span class="token hvariable">tablero_u4</span> <span class="token operator">:</span> <span class="token constant">String</span>
 <span class="token hvariable">tablero_u4</span> <span class="token operator">=</span> <span class="token hvariable">makeSBoard</span> <span class="token hvariable">u4</span>
 
-<span class="token comment">-- Ejecutamos: showGraphViz &quot;G6&quot; tablero_u4</span>
-</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="G6">
-<div id="inputGraphG6" style="width:100%; display: inline-block;">
-<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTG6"> digraph G {
+<span class="token comment">-- Ejecutamos: showGraphViz &quot;T6&quot; tablero_u4</span>
+</pre><p></p><div data-role="litvisOutput" style="display: inline;"><div id="T6">
+<div id="inputGraphT6" style="width:100%; display: inline-block;">
+<textarea name="textarea" style="width:100%; height:300pt;" id="inDOTT6"> digraph G {
   rankdir=TB
   graph []
   node [shape=box, color=black]
   edge [dir=none, color=blue, fontcolor=blue]
-  0 -&gt; 1 [label=&quot; &#x3B2;: &#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )\n &#x27F9; {&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F6; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )}&quot;]
-  0 -&gt; 13 [label=&quot; &#x3B2;: &#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )\n &#x27F9; {&#xAC; ( ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) &#x27F6; ( ( p &#x2227; q ) &#x27F6; r ) )}&quot;]
-  1 -&gt; 2 [label=&quot;&#x3B1; : &#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F6; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )\n &#x27F9; {( ( p &#x2227; q ) &#x27F6; r ), &#xAC; ( q &#x27F6; ( &#xAC; p &#x2228; r ) )}&quot;]
-  2 -&gt; 3 [label=&quot;&#x3B1; : &#xAC; ( q &#x27F6; ( &#xAC; p &#x2228; r ) )\n &#x27F9; {q, &#xAC; ( &#xAC; p &#x2228; r )}&quot;]
-  3 -&gt; 4 [label=&quot;&#x3B1; : &#xAC; ( &#xAC; p &#x2228; r )\n &#x27F9; {&#xAC; &#xAC; p, &#xAC; r}&quot;]
-  4 -&gt; 5 [label=&quot;dN : &#xAC; &#xAC; p\n &#x27F9; {p}&quot;]
-  5 -&gt; 6 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; r )\n &#x27F9; {&#xAC; ( p &#x2227; q )}&quot;]
-  5 -&gt; 11 [label=&quot; &#x3B2;: ( ( p &#x2227; q ) &#x27F6; r )\n &#x27F9; {r}&quot;]
-  6 -&gt; 7 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; p}&quot;]
-  6 -&gt; 9 [label=&quot; &#x3B2;: &#xAC; ( p &#x2227; q )\n &#x27F9; {&#xAC; q}&quot;]
+  0 -&gt; 1 [label=&quot; &#x3B2;&#x2081;: &#x300E;&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )&#x300F;&quot;]
+  0 -&gt; 13 [label=&quot; &#x3B2;&#x2082;: &#x300E;&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )&#x300F;&quot;]
+  1 -&gt; 2 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F6; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )&#x300F;&quot;]
+  2 -&gt; 3 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( q &#x27F6; ( &#xAC; p &#x2228; r ) )&#x300F;&quot;]
+  3 -&gt; 4 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( &#xAC; p &#x2228; r )&#x300F;&quot;]
+  4 -&gt; 5 [label=&quot;dN : &#x300E;&#xAC; &#xAC; p&#x300F;&quot;]
+  5 -&gt; 6 [label=&quot; &#x3B2;&#x2081;: &#x300E;( ( p &#x2227; q ) &#x27F6; r )&#x300F;&quot;]
+  5 -&gt; 11 [label=&quot; &#x3B2;&#x2082;: &#x300E;( ( p &#x2227; q ) &#x27F6; r )&#x300F;&quot;]
+  6 -&gt; 7 [label=&quot; &#x3B2;&#x2081;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
+  6 -&gt; 9 [label=&quot; &#x3B2;&#x2082;: &#x300E;&#xAC; ( p &#x2227; q )&#x300F;&quot;]
   7 -&gt; 8 [label=&quot;&quot;]
   9 -&gt; 10 [label=&quot;&quot;]
   11 -&gt; 12 [label=&quot;&quot;]
-  13 -&gt; 14 [label=&quot;&#x3B1; : &#xAC; ( ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) &#x27F6; ( ( p &#x2227; q ) &#x27F6; r ) )\n &#x27F9; {( q &#x27F6; ( &#xAC; p &#x2228; r ) ), &#xAC; ( ( p &#x2227; q ) &#x27F6; r )}&quot;]
-  14 -&gt; 15 [label=&quot;&#x3B1; : &#xAC; ( ( p &#x2227; q ) &#x27F6; r )\n &#x27F9; {( p &#x2227; q ), &#xAC; r}&quot;]
-  15 -&gt; 16 [label=&quot;&#x3B1; : ( p &#x2227; q )\n &#x27F9; {p, q}&quot;]
-  16 -&gt; 17 [label=&quot; &#x3B2;: ( q &#x27F6; ( &#xAC; p &#x2228; r ) )\n &#x27F9; {&#xAC; q}&quot;]
-  16 -&gt; 19 [label=&quot; &#x3B2;: ( q &#x27F6; ( &#xAC; p &#x2228; r ) )\n &#x27F9; {( &#xAC; p &#x2228; r )}&quot;]
+  13 -&gt; 14 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) &#x27F6; ( ( p &#x2227; q ) &#x27F6; r ) )&#x300F;&quot;]
+  14 -&gt; 15 [label=&quot;&#x3B1; : &#x300E;&#xAC; ( ( p &#x2227; q ) &#x27F6; r )&#x300F;&quot;]
+  15 -&gt; 16 [label=&quot;&#x3B1; : &#x300E;( p &#x2227; q )&#x300F;&quot;]
+  16 -&gt; 17 [label=&quot; &#x3B2;&#x2081;: &#x300E;( q &#x27F6; ( &#xAC; p &#x2228; r ) )&#x300F;&quot;]
+  16 -&gt; 19 [label=&quot; &#x3B2;&#x2082;: &#x300E;( q &#x27F6; ( &#xAC; p &#x2228; r ) )&#x300F;&quot;]
   17 -&gt; 18 [label=&quot;&quot;]
-  19 -&gt; 20 [label=&quot; &#x3B2;: ( &#xAC; p &#x2228; r )\n &#x27F9; {&#xAC; p}&quot;]
-  19 -&gt; 22 [label=&quot; &#x3B2;: ( &#xAC; p &#x2228; r )\n &#x27F9; {r}&quot;]
+  19 -&gt; 20 [label=&quot; &#x3B2;&#x2081;: &#x300E;( &#xAC; p &#x2228; r )&#x300F;&quot;]
+  19 -&gt; 22 [label=&quot; &#x3B2;&#x2082;: &#x300E;( &#xAC; p &#x2228; r )&#x300F;&quot;]
   20 -&gt; 21 [label=&quot;&quot;]
   22 -&gt; 23 [label=&quot;&quot;]
   0 [label=&quot;{&#xAC; ( ( ( p &#x2227; q ) &#x27F6; r ) &#x27F7; ( q &#x27F6; ( &#xAC; p &#x2228; r ) ) )}&quot;]
@@ -1007,14 +1007,14 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
   22 [label=&quot;{&#xAC; r, p, q, r}&quot;]
   23 [label=&quot;&#x2573;&quot;]
 } </textarea>
-<button style="width:100%; height: 5%" onclick="plotDot(&quot;G6&quot;);"> RENDER GRAPH </button>
+<button style="width:100%; height: 5%" onclick="plotDot(&quot;T6&quot;);"> RENDER GRAPH </button>
 </div>
-<div id="outputGraphG6" style="width:100%; display: none">
-<div id="svgContainerG6" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
-<button style="width:100%; height: 5%; " onclick="generatePng(&quot;G6&quot;);"> DOWNLOAD AS PNG </button>
+<div id="outputGraphT6" style="width:100%; display: none">
+<div id="svgContainerT6" style="width:100%; height:95; border: 1px solid black; display: flex; justify-content: center;"> </div>
+<button style="width:100%; height: 5%; " onclick="generatePng(&quot;T6&quot;);"> DOWNLOAD AS PNG </button>
 </div>
-<p><canvas id="canvasG6" style="display: none;"></canvas></p>
-<div id="pngContainerG6" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
+<p><canvas id="canvasT6" style="display: none;"></canvas></p>
+<div id="pngContainerT6" style="width:20%; height: 5%; float: left; align-content: center; display: none;"></div>
 </div>
 </div><p></p>
 <p>O equivalentemente, no posee modelos</p>
@@ -1025,8 +1025,6 @@ isConsecuenceBoard fs f = List.isEmpty &lt;| modelsTab &lt;|  Neg f::fs
 </pre><p></p><div data-role="litvisOutput" style="display: inline;"><p>True</p>
 </div><p></p>
 <p>Por tanto, el conjunto es, en efecto, inconsistente y por tanto s&#xED; se da la condici&#xF3;n planteada en el problema.</p>
-<h2>1.3. Tableros Sem&#xE1;nticos en L&#xF3;gica de Primer Orden</h2>
-<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><menclose notation="box"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="false"><mstyle scriptlevel="0" displaystyle="true"><mrow><mi>C</mi><mi>o</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>t</mi><mi>a</mi><mi>r</mi></mrow></mstyle></mstyle></mstyle></menclose></mrow><annotation encoding="application/x-tex">\boxed{Completar}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.5688799999999998em;vertical-align:-0.53444em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0344399999999998em;"><span style="top:-3.56888em;"><span class="pstrut" style="height:3.56888em;"></span><span class="boxpad"><span class="mord"><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault">o</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span><span class="mord mathdefault">t</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span></span><span style="top:-3.03444em;"><span class="pstrut" style="height:3.56888em;"></span><span class="stretchy fbox" style="height:1.5688799999999998em;border-style:solid;border-width:0.04em;"></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.53444em;"><span></span></span></span></span></span></span></span></span></p>
 
       </div>
       

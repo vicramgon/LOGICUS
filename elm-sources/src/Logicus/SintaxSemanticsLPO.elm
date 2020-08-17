@@ -32,6 +32,8 @@ type FormulaLPO = Pred String (List Term)
                 | Forall Variable FormulaLPO
                 | Insat
 
+type alias SetLPO = List FormulaLPO
+
 type alias Substitution = Dict String Term
 
 type alias Universe a = List a

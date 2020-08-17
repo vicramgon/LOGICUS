@@ -64,8 +64,8 @@ elm:
 </script>
 
 
-## **TEMA 2**
-Tableros Semánticos en LP y LPO
+## **TEMA 2 - PARTE 1**
+Tableros Semánticos I
 ====================
 
 Descripción general del capítulo
@@ -88,7 +88,7 @@ Para el estudio práctico se hará uso de los módulos:
 -   **Módulo IO\_LPO**. Recoge las implementaciones de los métodos relacionados con la lectura y representación de las fórmulas LPO.
 
 
-1.1. Introducción. Visión general de Tableros Semánticos
+2.1. Introducción. Visión general de Tableros Semánticos
 --------------------------------------------
 
 El método de los Tableros Semánticos establece un algoritmo para la decisión de la satisfactibilidad de un conjunto de fórmulas, trabajando con las fórmulas del conjunto desde un marco sintáctico y sin necesidad de preprocesamiento de las fórmulas.
@@ -99,7 +99,7 @@ Además este método es gráficamente representable de manera sencilla a través
 
 Aunque nosotros vamos a estudiar su desarrollo para las lógicas LP y LPO, la versatilidad y sencillez del método, lo hace fácilmente adaptable a otras lógicas (descriptivas, modales, ...).
 
-1.2. Tableros Semánticos en Lógica Proposicional
+2.2. Tableros Semánticos en Lógica Proposicional
 --------------------------------------------
 
 El método de los tableros semánticos (en adelante tableros) en la lógica proposicional basa su desarrollo en dos pasos fundamentales:
@@ -167,7 +167,7 @@ Nótese que el algoritmo se presenta en forma recursiva, pues es fácilmente pro
 
 > Dado un conjunto de fórmulas $S$ y un tablero $T$ (completo) para $S$:
 > 1. **Corrección**. Si $T$ es cerrado, entonces $S$ es insatisfactible.
-> 2. **Completitud**. Si $S$ es insatisfactible, entonces $T$ es abierto.
+> 2. **Completitud**. Si $S$ es insatisfactible, entonces $T$ es cerrado.
 
 #### Búsqueda de modelos.
 
@@ -383,7 +383,6 @@ Los conceptos (teóricos y prácticos) que hemos desarrollado previamente nos pe
 <u>Apartado 1</u>
 
 ```elm {l context="1"}
-
 import Logicus.IO_LP exposing (..)
 import Logicus.SintaxSemanticsLP exposing (..)
 import Logicus.SemanticBoardsLP exposing (..)
@@ -399,10 +398,10 @@ De forma que el tablero para $F$:
 tablero_a : String
 tablero_a  = makeSBoard [a]
 
--- Ejecutamos: showGraphViz "G1" tablero_a
+-- Ejecutamos: showGraphViz "T1" tablero_a
 ```
 
-^^^elm {m=(showGraphViz "G1"  tablero_a) context="1"}^^^
+^^^elm {m=(showGraphViz "T1"  tablero_a) context="1"}^^^
 
 Para $\neg F$:
 
@@ -411,10 +410,10 @@ Para $\neg F$:
 tablero_na : String
 tablero_na  = makeSBoard [Neg a]
 
--- Ejecutamos: showGraphViz "G2"  tablero_na
+-- Ejecutamos: showGraphViz "T2"  tablero_na
 ```
 
-^^^elm {m=(showGraphViz "G2" tablero_na) context="1"}^^^
+^^^elm {m=(showGraphViz "T2" tablero_na) context="1"}^^^
 
 <u>Apartado 2</u>
 
@@ -496,10 +495,10 @@ u1 =  List.map (\x -> fromStringToFLP x |> extractReadFLP)["(p OR q IMPLIES r)",
 tablero_u1 : String
 tablero_u1  = makeSBoard u1
 
--- Ejecutamos: showGraphViz "G3" tablero_u1
+-- Ejecutamos: showGraphViz "T3" tablero_u1
 ```
 
-^^^elm {m=(showGraphViz "G3" tablero_u1) context="2"}^^^
+^^^elm {m=(showGraphViz "T3" tablero_u1) context="2"}^^^
 
 O equivalentemente, calculamos los modelos mediante tableros
 
@@ -527,10 +526,10 @@ u2 =  List.map (\x -> fromStringToFLP x |> extractReadFLP)["NOT ((p OR q IMPLIES
 tablero_u2 : String
 tablero_u2  = makeSBoard u2
 
--- Ejecutamos: showGraphViz "G4" tablero_u2
+-- Ejecutamos: showGraphViz "T4" tablero_u2
 ```
 
-^^^elm {m=(showGraphViz "G4" tablero_u2) context="2"}^^^
+^^^elm {m=(showGraphViz "T4" tablero_u2) context="2"}^^^
 
 O equivalentemente, calculamos los modelos mediante tableros, y comprobamos que no existe ninguno:
 
@@ -558,10 +557,10 @@ u3 =  List.map (\x -> fromStringToFLP x |> extractReadFLP)
 tablero_u3 : String
 tablero_u3  = makeSBoard u3
 
--- Ejecutamos: showGraphViz "G5" tablero_u3
+-- Ejecutamos: showGraphViz "T5" tablero_u3
 ```
 
-^^^elm {m=(showGraphViz "G5" tablero_u3) context="2"}^^^
+^^^elm {m=(showGraphViz "T5" tablero_u3) context="2"}^^^
 
 O equivalentemente, no posee modelos
 
@@ -589,10 +588,10 @@ u4 =  List.map (\x -> fromStringToFLP x |> extractReadFLP)
 tablero_u4 : String
 tablero_u4 = makeSBoard u4
 
--- Ejecutamos: showGraphViz "G6" tablero_u4
+-- Ejecutamos: showGraphViz "T6" tablero_u4
 ```
 
-^^^elm {m=(showGraphViz "G6" tablero_u4) context="2"}^^^
+^^^elm {m=(showGraphViz "T6" tablero_u4) context="2"}^^^
 
 O equivalentemente, no posee modelos
 
@@ -607,9 +606,3 @@ modelosTab_u4 = modelsTab u4
 ^^^elm {m=(toString <| List.isEmpty <| modelosTab_u4) context="2"}^^^
 
 Por tanto, el conjunto es, en efecto, inconsistente y por tanto sí se da la condición planteada en el problema.
-
-
-1.3. Tableros Semánticos en Lógica de Primer Orden
---------------------------------------------
-
-$\boxed{Completar}$

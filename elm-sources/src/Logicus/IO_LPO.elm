@@ -1,5 +1,6 @@
 module Logicus.IO_LPO exposing(fromStringToFLPO, fromStringToSetLPO, checkFLPO, extractReadFLPO, fromStringToSubstitutionLPO,
-                               checkSubstitutionLPO, extractReadSubstitutionLPO, toStringFLPO, toStringSLOP, toLatexFLPO, toLatexLPOSet, formTree)
+                               checkSubstitutionLPO, extractReadSubstitutionLPO, toStringFLPO, toStringLPOSet, toLatexFLPO, toLatexLPOSet, 
+                               formTree, toStringTerm)
 
 import Char
 import Set
@@ -294,12 +295,12 @@ toStringFLPO x =
         Disj p q -> "( " ++ toStringFLPO p ++ " ∨ "  ++ toStringFLPO q ++ " )"
         Impl p q -> "( " ++ toStringFLPO p ++ " → "  ++ toStringFLPO q ++ " )"
         Equi p q -> "( " ++ toStringFLPO p ++ " ↔ "  ++ toStringFLPO q ++ " )"
-        Exists v p -> "∃ " ++ toStringTerm v ++ " " ++ toStringFLPO p
-        Forall v p -> "∀ " ++ toStringTerm v ++ " " ++ toStringFLPO p
+        Exists v p -> "∃" ++ toStringTerm v ++ " " ++ toStringFLPO p
+        Forall v p -> "∀" ++ toStringTerm v ++ " " ++ toStringFLPO p
         Insat -> "⊥"
 
-toStringSLOP : List FormulaLPO -> String
-toStringSLOP xs = "{" ++ (String.join ", " <| List.map toStringFLPO xs) ++ "}"
+toStringLPOSet : List FormulaLPO -> String
+toStringLPOSet xs = "{" ++ (String.join ", " <| List.map toStringFLPO xs) ++ "}"
 
 toLatexFLPO : FormulaLPO -> String
 toLatexFLPO x = "$" ++ toLatexFLPOAux x ++ "$"

@@ -4,14 +4,14 @@
   		<script src="../js/viz.js" type="javascript/worker"></script>
   		<script src="../js/d3-graphviz.js"></script>
     </head>
-    <body style="overflow: hidden;">
+    <body style="height: auto;">
         <div id="g1">
-            <div id="inputGraph_g1" style="width:100%; display: inline-block;">
-            	<textarea name="textarea" style="width:100%; height:300pt;" id="inDOT_g1"></textarea>
+            <div id="inputGraph_g1" style="width:100%; height:auto; display: inline-block;">
+            	<textarea name="textarea" style="width:100%; height:auto; min-height:300pt;" id="inDOT_g1"></textarea>
             	<button style="width:100%; height: 5%" onclick='plotDot("g1");'> RENDER GRAPH </button>
             </div>
 
-            <div id="outputGraph_g1" style="width:100%; display: none">
+            <div id="outputGraph_g1" style="width:100%; height:auto; display: none">
                 <div id="svgContainer_g1" style="width:100%; height:80%; border: 1px solid black; display: flex; justify-content: center;"> </div> 
                 <button style="width:100%; height: 5%; " onclick='generatePng("g1");'> DOWNLOAD AS PNG </button>
             </div>
