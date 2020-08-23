@@ -2,12 +2,13 @@ module Logicus.SintaxSemanticsLP exposing (
     PSymb, FormulaLP(..), Interpretation, LPSet,
     valuation, truthTable, models, countermodels, satisfactibility, 
     validity, insatisfactibility, isSetModel, allSetModels, 
-    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, setSymbols, symbInProp)
+    allSetCounterModels, isConsistent, isInconsistent, isConsecuence, setSymbols, symbInProp, conjunctionSet, disjunctionSet)
 
 import List
 import Set
 import Logicus.AuxiliarFunctions as Aux
 import Maybe exposing (Maybe(..))
+import List.Extra
 
 -----------
 -- TYPES --
@@ -99,5 +100,12 @@ isInconsistent xs = not(isConsistent xs)
 isConsecuence : List FormulaLP -> FormulaLP -> Bool
 --isConsecuence xs x = List.all (\y -> valuation x y) <| allSetModels xs
 isConsecuence xs x = isInconsistent (xs ++ [Neg x])
+
+conjunctionSet : LPSet -> FormulaLP
+conjunctionSet fs = Maybe.withDefault Insat <| List.Extra.foldl1 (\x ac -> Conj ac x) fs
+
+disjunctionSet : LPSet -> FormulaLP
+disjunctionSet fs = Maybe.withDefault Insat <| List.Extra.foldl1 (\x ac -> Disj ac x) fs
+
 
 
