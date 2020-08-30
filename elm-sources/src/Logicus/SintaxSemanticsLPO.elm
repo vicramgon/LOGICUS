@@ -8,6 +8,8 @@ import Maybe exposing (Maybe(..), andThen)
 import Dict exposing (Dict)
 import Maybe.Extra exposing (isNothing, values, combine)
 
+import String
+
 
 
 
@@ -54,6 +56,19 @@ getVarSymb : Variable -> String
 getVarSymb t =
     case t of
         Var x -> x
+        _ -> ""
+
+isConstTerm : Term -> Bool 
+isConstTerm t =
+    case t of
+        Func _ [] -> True
+        Func _ terms -> List.all (\x -> isConstTerm x) terms
+        _ -> False
+
+getConstSymb : Variable -> String
+getConstSymb t =
+    case t of
+        Func x [] -> x
         _ -> ""
 
 isVariable : Term -> Bool
@@ -200,80 +215,89 @@ existencialClausureFLPOAux f ls =
         x::xs -> existencialClausureFLPOAux (Exists x f) xs
 
 renameVars : FormulaLPO -> FormulaLPO
-renameVars f = Tuple.first <| renameVarsAux f  Dict.empty
+renameVars f = Tuple.first <| renameVarsAux Dict.empty Dict.empty f
 
-renameVarsAux : FormulaLPO -> Dict String Int -> (FormulaLPO, Dict String Int)
-renameVarsAux f vars =
-    let varsSub = Dict.map (\ k v ->  Var (k ++ "_" ++ String.fromInt v)) vars in
-        case f of
-            Pred n terms ->  (Pred n <| List.map (\ t -> applySubsToTerm varsSub t) terms, vars)
-            Equal t1 t2 -> (Equal (applySubsToTerm varsSub t1) (applySubsToTerm varsSub t2), vars)
-            Neg p ->  
+renameVarsAux : Dict String Int -> Dict String Int -> FormulaLPO -> (FormulaLPO, Dict String Int)
+renameVarsAux act mem  f =
+    case f of
+        Pred n terms -> 
+            let
+                s = Dict.map (\ k v -> Var (k ++ "_" ++ String.fromInt v)) act
+            in
+                (Pred n <| List.map (\ t -> applySubsToTerm s t) terms, mem)
+    
+        Equal t1 t2 -> 
+            let
+                s = Dict.map (\ k v -> Var (k ++ "_" ++ String.fromInt v)) act
+            in
+                (Equal (applySubsToTerm s t1) (applySubsToTerm s t2), mem)
+
+        Neg g ->
+            let
+                (ng, nmem) = renameVarsAux act mem g
+            in
+                (Neg ng, nmem)
+        
+        Conj g h ->
+            let
+                (ng, nmem) = renameVarsAux act mem g
+            in
                 let
-                    (f1, d1) = renameVarsAux p vars
+                    (nh, nmem2) = renameVarsAux act nmem h
                 in
-                    (Neg f1 , d1)
-            Conj p q -> 
+                    (Conj ng nh, nmem2)
+
+        Disj g h ->
+            let
+                (ng, nmem) = renameVarsAux act mem g
+            in
                 let
-                    (f1, d1) = renameVarsAux p vars
+                    (nh, nmem2) = renameVarsAux act nmem h
+                in
+                    (Disj ng nh, nmem2)
+        Impl g h ->
+            let
+                (ng, nmem) = renameVarsAux act mem g
+            in
+                let
+                    (nh, nmem2) = renameVarsAux act nmem h
+                in
+                    (Impl ng nh, nmem2)
+        Equi g h ->
+            let
+                (ng, nmem) = renameVarsAux act mem g
+            in
+                let
+                    (nh, nmem2) = renameVarsAux act nmem h
+                in
+                    (Equi ng nh, nmem2)
+        Forall (Var x) g ->
+            let
+                xind = (Maybe.withDefault 0 <| Dict.get x mem) + 1
+            in
+                let
+                    nact = Dict.insert x xind act 
+                    nmem = Dict.insert x xind mem
                 in
                     let
-                        (f2,d2) = renameVarsAux q d1
+                        (ng, nmem2) = renameVarsAux nact nmem g
                     in
-                        (Conj f1 f2, d2)
-            Disj p q -> 
+                        (Forall (Var (x ++ "_" ++  String.fromInt xind)) ng, nmem2)
+
+        Exists (Var x) g ->
+            let
+                xind = (Maybe.withDefault 0 <| Dict.get x mem) + 1
+            in
                 let
-                    (f1, d1) = renameVarsAux p vars
+                    nact = Dict.insert x xind act 
+                    nmem = Dict.insert x xind mem
                 in
                     let
-                        (f2,d2) = renameVarsAux q d1
+                        (ng, nmem2) = renameVarsAux nact nmem g
                     in
-                        (Disj f1 f2, d2)
-            Impl p q -> 
-                let
-                    (f1, d1) = renameVarsAux p vars
-                in
-                    let
-                        (f2,d2) = renameVarsAux q d1
-                    in
-                        (Impl f1 f2, d2)
-            Equi p q -> 
-                let
-                    (f1, d1) = renameVarsAux p vars
-                in
-                    let
-                        (f2,d2) = renameVarsAux q d1
-                    in
-                        (Equi f1 f2, d2)
-            Exists v p -> 
-                let 
-                    vSymb = getVarSymb v 
-                in
-                    let 
-                        vNewIndex = (Maybe.withDefault 0 <| Dict.get vSymb vars) + 1
-                    in
-                        let
-                            newVars = Dict.insert vSymb vNewIndex vars
-                        in
-                            let
-                                (f1, d1) = renameVarsAux p newVars
-                            in
-                                (Exists (Var (vSymb ++ "_" ++ String.fromInt vNewIndex)) f1, d1)
-            Forall v p -> 
-                let 
-                    vSymb = getVarSymb v 
-                in
-                    let 
-                        vNewIndex = (Maybe.withDefault 0 <| Dict.get vSymb vars) + 1
-                    in
-                        let
-                            newVars = Dict.insert vSymb vNewIndex vars
-                        in
-                            let
-                                (f1, d1) = renameVarsAux p newVars
-                            in
-                                (Forall (Var (vSymb ++ "_" ++ String.fromInt vNewIndex)) f1, d1)
-            Insat -> (Insat, vars)
+                        (Exists (Var (x ++ "_" ++  String.fromInt xind)) ng, nmem2)
+
+        _ -> (Insat, mem)
 
 interpretsTerm : Term -> Interpretation a ->  Maybe a
 interpretsTerm t i =
@@ -357,7 +381,7 @@ interpretsFLPOAux f (m,i) =
                             Nothing -> Nothing 
                             Just y -> Just (x == y)
         Exists v f1 ->
-            let ls = combine <| List.map (\o -> interpretsFLPOAux (applySubsToFormula (Dict.singleton (getVarSymb v) (Func o [])) f1) (m,i)) (Dict.keys i.i_const)in
+            let ls = combine <| List.map (\o -> interpretsFLPOAux (applySubsToFormula (Dict.singleton (getVarSymb v) (Func o [])) f1) (m,i)) (Dict.keys i.i_const) in
                 case ls of
                     Nothing -> Nothing
                     Just li -> Just <| List.any (\x -> x) li
@@ -367,6 +391,16 @@ interpretsFLPOAux f (m,i) =
                     Nothing -> Nothing
                     Just li -> Just <| List.all (\x -> x) li
         Insat -> Just False
+
+interpretsSetLPO : SetLPO -> L_estructure a -> Maybe Bool
+interpretsSetLPO fs estr = interpretsFLPOAux (universalClausureFLPO <| lpoSetConjunction fs) estr
+
+lpoSetConjunction : SetLPO -> FormulaLPO
+lpoSetConjunction fs = 
+    case fs of
+        f::xs -> List.foldl (\x ac -> Conj ac x) f xs
+        _ -> Insat
+    
        
 
 

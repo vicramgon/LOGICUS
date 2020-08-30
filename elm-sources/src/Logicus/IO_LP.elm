@@ -163,8 +163,8 @@ toStringFLP prop =
         Neg p -> "¬ " ++ toStringFLP p
         Conj p q -> "( " ++ toStringFLP p ++ " ∧ "  ++ toStringFLP q ++ " )"
         Disj p q -> "( " ++ toStringFLP p ++ " ∨ "  ++ toStringFLP q ++ " )"
-        Impl p q -> "( " ++ toStringFLP p ++ " ⟶ "  ++ toStringFLP q ++ " )"
-        Equi p q -> "( " ++ toStringFLP p ++ " ⟷ "  ++ toStringFLP q ++ " )"
+        Impl p q -> "( " ++ toStringFLP p ++ " → "  ++ toStringFLP q ++ " )"
+        Equi p q -> "( " ++ toStringFLP p ++ " ↔ "  ++ toStringFLP q ++ " )"
         Insat -> "⊥"
 
 toStringFLPSet : List FormulaLP -> String

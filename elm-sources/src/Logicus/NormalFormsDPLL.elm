@@ -127,15 +127,15 @@ interiorizeNegAux f=
     case f of
         Atom x -> Neg (Atom x)
 
-        Neg x -> x
+        Neg x -> interiorizeNeg x
 
         Conj x y -> Disj (interiorizeNegAux x) (interiorizeNegAux  y)
 
         Disj x y -> Conj (interiorizeNegAux x) (interiorizeNegAux y)
 
-        Impl x y -> Conj x (interiorizeNeg y)
+        Impl x y -> Conj (interiorizeNeg x) (interiorizeNegAux y)
 
-        Equi x y -> Disj (Conj (interiorizeNeg x) y) (Conj x (interiorizeNeg y)) 
+        Equi x y -> Disj (interiorizeNegAux  (Impl x y)) (interiorizeNegAux  (Impl y x)) 
 
         Insat -> Insat
 
