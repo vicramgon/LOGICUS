@@ -309,7 +309,7 @@ toLatexFLPOAux : FormulaLPO -> String
 toLatexFLPOAux x =
     case x of
         Pred n params ->  n ++ "\\left(" ++ (String.join ", " <| List.map toStringTerm params) ++ "\\right)"
-        Equal t1 t2 ->  toStringTerm t1 ++ " = " ++ toStringTerm t2
+        Equal t1 t2 -> "\\left( " ++ toStringTerm t1 ++ " = " ++ toStringTerm t2  ++ " \\right)"
         Neg p -> "\\neg " ++ toLatexFLPOAux p
         Conj p q -> "\\left( " ++ toLatexFLPOAux p ++ " \\wedge "  ++ toLatexFLPOAux q ++ " \\right)"
         Disj p q -> "\\left( " ++ toLatexFLPOAux p ++ " \\vee "  ++ toLatexFLPOAux q ++ " \\right)"

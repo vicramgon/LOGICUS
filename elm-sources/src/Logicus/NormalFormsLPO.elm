@@ -1,12 +1,11 @@
 module Logicus.NormalFormsLPO exposing (..)
 
-import Logicus.SintaxSemanticsLPO exposing (FormulaLPO(..), Term(..), getVarSymb)
+import Logicus.SintaxSemanticsLPO exposing (FormulaLPO(..), Term(..), getVarSymb, applySubsToFormula, lpoSetConjunction)
 import List.Extra
 import List
-
-import Dict
 import Dict exposing (Dict)
-import Logicus.SintaxSemanticsLPO exposing (applySubsToFormula)
+import Logicus.AuxiliarFunctions as Aux
+import Logicus.IO_LPO exposing (toStringTerm, toStringLPOSet)
 
 
 type Cuantifier
@@ -273,7 +272,7 @@ getSkolemSubs cS =
                             in
                                 (nres, lF, nE + 1)
                 ) 
-                (Dict.empty, [], 0) 
+                (Dict.empty, [], 0)
                 cS    
     in
         subs
@@ -488,6 +487,71 @@ interiorizeConj f=
 
 toDNF : FormulaLPO -> FormulaLPO
 toDNF f = interiorizeConj <| toNNF <| toSkolemForm f
+
+type alias Clause = List Literal
+
+toClauseCNF : FormulaLPO -> List Clause
+toClauseCNF x =
+    case x of
+        Conj f g ->
+            Aux.unionLs (toClauseCNF f) (toClauseCNF g)
+
+        _ ->
+            [ toClauseCNFAux x ]
+
+toClauseCNFAux : FormulaLPO -> Clause
+toClauseCNFAux x =
+    if literal x then
+        [ x ]
+
+    else
+        case x of
+            Disj f g ->
+                Aux.unionLs (toClauseCNFAux f) (toClauseCNFAux g)
+
+            _ ->
+                []
+
+toClause : FormulaLPO -> List Clause
+toClause x =
+    toClauseCNF <| toCNF x
+
+
+areEqClauses : Clause -> Clause -> Bool
+
+areEqClauses a b =
+     List.all (\x -> List.member x a) b && List.all (\x -> List.member x b) a
+
+
+filterEqClauses : List Clause -> List Clause
+filterEqClauses xs =
+    Aux.uniqueBy areEqClauses xs
+
+    
+toClauseSet : List FormulaLPO -> List Clause
+toClauseSet x =
+    toClause <| lpoSetConjunction x
+
+
+toStringClauseSet : List Clause -> String
+toStringClauseSet clauses =
+    "{" ++ (String.join "," <| List.map (\x -> toStringLPOSet x) clauses) ++ "}"
+
+toLatexClauseSet : List Clause -> String
+toLatexClauseSet clauses =
+    "$\\left\\lbrace" ++ (String.join ", \\, " <| List.map (\x -> toLatexClause x) clauses) ++ "\\right\\rbrace$"
+
+toLatexClause : Clause -> String
+toLatexClause clause = 
+  "\\left\\lbrace " ++ (String.join ", \\," <| List.map toLatexLiteral clause) ++ "\\right\\rbrace"
+
+toLatexLiteral : Literal -> String                  
+toLatexLiteral l =
+    case l of    
+        Pred n params ->  n ++ "\\left(" ++ (String.join ", " <| List.map toStringTerm params) ++ "\\right)"
+        Equal t1 t2 -> "\\left( " ++ toStringTerm t1 ++ " = " ++ toStringTerm t2  ++ " \\right)"
+        Neg p -> "\\neg " ++ toLatexLiteral p
+        _ -> ""
         
 
     
