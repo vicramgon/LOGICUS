@@ -219,7 +219,7 @@ lpoSetHerbrandModels fs n =
         Nothing
 
 
-formulaLPOHerbrandExtension : FormulaLPO -> Int -> Maybe (List FormulaLP)
+formulaLPOHerbrandExtension  : FormulaLPO -> Int -> Maybe (List FormulaLP)
 formulaLPOHerbrandExtension f n =
     if isOpenFLPO f then
         Just <| formulaLPOHerbrandExtensionAux f n 
@@ -238,6 +238,12 @@ formulaLPOHerbrandExtensionAux f n =
         in
             List.map (\xs -> Maybe.withDefault LP.Insat <| formulaLPOToLP <| applySubsToFormula (Dict.fromList xs) f) substitutions
         
+lpoSetHerbrandExtension : SetLPO -> Int -> Maybe (List FormulaLP)
+lpoSetHerbrandExtension fs n =
+    if List.all isOpenFLPO fs then
+        Just <| List.foldl(\x ac-> Aux.uniqueConcatList ac (formulaLPOHerbrandExtensionAux x n)) [] fs
+    else
+        Nothing
 
 formulaLPOToLP : FormulaLPO -> Maybe(FormulaLP)
 formulaLPOToLP f =
@@ -279,6 +285,8 @@ formulaLPOToLP f =
         LPO.Forall _ _ -> Nothing
         LPO.Exists _ _ -> Nothing
         LPO.Insat -> Just LP.Insat
+
+
 
 
     

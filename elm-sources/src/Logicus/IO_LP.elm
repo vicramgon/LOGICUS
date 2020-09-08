@@ -1,5 +1,5 @@
 module Logicus.IO_LP exposing(fromStringToFLP, checkReadFLP, extractReadFLP, fromStringToSetLP, toStringFLP, toLatexFLP, toStringFLPSet, formTree, 
-                              toLatexLPSet, truthTableToMDFormat, interpretations2MDFormat)
+                              toLatexLPSet, truthTableToMDFormat, interpretations2MDFormat, toLatexLPSetInLines)
 
 import Char
 import Set
@@ -187,6 +187,10 @@ toLatexFLPAux x =
 toLatexLPSet : LPSet -> String
 toLatexLPSet  xs =
   "$ \\left\\lbrace " ++ (String.join ", \\," <| List.map toLatexFLPAux  xs) ++ "\\right\\rbrace$"
+
+toLatexLPSetInLines : List FormulaLP -> String
+toLatexLPSetInLines xs = "$\\begin{array}{c}" ++ (String.join "\\\\" <| List.map toLatexFLPAux xs) ++ "\\end{array}$"
+
 formTree : FormulaLP -> String
 formTree x =  String.replace "\n\n" "\n" <| formTree2DOT <| formTree1 x
 
