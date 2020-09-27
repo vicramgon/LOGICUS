@@ -207,7 +207,7 @@ toClause x =
 areEqClauses : Clause -> Clause -> Bool
 
 areEqClauses a b =
-     List.all (\x -> member x a) b && List.all (\x -> member x b) a
+     List.all (\x -> member x a) b && (List.length a == List.length b)
 
 
 filterEqClauses : List Clause -> List Clause
@@ -441,7 +441,15 @@ dpllModelsAux clauses psymbs actualModel =
 
 toStringClauseSet : List Clause -> String
 toStringClauseSet clauses =
-    "{" ++ (String.join "," <| List.map (\x -> toStringFLPSet x) clauses) ++ "}"
+    "{" ++ (String.join "," <| List.map (toStringClause) clauses) ++ "}"
+
+toStringClause : Clause -> String
+toStringClause clause =
+    if List.isEmpty clause then 
+        "□"
+    else 
+        toStringFLPSet clause
+
 
 toLatexClauseSet : List Clause -> String
 toLatexClauseSet clauses =

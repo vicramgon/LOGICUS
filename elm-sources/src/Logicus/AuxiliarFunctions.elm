@@ -34,13 +34,13 @@ unique xs =
 
 uniqueBy : (a -> a -> Bool) -> List a -> List a
 uniqueBy p xs =
-    foldr
+    foldl
         (\x ac ->
             if List.any (\y -> p x y) ac then
                 ac
 
             else
-                x :: ac
+                ac ++ [x]
         )
         []
         xs
