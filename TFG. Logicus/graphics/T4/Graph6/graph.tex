@@ -1,0 +1,44 @@
+\documentclass{article}
+\usepackage[x11names, svgnames, rgb]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{snakes,arrows,shapes}
+\usepackage{amsmath}
+%
+%
+
+%
+
+%
+
+\begin{document}
+\pagestyle{empty}
+%
+%
+%
+
+\enlargethispage{100cm}
+% Start of code
+\begin{tikzpicture}[>=latex',line join=bevel, line width=1.2pt]
+%%
+\node (1) at (80.847bp,234.0bp) [draw,fill=lightgray,ellipse] {Batería};
+  \node (2) at (31.847bp,162.0bp) [draw,fill=lightgray,ellipse] {Radio};
+  \node (3) at (129.85bp,162.0bp) [draw,fill=lightgray,ellipse] {Encendido};
+  \node (5) at (183.85bp,90.0bp) [draw,fill=lightgray,ellipse] {Arranca};
+  \node (6) at (183.85bp,18.0bp) [draw,fill=lightgray,ellipse] {Se mueve};
+  \node (4) at (237.85bp,162.0bp) [draw,fill=lightgray,ellipse] {Gasolina};
+  \draw [->] (1) ..controls (63.255bp,208.15bp) and (55.842bp,197.26bp)  .. (2);
+  \draw [->] (1) ..controls (98.31bp,208.34bp) and (105.53bp,197.73bp)  .. (3);
+  \draw [->] (3) ..controls (149.49bp,135.82bp) and (157.57bp,125.04bp)  .. (5);
+  \draw [->] (5) ..controls (183.85bp,64.131bp) and (183.85bp,54.974bp)  .. (6);
+  \draw [->] (4) ..controls (218.21bp,135.82bp) and (210.13bp,125.04bp)  .. (5);
+%
+\end{tikzpicture}
+% End of code
+
+%
+\end{document}
+%
+
+
+

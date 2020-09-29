@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage[x11names, svgnames, rgb]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{snakes,arrows,shapes}
+\usepackage{amsmath}
+%
+%
+
+%
+
+%
+
+\begin{document}
+\pagestyle{empty}
+%
+%
+%
+
+\enlargethispage{100cm}
+% Start of code
+\begin{tikzpicture}[>=latex',line join=bevel,]
+%%
+\node (E) at (27.0bp,90.0bp) [draw,fill=pink,ellipse] {E};
+  \node (I) at (63.0bp,18.0bp) [draw,fill=pink,ellipse] {I};
+  \node (H) at (99.0bp,90.0bp) [draw,fill=pink,ellipse] {H};
+  \draw [->] (E) ..controls (39.96bp,64.081bp) and (45.154bp,53.693bp)  .. (I);
+  \draw [->] (H) ..controls (86.04bp,64.081bp) and (80.846bp,53.693bp)  .. (I);
+%
+\end{tikzpicture}
+% End of code
+
+%
+\end{document}
+%
+
+
+

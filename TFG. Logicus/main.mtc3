@@ -1,0 +1,15 @@
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {3.1}Visión general del capítulo}{\reset@font\mtcSfont 10}{section.3.1}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {3.2}Trabajo con la Lógica Proposicional}{\reset@font\mtcSfont 10}{section.3.2}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.2.1}Módulos \textit {SintaxSemanticsPL} y \textit {SintaxSemanticsPL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.2.1}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.2.2}Módulos \textit {SemanticBoardsPL} y \textit {SemanticBoardsLP.IO}}{\reset@font\mtcSSfont 10}{subsection.3.2.2}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.2.3}Módulos \textit {NormalFormsClausesPL} y \textit {NormalFormsClausesPL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.2.3}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.2.4}Módulos \textit {DPLL} y \textit {DPLL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.2.4}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.2.5}Módulos \textit {DeductiveSystemsPL} y \textit {DeductiveSystemsPL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.2.5}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.2.6}Módulos \textit {ResolutionPL} y \textit {ResolutionPL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.2.6}}
+{\reset@font\mtcSfont\mtc@string\contentsline{section}{\noexpand \leavevmode \numberline {3.3}Trabajo con la Lógica de Primer Orden}{\reset@font\mtcSfont 10}{section.3.3}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.3.1}Módulos \textit {SintaxSemanticsFOL} y \textit {SintaxSemanticsFOL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.3.1}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.3.2}Módulos \textit {SemanticBoardsFOL} y \textit {SemanticBoardsFOL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.3.2}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.3.3}Módulos \textit {NormalFormsClausesFOL} y \textit {NormalFormsClausesFOL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.3.3}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.3.4}Módulos \textit {Herbrand} y \textit {Herbrand.IO}}{\reset@font\mtcSSfont 10}{subsection.3.3.4}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.3.5}Módulos \textit {UnificationFOL} y \textit {UnificationFOL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.3.5}}
+{\reset@font\mtcSSfont\mtc@string\contentsline{subsection}{\noexpand \leavevmode \numberline {3.3.6}Módulos \textit {ResolutionFOL} y \textit {ResolutionFOL.IO}}{\reset@font\mtcSSfont 10}{subsection.3.3.6}}

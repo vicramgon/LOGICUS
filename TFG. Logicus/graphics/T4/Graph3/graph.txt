@@ -1,0 +1,7 @@
+digraph G {
+    node [style=filled, fillcolor=pink, shape=ellipse]
+    PF -> FP;
+    FP -> F;
+    FP -> C;
+    F -> C;
+}

@@ -3,7 +3,7 @@ module Logicus.ResolutionLP exposing (..)
 import Logicus.SintaxSemanticsLP exposing (FormulaLP(..))
 import Logicus.NormalFormsDPLL exposing (Literal, Clause,  literalComplement, areEqClauses, haveContraryLiteral, toStringClause)
 import Logicus.AuxiliarFunctions as Aux
-import Graph exposing (NodeId, Node, Edge, fromNodesAndEdges, Graph)
+import Graph exposing (Node, Edge, fromNodesAndEdges, Graph)
 import Graph.DOT exposing (outputWithStyles, defaultStyles)
 import Logicus.IO_LP exposing (toStringFLP)
 

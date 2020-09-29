@@ -1,0 +1,13 @@
+digraph G {
+    rankdir="LR";
+    A -> B [label="1"];
+    B -> D [label="2"];
+    D -> E [label="3"];
+    E -> F [label="4"];
+    
+    A [texlbl="$A$"];
+    B [texlbl="$B$"];
+    D [texlbl="$D$"];
+    E [texlbl="$E$"] ;
+    F [fillcolor=lightgreen, style=filled, texlbl="$F$"];
+}

@@ -1,0 +1,72 @@
+\BOOKMARK [0][-]{chapter.1}{Introducci\363n.}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Visi\363n general del cap\355tulo}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{Marco de desarrollo del proyecto.}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.2.1}{Motivaci\363n del proyecto.}{section.1.2}% 4
+\BOOKMARK [2][-]{subsection.1.2.2}{Contexto del proyecto.}{section.1.2}% 5
+\BOOKMARK [2][-]{subsection.1.2.3}{Objetivos.}{section.1.2}% 6
+\BOOKMARK [1][-]{section.1.3}{Metodolog\355a de desarrollo del proyecto.}{chapter.1}% 7
+\BOOKMARK [2][-]{subsection.1.3.1}{Objetivos espec\355ficos y herramientas utilizadas.}{section.1.3}% 8
+\BOOKMARK [2][-]{subsection.1.3.2}{Planificaci\363n y organizaci\363n del proyecto.}{section.1.3}% 9
+\BOOKMARK [0][-]{chapter.2}{El lenguaje Elm.}{}% 10
+\BOOKMARK [1][-]{section.2.1}{Visi\363n general del cap\355tulo}{chapter.2}% 11
+\BOOKMARK [1][-]{section.2.2}{Introducci\363n a la Programaci\363n Declarativa.}{chapter.2}% 12
+\BOOKMARK [1][-]{section.2.3}{Elm como herramienta de Programaci\363n Declarativa.}{chapter.2}% 13
+\BOOKMARK [1][-]{section.2.4}{Elm como herramienta orientada a la Web.}{chapter.2}% 14
+\BOOKMARK [0][-]{chapter.3}{Desarrollo del n\372cleo de LogicUS}{}% 15
+\BOOKMARK [1][-]{section.3.1}{Visi\363n general del cap\355tulo}{chapter.3}% 16
+\BOOKMARK [1][-]{section.3.2}{Trabajo con la L\363gica Proposicional}{chapter.3}% 17
+\BOOKMARK [2][-]{subsection.3.2.1}{M\363dulos SintaxSemanticsPL y SintaxSemanticsPL.IO}{section.3.2}% 18
+\BOOKMARK [2][-]{subsection.3.2.2}{M\363dulos SemanticBoardsPL y SemanticBoardsLP.IO}{section.3.2}% 19
+\BOOKMARK [2][-]{subsection.3.2.3}{M\363dulos NormalFormsClausesPL y NormalFormsClausesPL.IO}{section.3.2}% 20
+\BOOKMARK [2][-]{subsection.3.2.4}{M\363dulos DPLL y DPLL.IO}{section.3.2}% 21
+\BOOKMARK [2][-]{subsection.3.2.5}{M\363dulos DeductiveSystemsPL y DeductiveSystemsPL.IO}{section.3.2}% 22
+\BOOKMARK [2][-]{subsection.3.2.6}{M\363dulos ResolutionPL y ResolutionPL.IO}{section.3.2}% 23
+\BOOKMARK [1][-]{section.3.3}{Trabajo con la L\363gica de Primer Orden}{chapter.3}% 24
+\BOOKMARK [2][-]{subsection.3.3.1}{M\363dulos SintaxSemanticsFOL y SintaxSemanticsFOL.IO}{section.3.3}% 25
+\BOOKMARK [2][-]{subsection.3.3.2}{M\363dulos SemanticBoardsFOL y SemanticBoardsFOL.IO}{section.3.3}% 26
+\BOOKMARK [2][-]{subsection.3.3.3}{M\363dulos NormalFormsClausesFOL y NormalFormsClausesFOL.IO}{section.3.3}% 27
+\BOOKMARK [2][-]{subsection.3.3.4}{M\363dulos Herbrand y Herbrand.IO}{section.3.3}% 28
+\BOOKMARK [2][-]{subsection.3.3.5}{M\363dulos UnificationFOL y UnificationFOL.IO}{section.3.3}% 29
+\BOOKMARK [2][-]{subsection.3.3.6}{M\363dulos ResolutionFOL y ResolutionFOL.IO}{section.3.3}% 30
+\BOOKMARK [0][-]{chapter.4}{Desarrollo de la interfaz de LogicUS}{}% 31
+\BOOKMARK [1][-]{section.4.1}{Visi\363n general del cap\355tulo}{chapter.4}% 32
+\BOOKMARK [1][-]{section.4.2}{Trabajo con la L\363gica Proposicional}{chapter.4}% 33
+\BOOKMARK [1][-]{section.4.3}{Trabajo con la L\363gica de Primer Orden}{chapter.4}% 34
+\BOOKMARK [0][-]{chapter.5}{Trabajo con L\363gicus}{}% 35
+\BOOKMARK [1][-]{section.5.1}{Trabajo con la shell de Elm.}{chapter.5}% 36
+\BOOKMARK [1][-]{section.5.2}{Creaci\363n de documentos web. Integraci\363n con el proyecto gicentre/litvis}{chapter.5}% 37
+\BOOKMARK [1][-]{section.5.3}{Acceso y manejo de la interfaz web.}{chapter.5}% 38
+\BOOKMARK [0][-]{chapter.6}{Conclusiones}{}% 39
+\BOOKMARK [1][-]{section.6.1}{Visi\363n general del cap\355tulo}{chapter.6}% 40
+\BOOKMARK [0][-]{section.6.1}{Ap\351ndices}{}% 41
+\BOOKMARK [0][-]{appendix.Alph1}{Implementaci\363n de los m\363dulos de la L\363gica Proposicional.}{}% 42
+\BOOKMARK [1][-]{section.Alph1.1}{Visi\363n general del ap\351ndice}{appendix.Alph1}% 43
+\BOOKMARK [1][-]{section.Alph1.2}{Implementaci\363n del m\363dulo SintaxSemanticsPL}{appendix.Alph1}% 44
+\BOOKMARK [1][-]{section.Alph1.3}{Implementaci\363n del m\363dulo SintaxSemanticsPL.IO}{appendix.Alph1}% 45
+\BOOKMARK [1][-]{section.Alph1.4}{Implementaci\363n del m\363dulo SemanticBoardsPL}{appendix.Alph1}% 46
+\BOOKMARK [1][-]{section.Alph1.5}{Implementaci\363n del m\363dulo SemanticBoardsPL.IO}{appendix.Alph1}% 47
+\BOOKMARK [1][-]{section.Alph1.6}{Implementaci\363n del m\363dulo NormalFormsClausesPL}{appendix.Alph1}% 48
+\BOOKMARK [1][-]{section.Alph1.7}{Implementaci\363n del m\363dulo NormalFormsClausesPL.IO}{appendix.Alph1}% 49
+\BOOKMARK [1][-]{section.Alph1.8}{Implementaci\363n del m\363dulo DPLL}{appendix.Alph1}% 50
+\BOOKMARK [1][-]{section.Alph1.9}{Implementaci\363n del m\363dulo DPLL.IO}{appendix.Alph1}% 51
+\BOOKMARK [1][-]{section.Alph1.10}{Implementaci\363n del m\363dulo DeductiveSystemsPL}{appendix.Alph1}% 52
+\BOOKMARK [1][-]{section.Alph1.11}{Implementaci\363n del m\363dulo DeductiveSystemsPL.IO}{appendix.Alph1}% 53
+\BOOKMARK [1][-]{section.Alph1.12}{Implementaci\363n del m\363dulo ResolutionPL}{appendix.Alph1}% 54
+\BOOKMARK [1][-]{section.Alph1.13}{Implementaci\363n del m\363dulo ResolutionPL.IO}{appendix.Alph1}% 55
+\BOOKMARK [0][-]{appendix.Alph2}{Implementaci\363n de los m\363dulos de la L\363gica de Primer Orden.}{}% 56
+\BOOKMARK [1][-]{section.Alph2.1}{Visi\363n general del ap\351ndice}{appendix.Alph2}% 57
+\BOOKMARK [1][-]{section.Alph2.2}{Implementaci\363n del m\363dulo SintaxSemanticsFOL}{appendix.Alph2}% 58
+\BOOKMARK [1][-]{section.Alph2.3}{Implementaci\363n del m\363dulo SintaxSemanticsFOL.IO}{appendix.Alph2}% 59
+\BOOKMARK [1][-]{section.Alph2.4}{Implementaci\363n del m\363dulo SemanticBoardsFOL}{appendix.Alph2}% 60
+\BOOKMARK [1][-]{section.Alph2.5}{Implementaci\363n del m\363dulo SemanticBoardsFOL.IO}{appendix.Alph2}% 61
+\BOOKMARK [1][-]{section.Alph2.6}{Implementaci\363n del m\363dulo NormalFormsClausesFOL}{appendix.Alph2}% 62
+\BOOKMARK [1][-]{section.Alph2.7}{Implementaci\363n del m\363dulo NormalFormsClausesFOL.IO}{appendix.Alph2}% 63
+\BOOKMARK [1][-]{section.Alph2.8}{Implementaci\363n del m\363dulo Herbrand}{appendix.Alph2}% 64
+\BOOKMARK [1][-]{section.Alph2.9}{Implementaci\363n del m\363dulo Herbrand.IO}{appendix.Alph2}% 65
+\BOOKMARK [1][-]{section.Alph2.10}{Implementaci\363n del m\363dulo UnificationFOL}{appendix.Alph2}% 66
+\BOOKMARK [1][-]{section.Alph2.11}{Implementaci\363n del m\363dulo UnificationFOL.IO}{appendix.Alph2}% 67
+\BOOKMARK [1][-]{section.Alph2.12}{Implementaci\363n del m\363dulo ResolutionFOL}{appendix.Alph2}% 68
+\BOOKMARK [1][-]{section.Alph2.13}{Implementaci\363n del m\363dulo ResolutionFOL.IO}{appendix.Alph2}% 69
+\BOOKMARK [0][-]{appendix.Alph3}{Implementaci\363n de la Interfaz}{}% 70
+\BOOKMARK [1][-]{section.Alph3.1}{Visi\363n general del ap\351ndice}{appendix.Alph3}% 71
+\BOOKMARK [1][-]{section.Alph3.2}{...}{appendix.Alph3}% 72

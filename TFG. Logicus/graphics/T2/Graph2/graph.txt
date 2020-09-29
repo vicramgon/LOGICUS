@@ -1,0 +1,12 @@
+digraph G {
+    A -> B [label="1"];
+    B -> C [label="2"];
+    C -> E [label="3"];
+    C -> F [label="4"];
+    
+    A [texlbl="$A$"];
+    B [texlbl="$B$"];
+    C [texlbl="$C$"] ;
+    E [fillcolor=lightcoral, style=filled, texlbl="$E$"] ;
+    F [fillcolor=lightgreen, style=filled, texlbl="$F$"] ;
+}

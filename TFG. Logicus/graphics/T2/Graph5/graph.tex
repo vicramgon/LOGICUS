@@ -1,0 +1,56 @@
+\documentclass{article}
+\usepackage[x11names, svgnames, rgb]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{snakes,arrows,shapes}
+\usepackage{amsmath}
+
+\definecolor{lightcoral}{RGB}{240,128,128}
+\definecolor{lightgreen}{RGB}{144,238,144}
+
+
+%
+%
+
+%
+
+%
+
+\begin{document}
+\pagestyle{empty}
+%
+%
+%
+
+\enlargethispage{100cm}
+% Start of code
+\begin{tikzpicture}[>=latex',line join=bevel,]
+%%
+\node (A) at (117.0bp,279.0bp) [draw,ellipse] {$A$};
+  \node (B) at (63.0bp,192.0bp) [draw,ellipse] {$B$};
+  \node (C) at (135.0bp,192.0bp) [draw,fill=lightcoral,ellipse] {$C$};
+  \node (D) at (63.0bp,105.0bp) [draw,ellipse] {$D$};
+  \node (E) at (27.0bp,18.0bp) [draw,fill=lightcoral,ellipse] {$E$};
+  \node (G) at (99.0bp,18.0bp) [draw,fill=lightcoral,ellipse] {$G$};
+  \draw [->] (A) ..controls (98.67bp,249.47bp) and (87.643bp,231.7bp)  .. (B);
+  \definecolor{strokecol}{rgb}{0.0,0.0,0.0};
+  \pgfsetstrokecolor{strokecol}
+  \draw (97.5bp,235.5bp) node {1};
+  \draw [->] (A) ..controls (123.17bp,249.19bp) and (126.4bp,233.56bp)  .. (C);
+  \draw (130.5bp,235.5bp) node {5};
+  \draw [->] (B) ..controls (63.0bp,162.19bp) and (63.0bp,146.56bp)  .. (D);
+  \draw (66.5bp,148.5bp) node {2};
+  \draw [->] (D) ..controls (50.689bp,75.248bp) and (43.911bp,58.867bp)  .. (E);
+  \draw (51.5bp,61.5bp) node {3};
+  \draw [->] (D) ..controls (75.311bp,75.248bp) and (82.089bp,58.867bp)  .. (G);
+  \draw (87.5bp,61.5bp) node {4};
+%
+\end{tikzpicture}
+% End of code
+
+%
+\end{document}
+%
+
+
+

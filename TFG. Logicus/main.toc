@@ -1,0 +1,75 @@
+\babel@toc {spanish}{}
+\textbf {Contenidos}\hfill \textbf {Página} \par 
+\vspace {-2mm} \hspace {-7.5mm} \hrule \par 
+\contentsline {chapter}{\numberline {1}Introducción.}{5}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Visión general del capítulo}{6}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Marco de desarrollo del proyecto.}{6}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Motivación del proyecto.}{6}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Contexto del proyecto.}{6}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Objetivos.}{6}{subsection.1.2.3}%
+\contentsline {section}{\numberline {1.3}Metodología de desarrollo del proyecto.}{6}{section.1.3}%
+\contentsline {subsection}{\numberline {1.3.1}Objetivos específicos y herramientas utilizadas.}{6}{subsection.1.3.1}%
+\contentsline {subsection}{\numberline {1.3.2}Planificación y organización del proyecto.}{6}{subsection.1.3.2}%
+\contentsline {chapter}{\numberline {2}El lenguaje Elm.}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Visión general del capítulo}{8}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Introducción a la Programación Declarativa.}{8}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Elm como herramienta de Programación Declarativa.}{8}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Elm como herramienta orientada a la Web.}{8}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Desarrollo del núcleo de LogicUS}{9}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Visión general del capítulo}{10}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Trabajo con la Lógica Proposicional}{10}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Módulos \textit {SintaxSemanticsPL} y \textit {SintaxSemanticsPL.IO}}{10}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Módulos \textit {SemanticBoardsPL} y \textit {SemanticBoardsLP.IO}}{10}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Módulos \textit {NormalFormsClausesPL} y \textit {NormalFormsClausesPL.IO}}{10}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Módulos \textit {DPLL} y \textit {DPLL.IO}}{10}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Módulos \textit {DeductiveSystemsPL} y \textit {DeductiveSystemsPL.IO}}{10}{subsection.3.2.5}%
+\contentsline {subsection}{\numberline {3.2.6}Módulos \textit {ResolutionPL} y \textit {ResolutionPL.IO}}{10}{subsection.3.2.6}%
+\contentsline {section}{\numberline {3.3}Trabajo con la Lógica de Primer Orden}{10}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Módulos \textit {SintaxSemanticsFOL} y \textit {SintaxSemanticsFOL.IO}}{10}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Módulos \textit {SemanticBoardsFOL} y \textit {SemanticBoardsFOL.IO}}{10}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Módulos \textit {NormalFormsClausesFOL} y \textit {NormalFormsClausesFOL.IO}}{10}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Módulos \textit {Herbrand} y \textit {Herbrand.IO}}{10}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Módulos \textit {UnificationFOL} y \textit {UnificationFOL.IO}}{10}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.6}Módulos \textit {ResolutionFOL} y \textit {ResolutionFOL.IO}}{10}{subsection.3.3.6}%
+\contentsline {chapter}{\numberline {4}Desarrollo de la interfaz de LogicUS}{11}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Visión general del capítulo}{12}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Trabajo con la Lógica Proposicional}{12}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Trabajo con la Lógica de Primer Orden}{12}{section.4.3}%
+\contentsline {chapter}{\numberline {5}Trabajo con Lógicus}{13}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Trabajo con la shell de Elm.}{14}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Creación de documentos web. Integración con el proyecto \textit {gicentre/litvis}}{14}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Acceso y manejo de la interfaz web.}{14}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusiones}{15}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Visión general del capítulo}{16}{section.6.1}%
+\contentsline {chapter}{Apéndices}{16}{section.6.1}%
+\contentsline {chapter}{\numberline {A}Implementación de los módulos de la Lógica Proposicional.}{17}{appendix.Alph1}%
+\contentsline {section}{\numberline {A.1}Visión general del apéndice}{18}{section.Alph1.1}%
+\contentsline {section}{\numberline {A.2}Implementación del módulo SintaxSemanticsPL}{18}{section.Alph1.2}%
+\contentsline {section}{\numberline {A.3}Implementación del módulo SintaxSemanticsPL.IO}{18}{section.Alph1.3}%
+\contentsline {section}{\numberline {A.4}Implementación del módulo SemanticBoardsPL}{18}{section.Alph1.4}%
+\contentsline {section}{\numberline {A.5}Implementación del módulo SemanticBoardsPL.IO}{18}{section.Alph1.5}%
+\contentsline {section}{\numberline {A.6}Implementación del módulo NormalFormsClausesPL}{18}{section.Alph1.6}%
+\contentsline {section}{\numberline {A.7}Implementación del módulo NormalFormsClausesPL.IO}{18}{section.Alph1.7}%
+\contentsline {section}{\numberline {A.8}Implementación del módulo DPLL}{18}{section.Alph1.8}%
+\contentsline {section}{\numberline {A.9}Implementación del módulo DPLL.IO}{18}{section.Alph1.9}%
+\contentsline {section}{\numberline {A.10}Implementación del módulo DeductiveSystemsPL}{18}{section.Alph1.10}%
+\contentsline {section}{\numberline {A.11}Implementación del módulo DeductiveSystemsPL.IO}{18}{section.Alph1.11}%
+\contentsline {section}{\numberline {A.12}Implementación del módulo ResolutionPL}{18}{section.Alph1.12}%
+\contentsline {section}{\numberline {A.13}Implementación del módulo ResolutionPL.IO}{18}{section.Alph1.13}%
+\contentsline {chapter}{\numberline {B}Implementación de los módulos de la Lógica de Primer Orden.}{19}{appendix.Alph2}%
+\contentsline {section}{\numberline {B.1}Visión general del apéndice}{20}{section.Alph2.1}%
+\contentsline {section}{\numberline {B.2}Implementación del módulo SintaxSemanticsFOL}{20}{section.Alph2.2}%
+\contentsline {section}{\numberline {B.3}Implementación del módulo SintaxSemanticsFOL.IO}{20}{section.Alph2.3}%
+\contentsline {section}{\numberline {B.4}Implementación del módulo SemanticBoardsFOL}{20}{section.Alph2.4}%
+\contentsline {section}{\numberline {B.5}Implementación del módulo SemanticBoardsFOL.IO}{20}{section.Alph2.5}%
+\contentsline {section}{\numberline {B.6}Implementación del módulo NormalFormsClausesFOL}{20}{section.Alph2.6}%
+\contentsline {section}{\numberline {B.7}Implementación del módulo NormalFormsClausesFOL.IO}{20}{section.Alph2.7}%
+\contentsline {section}{\numberline {B.8}Implementación del módulo Herbrand}{20}{section.Alph2.8}%
+\contentsline {section}{\numberline {B.9}Implementación del módulo Herbrand.IO}{20}{section.Alph2.9}%
+\contentsline {section}{\numberline {B.10}Implementación del módulo UnificationFOL}{20}{section.Alph2.10}%
+\contentsline {section}{\numberline {B.11}Implementación del módulo UnificationFOL.IO}{20}{section.Alph2.11}%
+\contentsline {section}{\numberline {B.12}Implementación del módulo ResolutionFOL}{20}{section.Alph2.12}%
+\contentsline {section}{\numberline {B.13}Implementación del módulo ResolutionFOL.IO}{20}{section.Alph2.13}%
+\contentsline {chapter}{\numberline {C}Implementación de la Interfaz}{21}{appendix.Alph3}%
+\contentsline {section}{\numberline {C.1}Visión general del apéndice}{21}{section.Alph3.1}%
+\contentsline {section}{\numberline {C.2}...}{21}{section.Alph3.2}%

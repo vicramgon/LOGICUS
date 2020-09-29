@@ -1,11 +1,8 @@
 module Logicus.HerbrandLPO exposing (..)
-import List.Extra
 import Logicus.SintaxSemanticsLPO as LPO exposing (FormulaLPO(..), Term(..), SetLPO, isOpenFLPO, lpoSetConjunction, varsInFormula, applySubsToFormula, getVarSymb)
-import Logicus.NormalFormsLPO exposing (toSkolemForm)
-import Logicus.AuxiliarFunctions exposing (uniqueConcatList)
+import Logicus.AuxiliarFunctions as Aux exposing (uniqueConcatList)
 import String exposing (repeat)
 import Dict
-import Logicus.AuxiliarFunctions as Aux
 import List
 import Logicus.SintaxSemanticsLP as LP exposing (FormulaLP(..))
 import Logicus.IO_LPO exposing (toStringFLPO)

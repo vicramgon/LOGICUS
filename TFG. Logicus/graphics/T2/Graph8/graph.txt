@@ -1,0 +1,60 @@
+digraph G {
+    node [shape=plaintext];
+
+    1 -> 2 [label="E{(1)}"];
+    2 -> 3 [label="B{(2)}"];
+    3 -> 4 [label="C{(3)}"];
+    4 -> 5 [label="D{(4)}"];
+    5 -> 6 [label="E{(5)}"];
+    6 -> 7 [label="C{(6)}"];
+    7 -> 8 [label="D{(7)}"];
+    8 -> 9 [label="B{(8)}"];
+    9 -> 10 [label="F{(9)}"];
+    10 -> 11 [label="C{(10)}"];
+    11 -> 12 [label="D{(11)}"];
+    10 -> 13 [label="D{(12)}"];
+    13 -> 14 [label="B{(13)}"];
+    14 -> 15 [label="C{(14)}"];
+    15  -> 16 [label="D{(15)}"];
+    13  -> 17 [label="C{(16)}"];
+    17 -> 18 [label="D{(17)}"];
+    13 -> 19 [label="F{(18)}"];
+    8  -> 20 [label="F{(19)}"];
+    7 -> 21 [label="F{(20)}"];
+    6 -> 22 [label="F{(21)}"];
+    4 -> 23 [label="E{(22)}"];
+    3 -> 24 [label="F{(23)}"];
+    2 -> 25 [label="C{(24)}"];
+    2 -> 26 [label="F{(25)}"];
+    
+    
+    
+    1 [texlbl="$\{p_1\}$"];
+    2 [texlbl="$\{p_1, p_3\}$"];
+    3 [texlbl="$\{p_1, p_3, p_5\}$"];
+    4 [texlbl="$\{p_1, p_2, p_5\}$"];
+    5 [texlbl="$\{p_1, p_4\}$"];
+    6 [texlbl="$\{p_1, p_3, p_4\}$"];
+    7 [texlbl="$\{p_1, p_2, p_4\}$"];
+    8 [texlbl="$\{p_1, p_2, p_3, p_4\}$"];
+    9 [texlbl="$\{p_1, p_2, p_3, p_5\}$"];
+    10 [texlbl="$\{p_2, p_3, p_5\}$"];
+    11 [texlbl="$\{p_2, p_5\}$"];
+    12 [texlbl="$\{p_4\}$", style=filled, fillcolor=lightcoral];
+    13 [texlbl="$\{p_3, p_4\}$"];
+    14 [texlbl="$\{p_3, p_5\}$"];
+    15 [texlbl="$\{p_2, p_5\}$"];
+    16 [texlbl="$\{p_4\}$", style=filled, fillcolor=lightcoral];
+    17 [texlbl="$\{p_2, p_4\}$"];
+    18 [texlbl="$\{p_4\}$", style=filled, fillcolor=lightcoral];
+    19 [texlbl="$\{p_3, p_4,p_5\}$", style=filled, fillcolor=palegreen];
+    20 [texlbl=""]
+    21 [texlbl=""]
+    22 [texlbl=""]
+    23 [texlbl=""]
+    24 [texlbl=""]
+    25 [texlbl=""]
+    26 [texlbl=""]
+    
+    
+}
