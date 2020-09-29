@@ -1,9 +1,0 @@
-digraph G {
-    node [style=filled, fillcolor=pink, shape=oval]
-    A -> D;
-    B -> D;
-    B -> E;
-    C -> E;
-   
-    A;B;C;D; E;
-}
