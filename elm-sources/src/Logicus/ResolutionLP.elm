@@ -4,9 +4,9 @@ import Logicus.SintaxSemanticsLP exposing (FormulaLP(..))
 import Logicus.NormalFormsDPLL exposing (Literal, Clause,  literalComplement, areEqClauses, haveContraryLiteral, toStringClause)
 import Logicus.AuxiliarFunctions as Aux
 import Graph exposing (Node, Edge, fromNodesAndEdges, Graph)
-import Graph.DOT exposing (outputWithStyles, defaultStyles)
 import Logicus.IO_LP exposing (toStringFLP)
 
+-- RESOLUTES BETWEEN CLAUSES
 
 resolute : Clause -> Clause -> Literal-> Clause
 resolute c1 c2 l =
@@ -29,14 +29,21 @@ setClausesCResolutesWithClauseAux c ls ac res =
             in
                 setClausesCResolutesWithClauseAux c xs (ac ++ resolutes_x) (res ++ List.map(\y -> (y, [c, x])) resolutes_x)
 
-clauseResolutesWithClosed : Clause -> List (Clause, List Clause, List Clause) -> List (Clause, List Clause)
-clauseResolutesWithClosed c closed =
+
+-- GENERAL RESOLUTION (LESS LENGTH HEURISTIC)
+
+clauseSetResolutionGraph : List(Clause) -> Graph Clause Literal 
+clauseSetResolutionGraph ls =
     let
-        ls = List.foldl  (\ (x, _, xs) ac -> if List.all (\ y -> not (areEqClauses c y)) xs then ac ++ [x] else ac) [] closed  
-    in
-        setClausesCResolutesWithClause c ls
-
-
+        opened = List.map (\x -> (x, [])) <| List.sortBy (\x -> List.length x) ls 
+    in 
+        let 
+            resPath = opened ++ (clauseSetResolutionAux [] opened)
+        in
+            let 
+                (nodes, edges) = buildResolutionGraph resPath [] []  
+            in 
+                fromNodesAndEdges nodes edges
 
 
 clauseSetResolutionAux :  List (Clause, List Clause, List Clause) ->  List (Clause, List Clause) -> List (Clause, List Clause)
@@ -70,6 +77,13 @@ clauseSetResolutionAux closed opened =
                             in
                                 clauseSetResolutionAux newclosed newopened
 
+clauseResolutesWithClosed : Clause -> List (Clause, List Clause, List Clause) -> List (Clause, List Clause)
+clauseResolutesWithClosed c closed =
+    let
+        ls = List.foldl  (\ (x, _, xs) ac -> if List.all (\ y -> not (areEqClauses c y)) xs then ac ++ [x] else ac) [] closed  
+    in
+        setClausesCResolutesWithClause c ls
+
 recoverResolutionPath : List(Clause) -> List (Clause, List(Clause)) -> List (Clause, List(Clause)) -> List (Clause, List(Clause))
 recoverResolutionPath  xs ys res =
     case xs of
@@ -84,32 +98,6 @@ recoverResolutionPath  xs ys res =
                     nres = Aux.uniqueConcatList cs res
                 in
                 recoverResolutionPath  nxs ys nres 
-
-clauseSetResolutionGraph : List(Clause) -> Graph Clause Literal 
-clauseSetResolutionGraph ls =
-    let
-        opened = List.map (\x -> (x, [])) <| List.sortBy (\x -> List.length x) ls 
-    in 
-        let 
-            resPath = opened ++ (clauseSetResolutionAux [] opened)
-        in
-            let 
-                (nodes, edges) = buildResolutionGraph resPath [] []  
-            in 
-                fromNodesAndEdges nodes edges
-
-
-graphvizResolutionGraph :  List Clause -> String 
-graphvizResolutionGraph ls = 
-    let 
-        initialNodes = String.join ";" <| List.map (String.fromInt) <|  List.range 0 <| (List.length ls)-1
-        resGraph = clauseSetResolutionGraph ls
-        myStyles ={ defaultStyles | node = "shape=box, color=black", edge = "dir=none, color=blue, fontcolor=blue"}
-        printNodes = \ x -> Maybe.Just <| toStringClause x
-        printEdges = \ x -> Maybe.Just <| toStringFLP x
-    in
-        String.replace "\n\n" "\n" <| String.replace "\n}" ("\n{rank=same; " ++ initialNodes ++ ";}\n}") <| outputWithStyles myStyles printNodes printEdges resGraph
-
             
 
 buildResolutionGraph : List (Clause, List(Clause)) -> List (Int, Clause) -> List (Int, Int, Literal) -> (List (Node Clause), List(Edge Literal))
@@ -131,7 +119,7 @@ buildResolutionGraph resPath nodes edges =
 getResolutionLiteralForGraph : Clause -> Clause -> Literal
 getResolutionLiteralForGraph c1 c2 = Maybe.withDefault Insat <| List.head <| List.filter (\x -> not (List.member x c2)) c1
 
-
+-- LINEAR RESOLUTION (LESS LENGTH HEURISTIC)
 
 clauseSetLinearResolutionAux :  List (Clause, List Clause) -> List (Clause, List Clause)
 clauseSetLinearResolutionAux clauses =
@@ -174,7 +162,7 @@ clauseSetLinearResolutionAux3 clauses resolutes =
                 [] -> clauseSetLinearResolutionAux3 clauses xs
                 ls -> ls
 
-
+ 
 clauseSetLinearResolutionGraph : List(Clause) -> Graph Clause Literal 
 clauseSetLinearResolutionGraph ls =
     let
@@ -188,13 +176,309 @@ clauseSetLinearResolutionGraph ls =
             in 
                 fromNodesAndEdges nodes edges
 
-graphvizLinearResolutionGraph :  List Clause -> String 
-graphvizLinearResolutionGraph ls = 
+
+-- POSITIVE RESOLUTION (LESS LENGTH HEURISTIC)
+
+clauseSetPositiveResolutionGraph : List(Clause) -> Graph Clause Literal 
+clauseSetPositiveResolutionGraph ls =
+    let
+        opened = List.map (\x -> (x, [])) <| List.sortBy (\x -> List.length x) ls 
+    in 
+        let 
+            resPath = opened ++ (clauseSetPositiveResolutionAux [] opened)
+        in
+            let 
+                (nodes, edges) = buildResolutionGraph resPath [] []  
+            in 
+                fromNodesAndEdges nodes edges
+
+clauseSetPositiveResolutionAux :  List (Clause, List Clause, List Clause) ->  List (Clause, List Clause) -> List (Clause, List Clause)
+clauseSetPositiveResolutionAux closed opened =
+    case opened of
+        [] -> []
+        x::xs ->
+            case x of 
+                ([], px) -> 
+                    let 
+                        ys = List.filter (\ y -> not(List.isEmpty <| Tuple.second y)) <| (List.map (\(c, ps, _) -> (c, ps)) closed) ++ xs
+                    in
+                        recoverResolutionPath px ys [] ++ [x]
+                (c, ps) ->
+                    if isPositiveClause c then
+                        let 
+                            opendedClauses = List.map (Tuple.first) xs
+
+                        in
+                            let
+                                newclosed = closed ++ [(c, ps, opendedClauses)]
+                                resolutesXWithClosed = clauseResolutesWithClosed c closed
+                                resolutesXWithOpened = setClausesCResolutesWithClause c opendedClauses
+                            in
+                                let
+                                    newopened = 
+                                        List.sortBy (\(y, _) -> List.length y ) <|
+                                            List.foldl 
+                                                (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                xs
+                                                (resolutesXWithClosed ++ resolutesXWithOpened)
+                                in
+                                    clauseSetPositiveResolutionAux newclosed newopened
+                    else
+                        let 
+                            opendedPositiveClauses = List.filter (isPositiveClause) <| List.map (Tuple.first) xs
+
+                        in
+                            let
+                                newclosed = closed ++ [(c, ps, opendedPositiveClauses)]
+                                resolutesXWithClosed = clauseResolutesWithClosed c <| List.filter (\(cx, _, _) -> isPositiveClause cx) closed
+                                resolutesXWithOpened = setClausesCResolutesWithClause c opendedPositiveClauses
+
+                            in
+                                let
+                                    newopened = 
+                                        List.sortBy (\(y, _) -> List.length y ) <|
+                                            List.foldl 
+                                                (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                xs
+                                                (resolutesXWithClosed ++ resolutesXWithOpened)
+                                in
+                                    clauseSetPositiveResolutionAux newclosed newopened
+
+
+
+isPositiveLiteral : Literal -> Bool
+isPositiveLiteral l =
+    case l of
+       Atom _ -> True
+       _ -> False
+
+isPositiveClause : Clause -> Bool 
+isPositiveClause c = List.all isPositiveLiteral c
+
+-- NEGATIVE RESOLUTION (LESS LENGTH HEURISTIC)
+
+clauseSetNegativeResolutionGraph : List(Clause) -> Graph Clause Literal 
+clauseSetNegativeResolutionGraph ls =
+    let
+        opened = List.map (\x -> (x, [])) <| List.sortBy (\x -> List.length x) ls 
+    in 
+        let 
+            resPath = opened ++ (clauseSetNegativeResolutionAux [] opened)
+        in
+            let 
+                (nodes, edges) = buildResolutionGraph resPath [] []  
+            in 
+                fromNodesAndEdges nodes edges
+
+clauseSetNegativeResolutionAux :  List (Clause, List Clause, List Clause) ->  List (Clause, List Clause) -> List (Clause, List Clause)
+clauseSetNegativeResolutionAux closed opened =
+    case opened of
+        [] -> []
+        x::xs ->
+            case x of 
+                ([], px) -> 
+                    let 
+                        ys = List.filter (\ y -> not(List.isEmpty <| Tuple.second y)) <| (List.map (\(c, ps, _) -> (c, ps)) closed) ++ xs
+                    in
+                        recoverResolutionPath px ys [] ++ [x]
+                (c, ps) ->
+                    if isNegativeClause c then
+                        let 
+                            opendedClauses = List.map (Tuple.first) xs
+
+                        in
+                            let
+                                newclosed = closed ++ [(c, ps, opendedClauses)]
+                                resolutesXWithClosed = clauseResolutesWithClosed c closed
+                                resolutesXWithOpened = setClausesCResolutesWithClause c opendedClauses
+                            in
+                                let
+                                    newopened = 
+                                        List.sortBy (\(y, _) -> List.length y ) <|
+                                            List.foldl 
+                                                (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                xs
+                                                (resolutesXWithClosed ++ resolutesXWithOpened)
+                                in
+                                    clauseSetNegativeResolutionAux newclosed newopened
+                    else
+                        let 
+                            opendedNegativeClauses = List.filter (isNegativeClause) <| List.map (Tuple.first) xs
+
+                        in
+                            let
+                                newclosed = closed ++ [(c, ps, opendedNegativeClauses)]
+                                resolutesXWithClosed = clauseResolutesWithClosed c <| List.filter (\(cx, _, _) -> isNegativeClause cx) closed
+                                resolutesXWithOpened = setClausesCResolutesWithClause c opendedNegativeClauses
+
+                            in
+                                let
+                                    newopened = 
+                                        List.sortBy (\(y, _) -> List.length y ) <|
+                                            List.foldl 
+                                                (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                xs
+                                                (resolutesXWithClosed ++ resolutesXWithOpened)
+                                in
+                                    clauseSetNegativeResolutionAux newclosed newopened
+
+
+
+isNegativeLiteral : Literal -> Bool
+isNegativeLiteral l =
+    case l of
+       Neg(Atom _) -> True
+       _ -> False
+
+isNegativeClause : Clause -> Bool 
+isNegativeClause c = List.all isNegativeLiteral c
+
+
+-- ENTRY RESOLUTION (LESS LENGTH HEURISTIC)
+
+clauseSetEntryResolutionGraph : List(Clause) -> Graph Clause Literal 
+clauseSetEntryResolutionGraph ls =
+    let
+        opened = List.map (\x -> (x, [])) <| List.sortBy (\x -> List.length x) ls 
+    in 
+        let 
+            resPath = opened ++ (clauseSetEntryResolutionAux [] opened)
+        in
+            let 
+                (nodes, edges) = buildResolutionGraph resPath [] []  
+            in 
+                fromNodesAndEdges nodes edges
+
+clauseSetEntryResolutionAux :  List (Clause, List Clause, List Clause) ->  List (Clause, List Clause) -> List (Clause, List Clause)
+clauseSetEntryResolutionAux closed opened =
+    case opened of
+        [] -> []
+        x::xs ->
+            case x of 
+                ([], px) -> 
+                    let 
+                        ys = List.filter (\ y -> not(List.isEmpty <| Tuple.second y)) <| (List.map (\(c, ps, _) -> (c, ps)) closed) ++ xs
+                    in
+                        recoverResolutionPath px ys [] ++ [x]
+                (c, ps) ->
+                    if List.isEmpty ps then
+                        let 
+                            opendedClauses = List.map (Tuple.first) xs
+
+                        in
+                            let
+                                newclosed = closed ++ [(c, ps, opendedClauses)]
+                                resolutesXWithClosed = clauseResolutesWithClosed c closed
+                                resolutesXWithOpened = setClausesCResolutesWithClause c opendedClauses
+                            in
+                                let
+                                    newopened = 
+                                        List.sortBy (\(y, _) -> List.length y ) <|
+                                            List.foldl 
+                                                (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                xs
+                                                (resolutesXWithClosed ++ resolutesXWithOpened)
+                                in
+                                    clauseSetEntryResolutionAux newclosed newopened
+                    else
+                        let 
+                            opendedEntryClauses = List.map (Tuple.first) <| List.filter (\ y -> List.isEmpty <| Tuple.second y) xs
+
+                        in
+                            let
+                                newclosed = closed ++ [(c, ps, opendedEntryClauses)]
+                                resolutesXWithClosed = clauseResolutesWithClosed c <| List.filter (\(_, px, _) -> List.isEmpty px) closed
+                                resolutesXWithOpened = setClausesCResolutesWithClause c opendedEntryClauses
+
+                            in
+                                let
+                                    newopened = 
+                                        List.sortBy (\(y, _) -> List.length y ) <|
+                                            List.foldl 
+                                                (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                xs
+                                                (resolutesXWithClosed ++ resolutesXWithOpened)
+                                in
+                                    clauseSetEntryResolutionAux newclosed newopened
+
+
+
+
+{--clauseSetWithFilterResolutionAux :  (List (Clause, List Clause, List Clause), List (Clause, List Clause, List Clause)) ->  
+                                    (List (Clause, List Clause), List (Clause, List Clause)) -> 
+                                    ((Clause, List Clause, List Clause) -> Bool) -> 
+                                    ((Clause, List Clause) -> Bool) -> 
+                                    List (Clause, List Clause)
+clauseSetWithFilterResolutionAux (closedT, closedF) (openedT, openedF) closedFilter openedFilter=
     let 
-        initialNodes = String.join ";" <| List.map (String.fromInt) <|  List.range 0 <| (List.length ls)-1
-        resGraph = clauseSetLinearResolutionGraph ls
-        myStyles ={ defaultStyles | node = "shape=box, color=black", edge = "dir=none, color=blue, fontcolor=blue"}
-        printNodes = \ x -> Maybe.Just <| toStringClause x
-        printEdges = \ x -> Maybe.Just <| toStringFLP x
+        varT = List.head <| openedT
+        varF = List.head <| openedF
     in
-        String.replace "\n\n" "\n" <| String.replace "\n}" ("\n{rank=same; " ++ initialNodes ++ ";}\n}") <| outputWithStyles myStyles printNodes printEdges resGraph
+
+
+    
+    
+    if (List.isEmpty openedT) && (List.isEmpty openedF) then 
+        []
+    else
+        
+
+    case openedT of
+        [] -> 
+            case openedF of
+                [] -> []
+                x::xs ->
+                    case x of 
+                        ([], px) -> 
+                            let 
+                                ys = List.filter (\ y -> not(List.isEmpty <| Tuple.second y)) <| (List.map (\(c, ps, _) -> (c, ps)) closed) ++ xs
+                            in
+                                recoverResolutionPath px ys [] ++ [x]
+                        
+                        (c, ps) ->
+                            let
+                                opendedFClauses = List.map (Tuple.first) xs
+
+                            in
+                                let
+                                    newclosedF = closedF ++ [(c, ps, opendedFClauses)]
+                                    (resolutesXWithClosedT, resolutesXWithClosedF) = clauseResolutesWithClosed c closed
+                                    resolutesXWithOpened = setClausesCResolutesWithClause c opendedClauses
+                                in
+                                    let
+                                        newopened = 
+                                            List.sortBy (\(y, _) -> List.length y ) <|
+                                                List.foldl 
+                                                    (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                    xs
+                                                    (resolutesXWithClosed ++ resolutesXWithOpened)
+                                    in
+                                        clauseSetEntryResolutionAux newclosed newopened
+                        else
+                            let 
+                                opendedEntryClauses = List.map (Tuple.first) <| List.filter (\ y -> List.isEmpty <| Tuple.second y) xs
+
+                            in
+                                let
+                                    newclosed = closed ++ [(c, ps, opendedEntryClauses)]
+                                    resolutesXWithClosed = clauseResolutesWithClosed c <| List.filter (\(_, px, _) -> List.isEmpty px) closed
+                                    resolutesXWithOpened = setClausesCResolutesWithClause c opendedEntryClauses
+
+                                in
+                                    let
+                                        newopened = 
+                                            List.sortBy (\(y, _) -> List.length y ) <|
+                                                List.foldl 
+                                                    (\ (y, pys) ac -> if not(haveContraryLiteral y) && List.all (\(z, _) -> not (areEqClauses y z)) ac && List.all (\(z, _, _) -> not (areEqClauses y z)) closed then ac ++ [(y, pys)] else ac)
+                                                    xs
+                                                    (resolutesXWithClosed ++ resolutesXWithOpened)
+                                    in
+                                        clauseSetEntryResolutionAux newclosed newopened--}
+
+
+
+
+
+
+
+

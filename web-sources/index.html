@@ -1,59 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Logicous</title>
     <link rel="stylesheet" href="./style.css" media="all" />
     <link rel="shortcut icon" href="images/logicusLogo.ico" />
     <script src="js/functions.js"></script>
-</head>
-<body>
-    <img src="images/athenesSchool2.jpg" id="bg" alt="">
-    <img src="images/LogicousIndex.png" id="LogIndex" alt="">
+  </head>
+  <body>
+    <img src="images/athenesSchool2.jpg" id="bg" alt="" />
+    <img src="images/LogicousIndex.png" id="LogIndex" alt="" />
     <main>
-        <div class="middleView" id="leftView">
-            <img src="images/FirsOrderSymbIndex.png" id="FOLSymb" alt="">
-            <img src="images/FirsOrderIndex.png" id="FOL" alt="" onclick="window.location= 'pages/FirstOrder.html'">
-        </div>
-        <div class="middleView" id="rightView">
-                <img src="images/PropositionalSymbIndex.png" id="PLSymb" alt="">
-                <img src="images/PropositionalIndex.png" id="PL" alt="" onclick="window.location= 'pages/Propositional.html'">
-        </div>
+      <div class="middleView" id="leftView">
+        <img src="images/FirsOrderSymbIndex.png" id="FOLSymb" alt="" />
+        <img
+          src="images/FirsOrderIndex.png"
+          id="FOL"
+          alt=""
+          onclick="window.location= 'pages/FirstOrder.html'"
+        />
+      </div>
+      <div class="middleView" id="rightView">
+        <img src="images/PropositionalSymbIndex.png" id="PLSymb" alt="" />
+        <img
+          src="images/PropositionalIndex.png"
+          id="PL"
+          alt=""
+          onclick="window.location= 'pages/Propositional.html'"
+        />
+      </div>
     </main>
-    
-</body>
+  </body>
 
-<script>
-    document.getElementById('FOL').onmouseover=function(){
-        document.getElementById('leftView').style.backgroundColor ="rgba(143,170,220,0.56)";
-        document.getElementById('leftView').style.cursor ="pointer";
-        hover(this);
-        hover(document.getElementById('FOLSymb'));
+  <script>
+    document.getElementById("FOL").onmouseover = function () {
+      document.getElementById("leftView").style.backgroundColor =
+        "rgba(143,170,220,0.56)";
+      document.getElementById("leftView").style.cursor = "pointer";
+      hover(this);
+      hover(document.getElementById("FOLSymb"));
     };
 
-    document.getElementById('FOL').onmouseout=function(){
-        document.getElementById('leftView').style.backgroundColor ="rgba(88,109,138,0.64)";
-        document.getElementById('leftView').style.cursor ="default";
-        unhover(this);
-        unhover(document.getElementById('FOLSymb'));
+    document.getElementById("FOL").onmouseout = function () {
+      document.getElementById("leftView").style.backgroundColor =
+        "rgba(88,109,138,0.64)";
+      document.getElementById("leftView").style.cursor = "default";
+      unhover(this);
+      unhover(document.getElementById("FOLSymb"));
     };
 
-    document.getElementById('PL').onmouseover=function(){
-        document.getElementById('rightView').style.backgroundColor ="rgba(143,170,220,0.56)";
-        document.getElementById('rightView').style.cursor ="pointer";
-        hover(this);
-        hover(document.getElementById('PLSymb'));
+    document.getElementById("PL").onmouseover = function () {
+      document.getElementById("rightView").style.backgroundColor =
+        "rgba(143,170,220,0.56)";
+      document.getElementById("rightView").style.cursor = "pointer";
+      hover(this);
+      hover(document.getElementById("PLSymb"));
     };
 
-    document.getElementById('PL').onmouseout=function(){
-        document.getElementById('rightView').style.backgroundColor ="rgba(222,235,247,0.64)";
-        document.getElementById('rightView').style.cursor ="default";
-        unhover(this);
-        unhover(document.getElementById('PLSymb'));
+    document.getElementById("PL").onmouseout = function () {
+      document.getElementById("rightView").style.backgroundColor =
+        "rgba(222,235,247,0.64)";
+      document.getElementById("rightView").style.cursor = "default";
+      unhover(this);
+      unhover(document.getElementById("PLSymb"));
     };
-
-</script>
-
+  </script>
 </html>
