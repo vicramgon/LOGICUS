@@ -134,6 +134,16 @@ applySubsToFormula s f =
                 Forall v (applySubsToFormula s2 p)
         Insat -> Insat
 
+-- subsComposition s1 s2 calculates s2 o s1
+subsComposition : Substitution -> Substitution -> Substitution
+subsComposition s1 s2 =
+    let
+        s1l = Dict.toList s1
+        s2l = Dict.toList s2
+    in
+        Dict.fromList <| (List.filter (\(x1, tr) -> (Var x1) /= tr) <| List.map (\(x1, t1) -> (x1, applySubsToTerm s2 t1)) s1l) ++ (List.filter (\(x2,_) -> not(Dict.member x2 s1)) s2l)
+    
+
 checkWFF : FormulaLPO -> Bool
 checkWFF x = checkWFFAux x []
 
